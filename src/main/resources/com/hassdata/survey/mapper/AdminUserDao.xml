@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.AdminUserDao">
+    <resultMap id="adminUserResult" type="AdminUser">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="adminUserColumns">
+        <![CDATA[
+        	id,
+            account,
+            password,
+            email,
+            headimage,
+            identifier,
+            remarks,
+            createdatetime,
+            lastlogintime
+        ]]>
+    </sql>
+
+    <sql id="adminUserDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="account != null">
+                and account = #{account}
+            </if>
+            <if test="password != null">
+                and password = #{password}
+            </if>
+            <if test="email != null">
+                and email = #{email}
+            </if>
+            <if test="headimage != null">
+                and headimage = #{headimage}
+            </if>
+            <if test="identifier != null">
+                and identifier = #{identifier}
+            </if>
+            <if test="remarks != null">
+                and remarks = #{remarks}
+            </if>
+            <if test="createdatetime != null">
+                and createdatetime = #{createdatetime}
+            </if>
+            <if test="lastlogintime != null">
+                and lastlogintime = #{lastlogintime}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="AdminUser" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        admin_user (
+	        	id,
+	        	account,
+	        	password,
+	        	email,
+	        	headimage,
+                identifier,
+                remarks,
+                createdatetime,
+                lastlogintime
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{account,jdbcType=VARCHAR},
+	        	#{password,jdbcType=VARCHAR},
+	        	#{email,jdbcType=VARCHAR},
+	        	#{headimage,jdbcType=VARCHAR},
+	        	#{identifier,jdbcType=VARCHAR},
+	        	#{remarks,jdbcType=VARCHAR},
+	        	#{createdatetime,jdbcType=DATE},
+	        	#{lastlogintime,jdbcType=DATE}
+	        )
+        ]]>
+    </insert>
+
+    <update id="update" parameterType="AdminUser">
+        <![CDATA[
+	        UPDATE admin_user SET
+		        account = #{account,jdbcType=VARCHAR},
+		        password = #{password,jdbcType=VARCHAR},
+		        email = #{email,jdbcType=VARCHAR},
+		        headimage = #{headimage,jdbcType=VARCHAR},
+		        identifier = #{identifier,jdbcType=VARCHAR},
+		        remarks = #{remarks,jdbcType=VARCHAR},
+		        createdatetime = #{createdatetime,jdbcType=DATE},
+		        lastlogintime = #{lastlogintime,jdbcType=DATE}
+			WHERE
+				id = #{id}
+        ]]>
+    </update>
+
+    <update id="updateParams" parameterType="AdminUser">
+        UPDATE
+        admin_user
+        <set>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="headimage != null">
+                headimage = #{headimage,jdbcType=VARCHAR},
+            </if>
+            <if test="identifier != null">
+                identifier = #{identifier,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createdatetime != null">
+                createdatetime = #{createdatetime,jdbcType=DATE},
+            </if>
+            <if test="lastlogintime != null">
+                lastlogintime = #{lastlogintime,jdbcType=DATE}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from admin_user where
+	        id = #{id}
+        ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="adminUserResult">
+        select
+        <include refid="adminUserColumns"/>
+        <![CDATA[
+		    from admin_user
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="AdminUser">
+        select count(1) from admin_user
+        <include refid="adminUserDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="adminUserResult" parameterType="map">
+        select
+        <include refid="adminUserColumns"/>
+        from admin_user
+        <include refid="adminUserDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="adminUserResult" parameterType="map">
+        select
+        <include refid="adminUserColumns"/>
+        from admin_user
+        <include refid="adminUserDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="adminUserResult" parameterType="map">
+        select
+        <include refid="adminUserColumns"/>
+        from admin_user
+        <include refid="adminUserDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from admin_user
+        <include refid="adminUserDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

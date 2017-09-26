@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.UserDao">
+    <resultMap id="userResult" type="User">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="userColumns">
+        <![CDATA[
+        	id,
+            account,
+            password,
+            schoolname,
+            headmaster,
+            address,
+            playhousename,
+            booknumber,
+            remarks,
+            lastlogintime
+
+	    ]]>
+    </sql>
+
+    <sql id="userDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="account != null">
+                and account = #{account}
+            </if>
+            <if test="password != null">
+                and password = #{password}
+            </if>
+            <if test="schoolname != null">
+                and schoolname = #{schoolname}
+            </if>
+            <if test="headmaster != null">
+                and headmaster = #{headmaster}
+            </if>
+            <if test="address != null">
+                and address = #{address}
+            </if>
+            <if test="playhousename != null">
+                and playhousename = #{playhousename}
+            </if>
+            <if test="booknumber != null">
+                and booknumber = #{booknumber}
+            </if>
+            <if test="remarks != null">
+                and remarks = #{remarks}
+            </if>
+            <if test="lastlogintime != null">
+                and lastlogintime = #{lastlogintime}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        user (
+	        	id,
+	        	account,
+	        	password,
+	        	schoolname,
+	        	headmaster,
+	        	address,
+	        	playhousename,
+	        	booknumber,
+	        	remarks,
+	        	lastlogintime
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{account,jdbcType=VARCHAR},
+	        	#{password,jdbcType=VARCHAR},
+	        	#{schoolname,jdbcType=VARCHAR},
+	        	#{headmaster,jdbcType=VARCHAR},
+	        	#{address,jdbcType=VARCHAR},
+	        	#{playhousename,jdbcType=VARCHAR},
+	        	#{booknumber,jdbcType=INTEGER},
+	        	#{remarks,jdbcType=VARCHAR},
+	        	#{lastlogintime,jdbcType=DATE}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="User">
+        <![CDATA[
+	        UPDATE user SET
+		        account = #{account,jdbcType=VARCHAR},
+		        password = #{password,jdbcType=VARCHAR},
+		        schoolname = #{schoolname,jdbcType=VARCHAR},
+		        headmaster = #{headmaster,jdbcType=VARCHAR},
+		        address = #{address,jdbcType=VARCHAR},
+		        playhousename = #{playhousename,jdbcType=VARCHAR},
+		        booknumber = #{booknumber,jdbcType=INTEGER},
+		        remarks = #{remarks,jdbcType=VARCHAR},
+		        lastlogintime = #{lastlogintime,jdbcType=DATE}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="User">
+        UPDATE
+        user
+        <set>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="schoolname != null">
+                schoolname = #{schoolname,jdbcType=VARCHAR},
+            </if>
+            <if test="headmaster != null">
+                headmaster = #{headmaster,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="playhousename != null">
+                playhousename = #{playhousename,jdbcType=VARCHAR},
+            </if>
+            <if test="booknumber != null">
+                booknumber = #{booknumber,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="lastlogintime != null">
+                lastlogintime = #{lastlogintime,jdbcType=DATE}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from user where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="userResult">
+        select <include refid="userColumns" />
+        <![CDATA[
+		    from user
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="User">
+        select count(1) from user
+        <include refid="userDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="userResult" parameterType="map">
+        select <include refid="userColumns"/> from user
+        <include refid="userDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="userResult" parameterType="map">
+        select <include refid="userColumns"/> from user
+        <include refid="userDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="userResult" parameterType="map">
+        select <include refid="userColumns" />
+        from user
+        <include refid="userDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from user
+        <include refid="userDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

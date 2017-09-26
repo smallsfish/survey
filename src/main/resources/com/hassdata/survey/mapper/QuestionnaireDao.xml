@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.QuestionnaireDao">
+    <resultMap id="questionnaireResult" type="Questionnaire">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="questionnaireColumns">
+        <![CDATA[
+        	id,
+            questionnairename,
+            questionnairecomp,
+            questionnairefrom,
+            questionnairebegintime,
+            questionnaireendtime,
+            questionnairecreatetime,
+            questionnaireexplain,
+            aid
+	    ]]>
+    </sql>
+
+    <sql id="questionnaireDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="questionnairename != null">
+                and questionnairename = #{questionnairename}
+            </if>
+            <if test="questionnairecomp != null">
+                and questionnairecomp = #{questionnairecomp}
+            </if>
+            <if test="questionnairebegintime != null">
+                and questionnairebegintime = #{questionnairebegintime}
+            </if>
+            <if test="questionnaireendtime != null">
+                and questionnaireendtime = #{questionnaireendtime}
+            </if>
+            <if test="questionnairecreatetime != null">
+                and questionnairecreatetime = #{questionnairecreatetime}
+            </if>
+            <if test="questionnaireexplain != null">
+                and questionnaireexplain = #{questionnaireexplain}
+            </if>
+            <if test="aid != null">
+                and aid = #{aid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Questionnaire" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        questionnaire (
+	        	id,
+	        	questionnairename,
+	        	questionnairecomp,
+	        	questionnairebegintime,
+	        	questionnaireendtime,
+	        	questionnairecreatetime,
+	        	questionnaireexplain,
+	        	aid,
+	        	remarks,
+	        	lastlogintime
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{questionnairename,jdbcType=VARCHAR},
+	        	#{questionnairecomp,jdbcType=VARCHAR},
+	        	#{questionnairebegintime,jdbcType=DATE},
+	        	#{questionnaireendtime,jdbcType=DATE},
+	        	#{questionnairecreatetime,jdbcType=DATE},
+	        	#{questionnaireexplain,jdbcType=VARCHAR},
+	        	#{aid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Questionnaire">
+        <![CDATA[
+	        UPDATE questionnaire SET
+		        questionnairename = #{questionnairename,jdbcType=VARCHAR},
+		        questionnairecomp = #{questionnairecomp,jdbcType=VARCHAR},
+		        questionnairebegintime = #{questionnairebegintime,jdbcType=DATE},
+		        questionnaireendtime = #{questionnaireendtime,jdbcType=DATE},
+		        questionnairecreatetime = #{questionnairecreatetime,jdbcType=DATE},
+		        questionnaireexplain = #{questionnaireexplain,jdbcType=VARCHAR},
+		        aid = #{aid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Questionnaire">
+        UPDATE
+        questionnaire
+        <set>
+            <if test="questionnairename != null">
+                questionnairename = #{questionnairename,jdbcType=VARCHAR},
+            </if>
+            <if test="questionnairecomp != null">
+                questionnairecomp = #{questionnairecomp,jdbcType=VARCHAR},
+            </if>
+            <if test="questionnairebegintime != null">
+                questionnairebegintime = #{questionnairebegintime,jdbcType=DATE},
+            </if>
+            <if test="questionnaireendtime != null">
+                questionnaireendtime = #{questionnaireendtime,jdbcType=DATE},
+            </if>
+            <if test="questionnairecreatetime != null">
+                questionnairecreatetime = #{questionnairecreatetime,jdbcType=DATE},
+            </if>
+            <if test="questionnaireexplain != null">
+                questionnaireexplain = #{questionnaireexplain,jdbcType=VARCHAR},
+            </if>
+            <if test="aid != null">
+                aid = #{aid,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from questionnaire where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="questionnaireResult">
+        select <include refid="questionnaireColumns" />
+        <![CDATA[
+		    from questionnaire
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Questionnaire">
+        select count(1) from questionnaire
+        <include refid="questionnaireDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="questionnaireResult" parameterType="map">
+        select <include refid="questionnaireColumns"/> from questionnaire
+        <include refid="questionnaireDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="questionnaireResult" parameterType="map">
+        select <include refid="questionnaireColumns"/> from questionnaire
+        <include refid="questionnaireDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="questionnaireResult" parameterType="map">
+        select <include refid="questionnaireColumns" />
+        from questionnaire
+        <include refid="questionnaireDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from questionnaire
+        <include refid="questionnaireDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

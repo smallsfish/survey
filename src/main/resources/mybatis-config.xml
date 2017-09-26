@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+ 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 类型别名 -->
+	<typeAliases>
+		<typeAlias alias="User" type="com.hassdata.survey.po.User" />
+		<typeAlias alias="AdminUser" type="com.hassdata.survey.po.Admin_User" />
+		<typeAlias alias="Questionnaire" type="com.hassdata.survey.po.Questionnaire" />
+		<typeAlias alias="QuestionType" type="com.hassdata.survey.po.QuestionType" />
+		<typeAlias alias="Question" type="com.hassdata.survey.po.Question" />
+		<typeAlias alias="Options" type="com.hassdata.survey.po.Options" />
+		<typeAlias alias="Student" type="com.hassdata.survey.po.Student" />
+		<typeAlias alias="Score" type="com.hassdata.survey.po.Score" />
+	</typeAliases>
+</configuration>
+
+
+
+
+

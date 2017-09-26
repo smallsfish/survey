@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.StudentDao">
+    <resultMap id="StudentResult" type="Student">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="StudentColumns">
+        <![CDATA[
+        	id,
+            studentname,
+            sex,
+            age,
+            grade,
+            classes,
+            uid
+	    ]]>
+    </sql>
+
+    <sql id="StudentDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="studentname != null">
+                and studentname = #{studentname}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade}
+            </if>
+            <if test="classes != null">
+                and classes = #{classes}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Student" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        student (
+	        	id,
+	        	studentname,
+                sex,
+                age,
+                grade,
+                classes,
+                uid
+	        ) VALUES (
+	        	#{id,jdbcType=BIGINT} ,
+	        	#{studentname,jdbcType=VARCHAR},
+	        	#{sex,jdbcType=VARCHAR},
+	        	#{age,jdbcType=INTEGER},
+	        	#{grade,jdbcType=VARCHAR},
+	        	#{classes,jdbcType=VARCHAR},
+	        	#{uid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Student">
+        <![CDATA[
+	        UPDATE student SET
+		        studentname = #{studentname,jdbcType=VARCHAR},
+		        sex = #{sex,jdbcType=VARCHAR},
+		        age = #{age,jdbcType=INTEGER},
+		        grade = #{grade,jdbcType=VARCHAR},
+		        classes = #{classes,jdbcType=VARCHAR},
+		        uid = #{uid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Student">
+        UPDATE
+        student
+        <set>
+            <if test="studentname != null">
+                studentname = #{studentname,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                age = #{age,jdbcType=INTEGER},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="classes != null">
+                classes = #{classes,jdbcType=VARCHAR},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        <![CDATA[
+	        delete from student where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Long" resultMap="StudentResult">
+        select <include refid="StudentColumns" />
+        <![CDATA[
+		    from student
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Student">
+        select count(1) from student
+        <include refid="StudentDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="StudentResult" parameterType="map">
+        select <include refid="StudentColumns"/> from student
+        <include refid="StudentDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="StudentResult" parameterType="map">
+        select <include refid="StudentColumns"/> from student
+        <include refid="StudentDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="StudentResult" parameterType="map">
+        select <include refid="StudentColumns" />
+        from student
+        <include refid="StudentDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from student
+        <include refid="StudentDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.ScoreDao">
+    <resultMap id="scoreResult" type="Score">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="scoreColumns">
+        <![CDATA[
+        	id,
+            questionnaireid,
+            questionid,
+            options,
+            sid,
+            uid
+	    ]]>
+    </sql>
+
+    <sql id="scoreDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="questionnaireid != null">
+                and questionnaireid = #{questionnaireid}
+            </if>
+            <if test="questionid != null">
+                and questionid = #{questionid}
+            </if>
+            <if test="options != null">
+                and options = #{options}
+            </if>
+            <if test="sid != null">
+                and sid = #{sid}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Score" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        score (
+	        	id,
+                questionnaireid,
+                questionid,
+                options,
+                sid,
+                uid
+	        ) VALUES (
+	        	#{id,jdbcType=BIGINT} ,
+	        	#{questionnaireid,jdbcType=INTEGER},
+	        	#{questionid,jdbcType=BIGINT},
+	        	#{options,jdbcType=VARCHAR},
+	        	#{sid,jdbcType=BIGINT},
+	        	#{uid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Score">
+        <![CDATA[
+	        UPDATE score SET
+		        questionnaireid = #{questionnaireid,jdbcType=INTEGER},
+		        questionid = #{questionid,jdbcType=BIGINT},
+		        options = #{options,jdbcType=VARCHAR},
+		        sid = #{sid,jdbcType=BIGINT},
+		        uid = #{uid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Score">
+        UPDATE
+        score
+        <set>
+            <if test="questionnaireid != null">
+                questionnaireid = #{questionnaireid,jdbcType=INTEGER},
+            </if>
+            <if test="questionid != null">
+                questionid = #{questionid,jdbcType=BIGINT},
+            </if>
+            <if test="options != null">
+                options = #{options,jdbcType=VARCHAR},
+            </if>
+            <if test="sid != null">
+                sid = #{sid,jdbcType=BIGINT},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        <![CDATA[
+	        delete from score where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Long" resultMap="scoreResult">
+        select <include refid="scoreColumns" />
+        <![CDATA[
+		    from score
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Score">
+        select count(1) from score
+        <include refid="scoreDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="scoreResult" parameterType="map">
+        select <include refid="scoreColumns"/> from score
+        <include refid="scoreDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="scoreResult" parameterType="map">
+        select <include refid="scoreColumns"/> from score
+        <include refid="scoreDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="scoreResult" parameterType="map">
+        select <include refid="scoreColumns" />
+        from score
+        <include refid="scoreDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from score
+        <include refid="scoreDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

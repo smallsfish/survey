@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.OptionsDao">
+    <resultMap id="optionsResult" type="Options">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="optionsColumns">
+        <![CDATA[
+        	id,
+            optionsname,
+            questionid
+
+	    ]]>
+    </sql>
+
+    <sql id="optionsDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="optionsname != null">
+                and optionsname = #{optionsname}
+            </if>
+            <if test="questionid != null">
+                and questionid = #{questionid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Options" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        options (
+	        	id,
+	        	optionsname,
+                questionid
+	        ) VALUES (
+	        	#{id,jdbcType=BIGINT} ,
+	        	#{optionsname,jdbcType=VARCHAR},
+	        	#{questionid,jdbcType=BIGINT}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Options">
+        <![CDATA[
+	        UPDATE options SET
+		        optionsname = #{optionsname,jdbcType=VARCHAR},
+		        questionid = #{questionid,jdbcType=BIGINT}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Options">
+        UPDATE
+        options
+        <set>
+            <if test="optionsname != null">
+                optionsname = #{optionsname,jdbcType=VARCHAR},
+            </if>
+            <if test="questionid != null">
+                questionid = #{questionid,jdbcType=VARCHAR}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        <![CDATA[
+	        delete from options where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Long" resultMap="optionsResult">
+        select <include refid="optionsColumns" />
+        <![CDATA[
+		    from options
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Options">
+        select count(1) from options
+        <include refid="optionsDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="optionsResult" parameterType="map">
+        select <include refid="optionsColumns"/> from options
+        <include refid="optionsDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="optionsResult" parameterType="map">
+        select <include refid="optionsColumns"/> from options
+        <include refid="optionsDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="optionsResult" parameterType="map">
+        select <include refid="optionsColumns" />
+        from options
+        <include refid="optionsDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from options
+        <include refid="optionsDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.QuestionTypeDao">
+    <resultMap id="questionTypeResult" type="QuestionType">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="questionTypeColumns">
+        <![CDATA[
+        	id,
+            questionTypename,
+            questionTypecolor,
+            questionTypesort,
+            questionnaireid
+	    ]]>
+    </sql>
+
+    <sql id="questionTypeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="questionTypename != null">
+                and questionTypename = #{questionTypename}
+            </if>
+            <if test="questionTypecolor != null">
+                and questionTypecolor = #{questionTypecolor}
+            </if>
+            <if test="questionTypesort != null">
+                and questionTypesort = #{questionTypesort}
+            </if>
+            <if test="questionnaireid != null">
+                and questionnaireid = #{questionnaireid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="QuestionType" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        questiontype (
+	        	id,
+	        	questionTypename,
+                questionTypecolor,
+                questionTypesort,
+                questionnaireid
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{questionTypename,jdbcType=VARCHAR},
+	        	#{questionTypecolor,jdbcType=VARCHAR},
+	        	#{questionTypesort,jdbcType=INTEGER},
+	        	#{questionnaireid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="QuestionType">
+        <![CDATA[
+	        UPDATE questiontype SET
+		        questionTypename = #{questionTypename,jdbcType=VARCHAR},
+		        questionTypecolor = #{questionTypecolor,jdbcType=VARCHAR},
+		        questionTypesort = #{questionTypesort,jdbcType=INTEGER},
+		        questionnaireid = #{questionnaireid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="QuestionType">
+        UPDATE
+        questiontype
+        <set>
+            <if test="questionTypename != null">
+                questionTypename = #{questionTypename,jdbcType=VARCHAR},
+            </if>
+            <if test="questionTypecolor != null">
+                questionTypecolor = #{questionTypecolor,jdbcType=VARCHAR},
+            </if>
+            <if test="questionTypesort != null">
+                questionTypesort = #{questionTypesort,jdbcType=INTEGER},
+            </if>
+            <if test="questionnaireid != null">
+                questionnaireid = #{questionnaireid,jdbcType=INTEGER}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from questiontype where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="questionTypeResult">
+        select <include refid="questionTypeColumns" />
+        <![CDATA[
+		    from questiontype
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="QuestionType">
+        select count(1) from questiontype
+        <include refid="questionTypeDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="questionTypeResult" parameterType="map">
+        select <include refid="questionTypeColumns"/> from questiontype
+        <include refid="questionTypeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="questionTypeResult" parameterType="map">
+        select <include refid="questionTypeColumns"/> from questiontype
+        <include refid="questionTypeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="questionTypeResult" parameterType="map">
+        select <include refid="questionTypeColumns" />
+        from questiontype
+        <include refid="questionTypeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from questiontype
+        <include refid="questionTypeDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="stdOut" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} | %-5p | %t:%c{1}:%L | %m%n" />
+		</layout>
+	</appender>
+	<appender name="errorOut" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="ImmediateFlush" value="true"></param>
+		<param name="File" value="/backup/applogs/error.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd"></param>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} | %-5p | %t:%c{1}:%L | %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="fatal" />
+			<param name="LevelMin" value="error" />
+			<param name="AcceptOnMatch" value="true" />
+		</filter>
+	</appender>
+	<appender name="appOut" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="Threshold" value="debug"></param>
+		<param name="ImmediateFlush" value="true"></param>
+		<param name="File" value="/backup/applogs/app.log"></param>
+		<param name="DatePattern" value="'.'yyyy-MM-dd"></param>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} | %-5p | %t:%c{1}:%L | %m%n" />
+		</layout>
+	</appender>
+	<logger name="com.yunzhe.mapper.VcOpenUserMapper" additivity="false">
+		<level value="debug"/>
+		<appender-ref ref="stdOut"/>
+	</logger>
+	<root>
+		<priority value="info"/>
+		<appender-ref ref="stdOut"/>
+		<appender-ref ref="appOut"/>
+		<appender-ref ref="errorOut"/>
+	</root>
+</log4j:configuration>
