@@ -48,11 +48,11 @@
                 questionTypesort,
                 questionnaireid
 	        ) VALUES (
-	        	#{id,jdbcType=INTEGER} ,
+	        	#{id,jdbcType=VARCHAR} ,
 	        	#{questionTypename,jdbcType=VARCHAR},
 	        	#{questionTypecolor,jdbcType=VARCHAR},
 	        	#{questionTypesort,jdbcType=INTEGER},
-	        	#{questionnaireid,jdbcType=INTEGER}
+	        	#{questionnaireid,jdbcType=VARCHAR}
 	        )
 	    ]]>
     </insert>
@@ -63,7 +63,7 @@
 		        questionTypename = #{questionTypename,jdbcType=VARCHAR},
 		        questionTypecolor = #{questionTypecolor,jdbcType=VARCHAR},
 		        questionTypesort = #{questionTypesort,jdbcType=INTEGER},
-		        questionnaireid = #{questionnaireid,jdbcType=INTEGER}
+		        questionnaireid = #{questionnaireid,jdbcType=VARCHAR}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -83,7 +83,7 @@
                 questionTypesort = #{questionTypesort,jdbcType=INTEGER},
             </if>
             <if test="questionnaireid != null">
-                questionnaireid = #{questionnaireid,jdbcType=INTEGER}
+                questionnaireid = #{questionnaireid,jdbcType=VARCHAR}
             </if>
         </set>
         WHERE

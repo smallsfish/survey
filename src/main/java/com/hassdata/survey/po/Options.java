@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Options implements Serializable {
     private Long id;
     private String optionsname;
-    private Long questionid;
+    private String questionid;
 
     public Long getId() {
         return id;
@@ -23,11 +23,11 @@ public class Options implements Serializable {
         this.optionsname = optionsname;
     }
 
-    public Long getQuestionid() {
+    public String getQuestionid() {
         return questionid;
     }
 
-    public void setQuestionid(Long questionid) {
+    public void setQuestionid(String questionid) {
         this.questionid = questionid;
     }
 }

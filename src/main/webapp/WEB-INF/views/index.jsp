@@ -161,22 +161,6 @@
         var loadIndex=layer.load(0);
         layer.confirm("确定退出系统吗？",function (index) {
             layer.close(index);
-            /*$.ajax({
-                type: "GET",
-                dataType: "json",
-                url: 'system/exit',
-                success: function (result) {
-                    layer.close(loadIndex);
-                    layer.alert(JSON.stringify(result));
-                    setTimeout(function () {
-                        window.location.href="system/login";
-                    },1000);
-                },
-                error: function(data) {
-                    layer.close(loadIndex);
-                    layer.alert(JSON.stringify(data));
-                }
-            });*/
             $.get( 'system/exit',function () {
                 layer.close(loadIndex);
                 window.location.href="system/login";

@@ -3,17 +3,17 @@ package com.hassdata.survey.po;
 import java.io.Serializable;
 
 public class Question implements Serializable {
-    private Long id;
+    private String id;
     private String questionname;
-    private Integer questionstyle;
-    private Integer questiontypeid;
-    private Integer questionnaireid;
+    private String questionstyle;
+    private String questiontypeid;
+    private String questionnaireid;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -25,27 +25,27 @@ public class Question implements Serializable {
         this.questionname = questionname;
     }
 
-    public Integer getQuestionstyle() {
+    public String getQuestionstyle() {
         return questionstyle;
     }
 
-    public void setQuestionstyle(Integer questionstyle) {
+    public void setQuestionstyle(String questionstyle) {
         this.questionstyle = questionstyle;
     }
 
-    public Integer getQuestiontypeid() {
+    public String getQuestiontypeid() {
         return questiontypeid;
     }
 
-    public void setQuestiontypeid(Integer questiontypeid) {
+    public void setQuestiontypeid(String questiontypeid) {
         this.questiontypeid = questiontypeid;
     }
 
-    public Integer getQuestionnaireid() {
+    public String getQuestionnaireid() {
         return questionnaireid;
     }
 
-    public void setQuestionnaireid(Integer questionnaireid) {
+    public void setQuestionnaireid(String questionnaireid) {
         this.questionnaireid = questionnaireid;
     }
 }

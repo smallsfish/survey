@@ -48,11 +48,11 @@
                 questiontypeid,
                 questionnaireid
 	        ) VALUES (
-	        	#{id,jdbcType=BIGINT},
+	        	#{id,jdbcType=VARCHAR},
 	        	#{questionname,jdbcType=VARCHAR},
 	        	#{questionstyle,jdbcType=VARCHAR},
-	        	#{questiontypeid,jdbcType=INTEGER},
-	        	#{questionnaireid,jdbcType=INTEGER}
+	        	#{questiontypeid,jdbcType=VARCHAR},
+	        	#{questionnaireid,jdbcType=VARCHAR}
 	        )
 	    ]]>
     </insert>
@@ -62,8 +62,8 @@
 	        UPDATE question SET
 		        questionname = #{questionname,jdbcType=VARCHAR},
 		        questionstyle = #{questionstyle,jdbcType=VARCHAR},
-		        questiontypeid = #{questiontypeid,jdbcType=INTEGER},
-		        questionnaireid = #{questionnaireid,jdbcType=INTEGER}
+		        questiontypeid = #{questiontypeid,jdbcType=VARCHAR},
+		        questionnaireid = #{questionnaireid,jdbcType=VARCHAR}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -80,10 +80,10 @@
                 questionstyle = #{questionstyle,jdbcType=VARCHAR},
             </if>
             <if test="questiontypeid != null">
-                questiontypeid = #{questiontypeid,jdbcType=INTEGER},
+                questiontypeid = #{questiontypeid,jdbcType=VARCHAR},
             </if>
             <if test="questionnaireid != null">
-                questionnaireid = #{questionnaireid,jdbcType=INTEGER}
+                questionnaireid = #{questionnaireid,jdbcType=VARCHAR}
             </if>
         </set>
         WHERE

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,8 +50,9 @@ public class AdminUserController {
         if(remind!=null){
             System.out.println("记住密码");
         }
-        if(adminUserService.getOne(adminUser)!=null){
-            session.setAttribute("CurrentAdminUser",adminUser);
+        Admin_User au=null;
+        if((au=adminUserService.getOne(adminUser))!=null){
+            session.setAttribute("CurrentAdminUser",au);
             return ServerResponse.createBySuccessMessage("登陆成功！");
         }else{
             return ServerResponse.createByErrorMessage("账号或者密码错误");

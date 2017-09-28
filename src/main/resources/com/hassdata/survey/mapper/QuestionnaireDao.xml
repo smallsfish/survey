@@ -17,6 +17,7 @@
             questionnaireendtime,
             questionnairecreatetime,
             questionnaireexplain,
+            questionnairejson,
             aid
 	    ]]>
     </sql>
@@ -45,6 +46,9 @@
             <if test="questionnaireexplain != null">
                 and questionnaireexplain = #{questionnaireexplain}
             </if>
+            <if test="questionnairejson != null">
+                and questionnairejson = #{questionnairejson}
+            </if>
             <if test="aid != null">
                 and aid = #{aid}
             </if>
@@ -62,17 +66,17 @@
 	        	questionnaireendtime,
 	        	questionnairecreatetime,
 	        	questionnaireexplain,
-	        	aid,
-	        	remarks,
-	        	lastlogintime
+	        	questionnairejson,
+	        	aid
 	        ) VALUES (
-	        	#{id,jdbcType=INTEGER} ,
+	        	#{id,jdbcType=VARCHAR} ,
 	        	#{questionnairename,jdbcType=VARCHAR},
 	        	#{questionnairecomp,jdbcType=VARCHAR},
-	        	#{questionnairebegintime,jdbcType=DATE},
-	        	#{questionnaireendtime,jdbcType=DATE},
-	        	#{questionnairecreatetime,jdbcType=DATE},
+	        	#{questionnairebegintime,jdbcType=TIMESTAMP},
+	        	#{questionnaireendtime,jdbcType=TIMESTAMP},
+	        	#{questionnairecreatetime,jdbcType=TIMESTAMP},
 	        	#{questionnaireexplain,jdbcType=VARCHAR},
+	        	#{questionnairejson,jdbcType=BLOB},
 	        	#{aid,jdbcType=INTEGER}
 	        )
 	    ]]>
@@ -83,10 +87,11 @@
 	        UPDATE questionnaire SET
 		        questionnairename = #{questionnairename,jdbcType=VARCHAR},
 		        questionnairecomp = #{questionnairecomp,jdbcType=VARCHAR},
-		        questionnairebegintime = #{questionnairebegintime,jdbcType=DATE},
-		        questionnaireendtime = #{questionnaireendtime,jdbcType=DATE},
-		        questionnairecreatetime = #{questionnairecreatetime,jdbcType=DATE},
+		        questionnairebegintime = #{questionnairebegintime,jdbcType=TIMESTAMP},
+		        questionnaireendtime = #{questionnaireendtime,jdbcType=TIMESTAMP},
+		        questionnairecreatetime = #{questionnairecreatetime,jdbcType=TIMESTAMP},
 		        questionnaireexplain = #{questionnaireexplain,jdbcType=VARCHAR},
+		        questionnairejson = #{questionnairejson,jdbcType=BLOB},
 		        aid = #{aid,jdbcType=INTEGER}
 			WHERE
 				id = #{id}
@@ -104,16 +109,19 @@
                 questionnairecomp = #{questionnairecomp,jdbcType=VARCHAR},
             </if>
             <if test="questionnairebegintime != null">
-                questionnairebegintime = #{questionnairebegintime,jdbcType=DATE},
+                questionnairebegintime = #{questionnairebegintime,jdbcType=TIMESTAMP},
             </if>
             <if test="questionnaireendtime != null">
-                questionnaireendtime = #{questionnaireendtime,jdbcType=DATE},
+                questionnaireendtime = #{questionnaireendtime,jdbcType=TIMESTAMP},
             </if>
             <if test="questionnairecreatetime != null">
-                questionnairecreatetime = #{questionnairecreatetime,jdbcType=DATE},
+                questionnairecreatetime = #{questionnairecreatetime,jdbcType=TIMESTAMP},
             </if>
             <if test="questionnaireexplain != null">
                 questionnaireexplain = #{questionnaireexplain,jdbcType=VARCHAR},
+            </if>
+            <if test="questionnairejson != null">
+                questionnairejson = #{questionnairejson,jdbcType=BLOB},
             </if>
             <if test="aid != null">
                 aid = #{aid,jdbcType=INTEGER},

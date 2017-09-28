@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +38,13 @@ public class UserController {
 
     @RequestMapping(value = "getAdminUser",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse getAdminUser(@RequestParam(required = false) int page,@RequestParam(required = false) int limit){
+    public ServerResponse getAdminUser(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer limit){
+        if(page==null || limit==null){
+            page=1;
+            limit=30;
+        }
         long count=adminUserService.getScrollCount(null);
-        List<Admin_User> a_us=adminUserService.getScrollData(null,"id DESC",page-1,limit);
+        List<Admin_User> a_us=adminUserService.getScrollData(null,"id DESC",(page-1)*limit,limit);
         List<AdminUser> aus=new ArrayList<>();
         AdminUser adminUser=null;
         int aid=1;
@@ -53,9 +61,17 @@ public class UserController {
             adminUser.setLastlogintime(au.getLastlogintime());
             adminUser.setRemarks(au.getRemarks());
             aus.add(adminUser);
-            System.out.println(au.getRemarks());
             aid++;
         }
         return ServerResponse.createBySuccessForLayuiTable("请求成功",aus,count);
+    }
+
+
+    @RequestMapping(value = "addAdminUser" , method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse addAdminUser(Admin_User admin_user, MultipartHttpServletRequest request, MultipartFile file){
+        System.out.println(admin_user.toString());
+        System.out.println(file.getOriginalFilename());
+        return null;
     }
 }

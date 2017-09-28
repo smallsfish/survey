@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Questionnaire implements Serializable {
-    private Integer id;
+    private String id;
     private String questionnairename;
     private String questionnairecomp;
     private String questionnairefrom;
@@ -12,15 +12,25 @@ public class Questionnaire implements Serializable {
     private Date questionnaireendtime;
     private Date questionnairecreatetime;
     private String questionnaireexplain;
+    private String questionnairejson;
     private Integer aid;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
+
+    public String getQuestionnairejson() {
+        return questionnairejson;
+    }
+
+    public void setQuestionnairejson(String questionnairejson) {
+        this.questionnairejson = questionnairejson;
+    }
+
 
     public String getQuestionnairename() {
         return questionnairename;

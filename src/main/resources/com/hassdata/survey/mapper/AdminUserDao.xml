@@ -75,8 +75,8 @@
 	        	#{headimage,jdbcType=VARCHAR},
 	        	#{identifier,jdbcType=VARCHAR},
 	        	#{remarks,jdbcType=VARCHAR},
-	        	#{createdatetime,jdbcType=DATE},
-	        	#{lastlogintime,jdbcType=DATE}
+	        	#{createdatetime,jdbcType=TIMESTAMP},
+	        	#{lastlogintime,jdbcType=TIMESTAMP}
 	        )
         ]]>
     </insert>
@@ -90,8 +90,8 @@
 		        headimage = #{headimage,jdbcType=VARCHAR},
 		        identifier = #{identifier,jdbcType=VARCHAR},
 		        remarks = #{remarks,jdbcType=VARCHAR},
-		        createdatetime = #{createdatetime,jdbcType=DATE},
-		        lastlogintime = #{lastlogintime,jdbcType=DATE}
+		        createdatetime = #{createdatetime,jdbcType=TIMESTAMP},
+		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
 			WHERE
 				id = #{id}
         ]]>
@@ -120,10 +120,10 @@
                 remarks = #{remarks,jdbcType=VARCHAR},
             </if>
             <if test="createdatetime != null">
-                createdatetime = #{createdatetime,jdbcType=DATE},
+                createdatetime = #{createdatetime,jdbcType=TIMESTAMP},
             </if>
             <if test="lastlogintime != null">
-                lastlogintime = #{lastlogintime,jdbcType=DATE}
+                lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
             </if>
         </set>
         WHERE

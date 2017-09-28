@@ -83,7 +83,7 @@
 	        	#{playhousename,jdbcType=VARCHAR},
 	        	#{booknumber,jdbcType=INTEGER},
 	        	#{remarks,jdbcType=VARCHAR},
-	        	#{lastlogintime,jdbcType=DATE}
+	        	#{lastlogintime,jdbcType=TIMESTAMP}
 	        )
 	    ]]>
     </insert>
@@ -99,7 +99,7 @@
 		        playhousename = #{playhousename,jdbcType=VARCHAR},
 		        booknumber = #{booknumber,jdbcType=INTEGER},
 		        remarks = #{remarks,jdbcType=VARCHAR},
-		        lastlogintime = #{lastlogintime,jdbcType=DATE}
+		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -134,7 +134,7 @@
                 remarks = #{remarks,jdbcType=VARCHAR},
             </if>
             <if test="lastlogintime != null">
-                lastlogintime = #{lastlogintime,jdbcType=DATE}
+                lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
             </if>
         </set>
         WHERE

@@ -41,7 +41,7 @@
 	        ) VALUES (
 	        	#{id,jdbcType=BIGINT} ,
 	        	#{optionsname,jdbcType=VARCHAR},
-	        	#{questionid,jdbcType=BIGINT}
+	        	#{questionid,jdbcType=VARCHAR}
 	        )
 	    ]]>
     </insert>
@@ -50,7 +50,7 @@
         <![CDATA[
 	        UPDATE options SET
 		        optionsname = #{optionsname,jdbcType=VARCHAR},
-		        questionid = #{questionid,jdbcType=BIGINT}
+		        questionid = #{questionid,jdbcType=VARCHAR}
 			WHERE
 				id = #{id}
 	    ]]>

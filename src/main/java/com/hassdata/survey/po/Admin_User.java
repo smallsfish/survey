@@ -84,4 +84,19 @@ public class Admin_User implements Serializable{
     public void setLastlogintime(String lastlogintime) {
         this.lastlogintime = lastlogintime;
     }
+
+    @Override
+    public String toString() {
+        return "Admin_User{" +
+                "id=" + id +
+                ", account='" + account + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", headimage='" + headimage + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", createdatetime='" + createdatetime + '\'' +
+                ", lastlogintime='" + lastlogintime + '\'' +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class Score implements Serializable{
     private Long id;
-    private Integer questionnaireid;
-    private Long questionid;
+    private String questionnaireid;
+    private String questionid;
     private String options;
     private Long sid;
     private Integer uid;
@@ -18,19 +18,19 @@ public class Score implements Serializable{
         this.id = id;
     }
 
-    public Integer getQuestionnaireid() {
+    public String getQuestionnaireid() {
         return questionnaireid;
     }
 
-    public void setQuestionnaireid(Integer questionnaireid) {
+    public void setQuestionnaireid(String questionnaireid) {
         this.questionnaireid = questionnaireid;
     }
 
-    public Long getQuestionid() {
+    public String getQuestionid() {
         return questionid;
     }
 
-    public void setQuestionid(Long questionid) {
+    public void setQuestionid(String questionid) {
         this.questionid = questionid;
     }
 

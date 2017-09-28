@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 public class FileUploadUtils {
 
-	public static boolean updateImg(String path,String fileName,InputStream in) {
+	public static boolean uploadSingleImage(String path,String fileName,InputStream in) {
 		FileOutputStream out = null;
 		boolean b=false;
 		try {
