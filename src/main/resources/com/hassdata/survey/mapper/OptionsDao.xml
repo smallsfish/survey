@@ -77,8 +77,25 @@
 	        id = #{id}
 	    ]]>
     </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+            <![CDATA[
+                delete from options where
+                id = #{id}
+        ]]>
+    </delete>
+
 
     <select id="find" parameterType="java.lang.Long" resultMap="optionsResult">
+        select <include refid="optionsColumns" />
+        <![CDATA[
+		    from options
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="optionsResult">
         select <include refid="optionsColumns" />
         <![CDATA[
 		    from options
@@ -126,4 +143,10 @@
         <include refid="optionsDynamicWhere"/>
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+    <delete id="deleteByQuestionid" parameterType="java.lang.String">
+        <![CDATA[
+                delete from options where
+                questionid = #{questionid}
+        ]]>
+    </delete>
 </mapper>

@@ -11,6 +11,9 @@
     <title>test</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="layui/css/layui.css">
+    <script>
+        var questionnaire = {};
+    </script>
     <script src="js/questionnaire.js"></script>
 </head>
 <body>

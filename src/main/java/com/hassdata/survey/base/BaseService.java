@@ -10,6 +10,11 @@ public interface BaseService <T>{
     T find(Serializable id);
 
     /**
+     * 根据主键id(String)获取
+     */
+    T findByStringId(String id);
+
+    /**
      * 保存
      */
     int save(T entity);
@@ -39,6 +44,11 @@ public interface BaseService <T>{
      * 根据主键id删除
      */
     int delete(Serializable id);
+
+    /**
+     * 根据主键id(String)删除
+     */
+    int deleteByStringId(String id);
 
     /**
      * 根据条件获取数目

@@ -10,6 +10,12 @@ public interface BaseDao <T>{
      */
     T find(Serializable id);
 
+
+    /**
+     * 根据主键id(String)获取
+     */
+    T findByStringId(String id);
+
     /**
      * 保存
      */
@@ -28,6 +34,10 @@ public interface BaseDao <T>{
      * 根据主键id删除
      */
     int delete(Serializable id);
+    /**
+     * 根据主键id(String)删除
+     */
+    int deleteByStringId(String id);
 
     /**
      * 根据条件获取数目

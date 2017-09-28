@@ -1,5 +1,9 @@
-(function ($, layui) {
-    var questionnaire = {};
+
+(function ($, layui,questionnaire) {
+    var questionnaireResult="";
+    var layer=null;
+    layui.use('layer', function () {
+        layer=layui.layer;});
     var life = -1;
     var types = 0;
     var typesHave = false;
@@ -23,50 +27,37 @@
         $(".questionnaireadd-main-explain").text(questionnaire.explain);
     }
     questionnaireSubmit = function () {
-        layui.use('layer', function () {
             var timeRange=$(":input[name='daterange']").val();
             if(timeRange !== ""){
                 questionnaire.daterange = timeRange;
             }
-            var questionnaireResult=JSON.stringify(questionnaire);
-            if(questionnaireResult.indexOf("说明性问题")!=-1 || questionnaireResult.indexOf("初始选项")!=-1 || questionnaireResult.indexOf("新增选项")!=-1 ){
-                layer.msg("系统检测到您有没有修改的初始问题或者选项，请仔细检查后再提交！",{icon:5,time:5000});
-                return;
-            }
-            if (questionnaireResult.indexOf("name")==-1){
-                layer.msg("系统检测到您有没有输入问卷名称，请填写完整！",{icon:5,time:5000});
-                return;
-            }
-            if (questionnaireResult.indexOf("questions")==-1){
-                layer.msg("系统检测到您有没有输入问卷名称，请填写完整！",{icon:5,time:5000});
-                return;
-            }
-            for(var i=0; i<questionnaire.types.length;i++){
-                if(questionnaire.types[i]!=null){
-                    if(questionnaire.types[i].questions.length<=0){
-                        layer.msg("系统检测到您有没有填写任何的问题或者类别下没有填写问题，请填写完整！",{icon:5,time:5000});
-                        return;
-                    }else{
-                        var qs=questionnaire.types[i].questions.length,count=0;
-                            for(var j=0; j< questionnaire.types[i].questions.length;j++){
-                                if(questionnaire.types[i].questions[j]==null){
-                                    count++;
-                                }
-                            }
-                        if(count==qs){
-                            layer.msg("系统检测到您有没有填写任何的问题或者类别下没有填写问题，请填写完整！",{icon:5,time:5000});
-                            return;
-                        }
+            if(questionnaireCheck()){
+                var loadIndex=layer.load(0);
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: 'system/questionnaireAdd',
+                    data: {'json':questionnaireResult},
+                    success: function (result) {
+                        layer.close(loadIndex);
+                        layer.msg(result.msg);
+                    },
+                    error: function(data) {
+                        layer.close(loadIndex);
+                        alert("error:"+data);
                     }
-
-                }
+                });
             }
+    }
+
+    questionnaireEditorSubmit=function(id){
+        if(questionnaireCheck()){
             var loadIndex=layer.load(0);
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/questionnaireAdd',
-                data: {'json':questionnaireResult},
+                url: 'system/questionnaireEditor',
+                data: {'json':questionnaireResult,'id':id},
                 success: function (result) {
                     layer.close(loadIndex);
                     layer.msg(result.msg);
@@ -76,7 +67,44 @@
                     alert("error:"+data);
                 }
             });
-        });
+        }
+    }
+
+    questionnaireCheck=function(){
+        questionnaireResult=JSON.stringify(questionnaire);
+        if(questionnaireResult.indexOf("说明性问题")!=-1 || questionnaireResult.indexOf("初始选项")!=-1 || questionnaireResult.indexOf("新增选项")!=-1 ){
+            layer.msg("系统检测到您有没有修改的初始问题或者选项，请仔细检查后再提交！",{icon:5,time:5000});
+            return false;
+        }
+        if (questionnaireResult.indexOf("name")==-1){
+            layer.msg("系统检测到您有没有输入问卷名称，请填写完整！",{icon:5,time:5000});
+            return false;
+        }
+        if (questionnaireResult.indexOf("questions")==-1){
+            layer.msg("系统检测到您有没有输入问卷名称，请填写完整！",{icon:5,time:5000});
+            return false;
+        }
+        for(var i=0; i<questionnaire.types.length;i++){
+            if(questionnaire.types[i]!=null){
+                if(questionnaire.types[i].questions.length<=0){
+                    layer.msg("系统检测到您有没有填写任何的问题或者类别下没有填写问题，请填写完整！",{icon:5,time:5000});
+                    return false;
+                }else{
+                    var qs=questionnaire.types[i].questions.length,count=0;
+                    for(var j=0; j< questionnaire.types[i].questions.length;j++){
+                        if(questionnaire.types[i].questions[j]==null){
+                            count++;
+                        }
+                    }
+                    if(count==qs){
+                        layer.msg("系统检测到您有没有填写任何的问题或者类别下没有填写问题，请填写完整！",{icon:5,time:5000});
+                        return false;
+                    }
+                }
+
+            }
+        }
+        return true;
     }
     questionnaireAddTypes = function () {
         layui.use('layer', function () {
@@ -266,4 +294,4 @@
         }
         event.stopPropagation();
     }
-})(jQuery, layui);
+})(jQuery, layui,questionnaire);

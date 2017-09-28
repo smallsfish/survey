@@ -1,14 +1,24 @@
 package com.hassdata.survey.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class QuestionnaireModel {
+public class QuestionnaireModel implements Serializable{
     private String id;
     private String questionnairename;
     private Date questionnairebegintime;
     private Date questionnaireendtime;
     private Date questionnairecreatetime;
+    private Integer questions;
     private String author;
+
+    public Integer getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Integer questions) {
+        this.questions = questions;
+    }
 
     public String getId() {
         return id;

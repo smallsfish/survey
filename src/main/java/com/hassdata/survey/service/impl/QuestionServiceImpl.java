@@ -20,4 +20,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
     public BaseDao<Question> getMapper() {
         return questionDao;
     }
+
+    @Override
+    public int deleteByQuestionnaireId(String questionnaireid) {
+        return questionDao.deleteByQuestionnaireId(questionnaireid);
+    }
 }

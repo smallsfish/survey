@@ -20,4 +20,9 @@ public class QuestionTypeServiceImpl extends BaseServiceImpl<QuestionType> imple
     public BaseDao<QuestionType> getMapper() {
         return questionTypeDao;
     }
+
+    @Override
+    public int deleteByQuestionnaireId(String questionnaireid) {
+        return questionTypeDao.deleteByQuestionnaireId(questionnaireid);
+    }
 }

@@ -24,6 +24,16 @@ public abstract class BaseServiceImpl <T> implements BaseService<T> {
         return this.getMapper().find(id);
     }
 
+
+    /**
+     * 根据主键id获取
+     */
+    @Override
+    public T findByStringId(String id) {
+        return this.getMapper().findByStringId(id);
+    }
+
+
     /**
      * 保存
      */
@@ -74,6 +84,14 @@ public abstract class BaseServiceImpl <T> implements BaseService<T> {
     @Override
     public int delete(Serializable id) {
         return this.getMapper().delete(id);
+    }
+
+    /**
+     * 根据主键id(String)删除
+     */
+    @Override
+    public int deleteByStringId(String id) {
+        return this.getMapper().deleteByStringId(id);
     }
 
     /**

@@ -96,8 +96,23 @@
 	        id = #{id}
 	    ]]>
     </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from questiontype where
+	        id = #{id}
+	    ]]>
+    </delete>
 
     <select id="find" parameterType="java.lang.Integer" resultMap="questionTypeResult">
+        select <include refid="questionTypeColumns" />
+        <![CDATA[
+		    from questiontype
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="questionTypeResult">
         select <include refid="questionTypeColumns" />
         <![CDATA[
 		    from questiontype
@@ -145,4 +160,13 @@
         <include refid="questionTypeDynamicWhere"/>
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <delete id="deleteByQuestionnaireId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from questiontype where
+	        questionnaireid = #{questionnaireid}
+	    ]]>
+    </delete>
 </mapper>

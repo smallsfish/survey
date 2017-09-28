@@ -1,6 +1,8 @@
 package com.hassdata.survey.dto;
 
-public class AdminUser {
+import java.io.Serializable;
+
+public class AdminUser implements Serializable{
     private Integer id;
     private Integer aid;
     private String account;

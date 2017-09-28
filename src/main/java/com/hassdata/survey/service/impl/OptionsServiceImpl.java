@@ -20,4 +20,9 @@ public class OptionsServiceImpl extends BaseServiceImpl<Options> implements Opti
     public BaseDao<Options> getMapper() {
         return optionsDao;
     }
+
+    @Override
+    public int deleteByQuestionid(String questionid) {
+        return optionsDao.deleteByQuestionid(questionid);
+    }
 }

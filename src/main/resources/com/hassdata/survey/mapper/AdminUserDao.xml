@@ -136,8 +136,24 @@
 	        id = #{id}
         ]]>
     </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from admin_user where
+	        id = #{id}
+        ]]>
+    </delete>
 
     <select id="find" parameterType="java.lang.Integer" resultMap="adminUserResult">
+        select
+        <include refid="adminUserColumns"/>
+        <![CDATA[
+		    from admin_user
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="adminUserResult">
         select
         <include refid="adminUserColumns"/>
         <![CDATA[

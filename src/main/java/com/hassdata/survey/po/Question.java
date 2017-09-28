@@ -6,8 +6,17 @@ public class Question implements Serializable {
     private String id;
     private String questionname;
     private String questionstyle;
+    private Integer questionsort;
     private String questiontypeid;
     private String questionnaireid;
+
+    public Integer getQuestionsort() {
+        return questionsort;
+    }
+
+    public void setQuestionsort(Integer questionsort) {
+        this.questionsort = questionsort;
+    }
 
     public String getId() {
         return id;

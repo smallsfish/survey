@@ -2,7 +2,9 @@ package com.hassdata.survey.controller.questionnaire;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hassdata.survey.dto.AdminUser;
+import com.hassdata.survey.dto.DisplayQuestionModel;
+import com.hassdata.survey.dto.DisplayQuestionTypeModel;
+import com.hassdata.survey.dto.DisplayQuestionnaireModel;
 import com.hassdata.survey.dto.QuestionnaireModel;
 import com.hassdata.survey.po.*;
 import com.hassdata.survey.service.*;
@@ -20,10 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("system")
@@ -51,6 +50,7 @@ public class QuestionnaireController {
         List<Questionnaire> questionnaires=questionnaireService.getScrollData(null,"id DESC",0,8);
         List<QuestionnaireModel> questionnaireModels=new ArrayList<>();
         QuestionnaireModel questionnaireModel=null;
+        Question question=null;
         for (Questionnaire q : questionnaires){
             questionnaireModel=new QuestionnaireModel();
             questionnaireModel.setId(q.getId());
@@ -59,6 +59,9 @@ public class QuestionnaireController {
             questionnaireModel.setQuestionnairecreatetime(q.getQuestionnairecreatetime());
             questionnaireModel.setQuestionnairename(q.getQuestionnairename());
             questionnaireModel.setAuthor(adminUserService.find(q.getAid()).getAccount());
+            question=new Question();
+            question.setQuestionnaireid(q.getId());
+            questionnaireModel.setQuestions(questionService.getAll(question).size());
             questionnaireModels.add(questionnaireModel);
         }
         map.addAttribute("count",count);
@@ -67,14 +70,18 @@ public class QuestionnaireController {
     }
 
     @RequestMapping(value = "questionnairesList",method = RequestMethod.GET)
-    public String getQuestionnaires(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer limit){
+    @ResponseBody
+    public ServerResponse getQuestionnaires(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer limit){
         if(page==null || limit==null){
             page=1;
             limit=8;
         }
         List<Questionnaire> questionnaires=questionnaireService.getScrollData(null,"id DESC",(page-1)*limit,limit);
-        System.out.println(questionnaires.size());
-        return "system/questionnaire/questionnaire";
+        if(questionnaires.size()<=0){
+            return ServerResponse.createByErrorMessage("暂无数据");
+        }else{
+            return ServerResponse.createBySuccess(questionnaires);
+        }
     }
 
     @RequestMapping(value = "questionnaireAdd",method = RequestMethod.GET)
@@ -84,13 +91,22 @@ public class QuestionnaireController {
     @RequestMapping(value = "questionnaireAdd",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse questionnaireAdd(String json, HttpServletRequest request){
-        System.out.println(json);
+        questionnaireAddUtils("",json,request,false);
+        return ServerResponse.createBySuccessMessage("上传成功");
+    }
+
+    private void questionnaireAddUtils(String id,String json, HttpServletRequest request,boolean isEditor){
         HttpSession session=request.getSession(true);
         Admin_User admin_user= (Admin_User) session.getAttribute("CurrentAdminUser");
         Questionnaire questionnaire=new Questionnaire();
-        String questionnaireid=UUID.randomUUID().toString();
-        questionnaire.setId(questionnaireid);
-        System.out.println(admin_user.getId());
+        String questionnaireid="";
+        if(isEditor){
+            questionnaireid=UUID.randomUUID().toString();
+            questionnaire.setId(questionnaireid);
+        }else{
+            questionnaire.setId(id);
+            questionnaireid=id;
+        }
         questionnaire.setAid(admin_user.getId());
         SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         JSONObject jsonObject=JSONObject.parseObject(json);
@@ -122,6 +138,7 @@ public class QuestionnaireController {
             for (int i = 0; i < jsonArrayTypes.size(); i++) {
                 jsonObjectType = jsonArrayTypes.getJSONObject(i);
                 if (jsonObjectType != null) {
+                    System.out.println(jsonObjectType.getString("title"));
                     questionType = new QuestionType();
                     String questionTypeId = UUID.randomUUID().toString();
                     questionType.setId(questionTypeId);
@@ -143,16 +160,20 @@ public class QuestionnaireController {
                                 question.setQuestionnaireid(questionnaireid);
                                 question.setQuestionname(jsonObjectQuestion.getString("main"));
                                 question.setQuestionstyle(jsonObjectQuestion.getString("type"));
+                                question.setQuestionsort(jsonObjectQuestion.getInteger("sort"));
                                 question.setQuestiontypeid(questionTypeId);
                                 questionService.save(question);
                                 JSONArray jsonArrayOption = jsonObjectQuestion.getJSONArray("options");
                                 if (jsonArrayOption != null) {
                                     Options options=null;
                                     for (int z=0;z<jsonArrayOption.size();z++){
-                                        options=new Options();
-                                        options.setOptionsname(jsonArrayOption.getString(z));
-                                        options.setQuestionid(questionid);
-                                        optionsService.save(options);
+                                        String option=jsonArrayOption.getString(z);
+                                        if(option!=null) {
+                                            options = new Options();
+                                            options.setOptionsname(option);
+                                            options.setQuestionid(questionid);
+                                            optionsService.save(options);
+                                        }
                                     }
                                 }
                             }
@@ -161,7 +182,92 @@ public class QuestionnaireController {
                 }
             }
         }
-        return ServerResponse.createBySuccessMessage("上传成功");
+    }
+
+    @RequestMapping(value = "questionnaireDel",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse questionnaireDelete(String id,HttpServletRequest request){
+        Question question=new Question();
+        question.setQuestionnaireid(id);
+        optionsService.deleteByQuestionid(questionService.getOne(question).getId());
+        questionTypeService.deleteByQuestionnaireId(id);
+        questionService.deleteByQuestionnaireId(id);
+        if(questionnaireService.deleteByStringId(id)>0){
+            return ServerResponse.createBySuccessMessage("问卷删除成功！");
+        }else{
+            return ServerResponse.createBySuccessMessage("问卷删除失败！");
+        }
+    }
+
+
+
+    @RequestMapping(value = "questionnaireEditor",method = RequestMethod.GET)
+    public String getQuestionnaireEditor(String id, ModelMap map){
+        Questionnaire questionnaire = questionnaireService.findByStringId(id);
+        DisplayQuestionnaireModel displayQuestionnaireModel=new DisplayQuestionnaireModel();
+        displayQuestionnaireModel.setQuestionnaire(questionnaire);
+        QuestionType questionType=new QuestionType();
+        questionType.setQuestionnaireid(questionnaire.getId());
+        List<QuestionType> questionTypes=questionTypeService.getAll(questionType);
+        DisplayQuestionTypeModel displayQuestionTypeModel=null;
+        List<DisplayQuestionTypeModel> displayQuestionTypeModels=new ArrayList<>();
+        for (QuestionType qt : questionTypes){
+            displayQuestionTypeModel=new DisplayQuestionTypeModel();
+            displayQuestionTypeModel.setQuestionType(qt);
+            Question question = new Question();
+            question.setQuestiontypeid(qt.getId());
+            List<Question> questions=questionService.getAll(question);
+            DisplayQuestionModel displayQuestionModel=null;
+            List<DisplayQuestionModel> displayQuestionModels=new ArrayList<>();
+            for(Question q : questions){
+                displayQuestionModel=new DisplayQuestionModel();
+                displayQuestionModel.setQuestion(q);
+                Options options=new Options();
+                options.setQuestionid(q.getId());
+                List<Options> optionsList=optionsService.getAll(options);
+                displayQuestionModels.add(displayQuestionModel);
+                displayQuestionModel.setOptionsList(optionsList);
+            }
+            Collections.sort(displayQuestionModels, new Comparator<DisplayQuestionModel>() {
+                @Override
+                public int compare(DisplayQuestionModel o1, DisplayQuestionModel o2) {
+                    int i = o1.getQuestion().getQuestionsort() - o2.getQuestion().getQuestionsort();
+                    if(i == 0){
+                        return o1.getQuestion().getQuestionsort() - o2.getQuestion().getQuestionsort();
+                    }
+                    return i;
+                }
+            });
+            displayQuestionTypeModels.add(displayQuestionTypeModel);
+            displayQuestionTypeModel.setDisplayQuestionModels(displayQuestionModels);
+        }
+        Collections.sort(displayQuestionTypeModels, new Comparator<DisplayQuestionTypeModel>() {
+            @Override
+            public int compare(DisplayQuestionTypeModel o1, DisplayQuestionTypeModel o2) {
+                int i = o1.getQuestionType().getQuestionTypesort() - o2.getQuestionType().getQuestionTypesort();
+                if(i == 0){
+                    return o1.getQuestionType().getQuestionTypesort() - o2.getQuestionType().getQuestionTypesort();
+                }
+                return i;
+            }
+        });
+        displayQuestionnaireModel.setDisplayQuestionTypeModels(displayQuestionTypeModels);
+        map.addAttribute("displayQuestionnaireModel",displayQuestionnaireModel);
+        return "system/questionnaire/questionnaireEditor";
+    }
+
+
+    @RequestMapping(value = "questionnaireEditor" , method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse questionnaireEditor(String id ,String json, HttpServletRequest request){
+        Question question=new Question();
+        question.setQuestionnaireid(id);
+        optionsService.deleteByQuestionid(questionService.getOne(question).getId());
+        questionTypeService.deleteByQuestionnaireId(id);
+        questionService.deleteByQuestionnaireId(id);
+        questionnaireService.deleteByStringId(id);
+        questionnaireAddUtils(id,json,request,true);
+        return ServerResponse.createBySuccessMessage("修改成功");
     }
 
 }

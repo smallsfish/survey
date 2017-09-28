@@ -1,0 +1,130 @@
+
+/* .slideTwo */
+.slideTwo {
+  width: 80px;
+  height: 30px;
+  background: #333;
+  margin: 20px auto;
+  position: relative;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+.slideTwo:after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  height: 2px;
+  width: 52px;
+  background: #111;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+  -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+  -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+.slideTwo label {
+  display: block;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  position: absolute;
+  top: 4px;
+  z-index: 1;
+  left: 4px;
+  background: #fcfff4;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+  -moz-transition: all 0.4s ease;
+  -o-transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  -moz-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+  background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+  background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+  background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+}
+.slideTwo label:after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: #333;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+  -moz-box-shadow: inset 0px 1px 1px black, 0px 1px 0px rgba(255, 255, 255, 0.9);
+  -webkit-box-shadow: inset 0px 1px 1px black, 0px 1px 0px rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0px 1px 1px black, 0px 1px 0px rgba(255, 255, 255, 0.9);
+}
+.slideTwo input[type=checkbox] {
+  visibility: hidden;
+}
+.slideTwo input[type=checkbox]:checked + label {
+  left: 54px;
+}
+.slideTwo input[type=checkbox]:checked + label:after {
+  background: #00bf00;
+}
+
+/* end .slideTwo */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+
+body .ondisplay {
+  text-align: center;
+  border-bottom: 1px solid gray;
+  padding: 20px 0;
+}
+body .ondisplay section {
+  width: 100px;
+  height: 100px;
+  background: #555;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  margin-top: 5px;
+  border: 1px solid gray;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+}
+body .ondisplay section:before {
+  content: 'click it';
+  color: #bbb;
+  font-size: 12px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0px 1px black;
+}
+body .ondisplay section:after {
+  content: attr(title);
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 3px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0px 1px black;
+}

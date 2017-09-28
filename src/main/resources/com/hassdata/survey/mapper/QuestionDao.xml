@@ -12,6 +12,7 @@
         	id,
             questionname,
             questionstyle,
+            questionsort,
             questiontypeid,
             questionnaireid
 	    ]]>
@@ -29,6 +30,9 @@
             <if test="questionstyle != null">
                 and questionstyle = #{questionstyle}
             </if>
+            <if test="questionsort != null">
+                and questionsort = #{questionsort}
+            </if>
             <if test="questiontypeid != null">
                 and questiontypeid = #{questiontypeid}
             </if>
@@ -45,12 +49,14 @@
 	        	id,
                 questionname,
                 questionstyle,
+                questionsort,
                 questiontypeid,
                 questionnaireid
 	        ) VALUES (
 	        	#{id,jdbcType=VARCHAR},
 	        	#{questionname,jdbcType=VARCHAR},
 	        	#{questionstyle,jdbcType=VARCHAR},
+	        	#{questionsort,jdbcType=INTEGER},
 	        	#{questiontypeid,jdbcType=VARCHAR},
 	        	#{questionnaireid,jdbcType=VARCHAR}
 	        )
@@ -62,6 +68,7 @@
 	        UPDATE question SET
 		        questionname = #{questionname,jdbcType=VARCHAR},
 		        questionstyle = #{questionstyle,jdbcType=VARCHAR},
+		        questionsort = #{questionsort,jdbcType=INTEGER},
 		        questiontypeid = #{questiontypeid,jdbcType=VARCHAR},
 		        questionnaireid = #{questionnaireid,jdbcType=VARCHAR}
 			WHERE
@@ -78,6 +85,9 @@
             </if>
             <if test="questionstyle != null">
                 questionstyle = #{questionstyle,jdbcType=VARCHAR},
+            </if>
+            <if test="questionsort != null">
+                questionsort = #{questionsort,jdbcType=INTEGER},
             </if>
             <if test="questiontypeid != null">
                 questiontypeid = #{questiontypeid,jdbcType=VARCHAR},
@@ -96,6 +106,12 @@
 	        id = #{id}
 	    ]]>
     </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from question where
+	        id = #{id}
+	    ]]>
+    </delete>
 
     <select id="find" parameterType="java.lang.Long" resultMap="questionResult">
         select <include refid="questionColumns" />
@@ -105,6 +121,14 @@
 		        id = #{id}
 	    ]]>
     </select>
+     <select id="findByStringId" parameterType="java.lang.String" resultMap="questionResult">
+            select <include refid="questionColumns" />
+            <![CDATA[
+                from question
+                where
+                    id = #{id}
+            ]]>
+     </select>
 
     <select id="count" resultType="long" parameterType="Question">
         select count(1) from question
@@ -145,4 +169,12 @@
         <include refid="questionDynamicWhere"/>
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+    <delete id="deleteByQuestionnaireId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from question where
+	        questionnaireid = #{questionnaireid}
+	    ]]>
+    </delete>
 </mapper>

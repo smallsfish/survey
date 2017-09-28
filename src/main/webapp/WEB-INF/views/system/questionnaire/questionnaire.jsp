@@ -25,24 +25,24 @@
 <div class="questionnaire-content">
     <c:if test="${qms.size()==0}"><div class="showEmpty" style="text-align: center;font-size: 22px; color: #ff5040;width: 100%;">暂无数据</div></c:if>
     <c:forEach var="qm" items="${qms}">
-        <div class="questionnaire-item">
+        <div id="${qm.id}" class="questionnaire-item">
             <div class="questionnaire-one">
                 <ul>
                     <li>${qm.questionnairename}</li>
                     <li>C:<fmt:formatDate value="${qm.questionnairecreatetime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
                     <li>B:<fmt:formatDate value="${qm.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
                     <li>E:<fmt:formatDate value="${qm.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
-                    <li>状态：已完成</li>
+                    <li>题目数量：${qm.questions}</li>
                     <li>制作者：${qm.author}</li>
                 </ul>
             </div>
             <div class="questionnaire-two">
                 <div style="display: block;">
-                    <button onclick="window.parent.createTab({title:'留守儿童问卷调查预览',isShowClose:true,url:'system/questionnairePreview'})"
+                    <button onclick="window.parent.createTab({title:'${qm.questionnairename}',isShowClose:true,url:'display/displayQuestionnaire?id=${qm.id}'})"
                             class="layui-btn  layui-btn-radius">预览
                     </button>
                     <br><br>
-                    <button onclick="window.parent.createTab({title:'留守儿童问卷调查',isShowClose:true,url:'system/questionnaireEditor'})"
+                    <button onclick="window.parent.createTab({title:'${qm.questionnairename}编辑',isShowClose:true,url:'system/questionnaireEditor?id=${qm.id}'})"
                             class="layui-btn  layui-btn-radius">编辑
                     </button>
                     <br><br>
@@ -62,7 +62,7 @@
         var laypage = layui.laypage;
 
         //执行一个laypage实例
-        laypage.render({
+        var qpage=laypage.render({
             elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
             count: count, //数据总数，从服务端得到
             limit: 8,
@@ -75,11 +75,35 @@
                 }
             }
         });
+        var loadIndex=null;
         deleteQuestionnaire = function (id) {
             layer.confirm("确定删除当前问卷吗？此操作不可恢复！", function (index) {
-
+                loadIndex=layer.load();
                 layer.close(index);
-            })
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: 'system/questionnaireDel',
+                    data: {'id':id},
+                    success: function (result) {
+                        layer.close(loadIndex);
+                        if(result.status==0){
+                            $("#"+id).remove();
+                            if($(".questionnaire-item").length==0){
+                                $(".questionnaire-content").append("<div class=\"showEmpty\" style=\"text-align: center;font-size: 22px; color: #ff5040;width: 100%;\">暂无数据</div>");
+                            }
+                            qpage.reload({
+                                count:count-1
+                            });
+                        }
+                        layer.msg(result.msg);
+                    },
+                    error: function(data) {
+                        layer.close(loadIndex);
+                        alert("出现异常！"+JSON.stringify(data));
+                    }
+                });
+            });
         }
     });
 </script>

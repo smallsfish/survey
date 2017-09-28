@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface QuestionTypeDao extends BaseDao<QuestionType> {
-
+    int deleteByQuestionnaireId(String questionnaireid);
 }
