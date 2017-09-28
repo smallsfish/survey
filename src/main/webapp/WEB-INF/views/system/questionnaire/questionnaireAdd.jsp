@@ -54,6 +54,7 @@
         </div>
         <div class="questionnaireadd-show-bottom">
             <button onclick="questionnaireSubmit()" class="layui-btn">提交</button>
+            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查</button>
 
         </div>
     </div>

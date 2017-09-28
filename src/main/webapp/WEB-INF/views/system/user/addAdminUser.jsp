@@ -20,16 +20,22 @@
 
 <body oncontextmenu="return false" onselect="return false">
 <blockquote class="layui-elem-quote">注意：该用户的密码系统初始设置为000000，请让该用户登录后自行修改密码</blockquote>
-<form class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
-    <div class="upload-headimg" id="headimg">
+<form class="layui-form" id="adminUserForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <%--<div class="upload-headimg" id="headimg">
         <button type="button" class="layui-btn" id="uploadheadimg">
             <i class="layui-icon">&#xe67c;</i>上传头像
         </button>
+    </div>--%>
+    <div class="layui-form-item" >
+        <label class="layui-form-label"><span style="color: #f00;">*</span>头像：</label>
+        <div class="layui-input-block">
+            <input type="file" name="file" lay-verify="required" class="layui-input">
+        </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>账号：</label>
         <div class="layui-input-block">
-            <input type="text" name="account" lay-verif="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
+            <input type="text" name="account" lay-verify="required" placeholder="请输入账号" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -60,12 +66,13 @@
 </form>
 </body>
 <script>
-    var dataForm=null;
-    layui.use(['form','upload'], function(){
+    var layer=null;
+    layui.use(['form','upload','layer'], function(){
         var form = layui.form;
         var upload=layui.upload;
+        layer=layui.layer;
         //执行实例
-        var uploadInst = upload.render({
+        /*var uploadInst = upload.render({
             elem: '#uploadheadimg', //绑定元素
             auto:false,
             url:'system/addAdminUser',
@@ -86,10 +93,28 @@
             done:function (res,index,upload) {
 
             }
-        });
+        });*/
         form.on('submit(addAdmin)', function(data){
-            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
-            dataForm=data.field;
+            var loadIndex=layer.load();
+            var fromData=new FormData($("#adminUserForm")[0]);
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: 'system/addAdminUser',
+                data: fromData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    layer.close(loadIndex);
+                    layer.msg(result.msg);
+                },
+                error: function(data) {
+                    layer.close(loadIndex);
+                    alert("出现异常！"+JSON.stringify(data));
+                }
+            });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });

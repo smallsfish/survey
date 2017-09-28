@@ -38,9 +38,8 @@
                         <a href="javascript:;">账号<span class="square-icon"></span></a>
                         <!-- 导航子菜单，可以在每一个菜单项的a标签后面添加-->
                         <ul class="system-layout-item-child">
-                            <li class="system-layout-item-child-li"><a href="javascript:;">安全设置</a></li>
                             <li class="system-layout-item-child-li"><a href="javascript:;">个人中心</a></li>
-                            <li class="system-layout-item-child-li"><a href="javascript:;">资料详情</a></li>
+                            <li class="system-layout-item-child-li"><a href="javascript:;">修改密码</a></li>
                         </ul>
                     </li>
                     <li class="system-layout-item">

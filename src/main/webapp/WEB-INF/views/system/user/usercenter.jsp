@@ -44,8 +44,8 @@
 
             <div class="usertools">
                 <div class="questionnaire-search" style="float:left; margin-top: -23px;">
-                    <input type="search" name="qname" placeholder="请输入用户名称">
-                    <div class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
+                    <input type="search" name="qname" placeholder="请输入账号">
+                    <div onclick="adminUserSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
                 </div>
                 <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中管理员" title="删除">
                 <img onclick="reflashAdminTable()" src="img/icon/icon-reflash.png" class="demoTable" alt="删除选中管理员" title="刷新">
@@ -63,7 +63,10 @@
 <script>
     var layui_tab_item_height = $('.layui-tab-item').height();
     var layui_tab_item_width = $('.layui-tab-item').width();
-    var table;
+    var table,adminTable,layer;
+    layui.use(['layer', 'table'], function () {
+        layer = layui.layer;
+    });
     layui.use(['element', 'table'], function () {
         var element = layui.element;
         table = layui.table;
@@ -72,7 +75,7 @@
             console.log(data);
         });
 //        动态表格
-        table.render({
+        adminTable=table.render({
             elem: '#dynamic-table-admin', //指定原始表格元素选择器（推荐id选择器）
             page: true,
             id: 'adminTable',
@@ -145,7 +148,19 @@
         });
     }
     function reflashAdminTable(){
-        alert("刷新");
+        adminTable.reload({
+            url:'system/getAdminUser'
+        });
+    }
+    function adminUserSearch() {
+        var account=$(":input[name='qname']").val();
+        if(account===""){
+            layer.msg("请输入账号！",{icon:5,time:3000});
+        }else{
+            adminTable.reload({
+                url:'system/adminUserSearch?account='+account
+            });
+        }
     }
 </script>
 <script id="headimg" type="text/html">

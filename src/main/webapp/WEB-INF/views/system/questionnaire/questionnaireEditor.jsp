@@ -54,10 +54,10 @@
     </div>
     <div class="questionnaireadd-show">
         <div class="questionnaireadd-main">
-            <div class="questionnaireadd-main-title"></div>
-            <div class="questionnaireadd-main-comp"></div>
-            <div class="questionnaireadd-main-explain"></div>
-            <div class="questionnaireadd-main-from"></div>
+            <div class="questionnaireadd-main-title">${displayQuestionnaireModel.questionnaire.questionnairename}</div>
+            <div class="questionnaireadd-main-comp">${displayQuestionnaireModel.questionnaire.questionnairecomp}</div>
+            <div class="questionnaireadd-main-explain">${displayQuestionnaireModel.questionnaire.questionnaireexplain}</div>
+            <div class="questionnaireadd-main-from">${displayQuestionnaireModel.questionnaire.questionnairefrom}</div>
             <c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}">
                 <div class="questionnaireadd-main-type">
                     <div class="questionnaireadd-main-type-title" onclick="questionnaireAddMainTypeLife(this,event)">${qt.questionType.questionTypename}<img src="img/icon/icon-delete.png" onclick="deleteItemTypes(this,event)" title="删除"></div>
@@ -83,8 +83,8 @@
             </c:forEach>
         </div>
         <div class="questionnaireadd-show-bottom">
-            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查</button>
             <button onclick="questionnaireEditorSubmit('${displayQuestionnaireModel.questionnaire.id}')" class="layui-btn">修改</button>
+            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查</button>
         </div>
     </div>
 </div>

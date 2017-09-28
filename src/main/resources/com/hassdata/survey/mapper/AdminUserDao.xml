@@ -206,5 +206,56 @@
         select count(1) from admin_user
         <include refid="adminUserDynamicWhere"/>
     </select>
+
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+    <sql id="adminUserLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="account != null">
+                and account LIKE #{account}
+            </if>
+            <if test="password != null">
+                and password LIKE #{password}
+            </if>
+            <if test="email != null">
+                and email LIKE #{email}
+            </if>
+            <if test="headimage != null">
+                and headimage LIKE #{headimage}
+            </if>
+            <if test="identifier != null">
+                and identifier LIKE #{identifier}
+            </if>
+            <if test="remarks != null">
+                and remarks LIKE #{remarks}
+            </if>
+            <if test="createdatetime != null">
+                and createdatetime LIKE #{createdatetime}
+            </if>
+            <if test="lastlogintime != null">
+                and lastlogintime LIKE #{lastlogintime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="adminUserResult" parameterType="map">
+        select
+        <include refid="adminUserColumns"/>
+        from admin_user
+        <include refid="adminUserLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from admin_user
+        <include refid="adminUserLikeDynamicWhere"/>
+    </select>
 </mapper>

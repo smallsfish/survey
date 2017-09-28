@@ -72,16 +72,17 @@
 
     questionnaireCheck=function(){
         questionnaireResult=JSON.stringify(questionnaire);
-        if(questionnaireResult.indexOf("说明性问题")!=-1 || questionnaireResult.indexOf("初始选项")!=-1 || questionnaireResult.indexOf("新增选项")!=-1 ){
-            layer.msg("系统检测到您有没有修改的初始问题或者选项，请仔细检查后再提交！",{icon:5,time:5000});
-            return false;
-        }
+
         if (questionnaireResult.indexOf("name")==-1){
             layer.msg("系统检测到您有没有输入问卷名称，请填写完整！",{icon:5,time:5000});
             return false;
         }
+        if(questionnaireResult.indexOf("说明性问题")!=-1 || questionnaireResult.indexOf("初始选项")!=-1 || questionnaireResult.indexOf("新增选项")!=-1 ){
+            layer.msg("系统检测到您有没有修改的初始问题或者选项，请仔细检查后再提交！",{icon:5,time:5000});
+            return false;
+        }
         if (questionnaireResult.indexOf("questions")==-1){
-            layer.msg("系统检测到您有没有输入问卷名称，请填写完整！",{icon:5,time:5000});
+            layer.msg("系统检测到您有没有填写任何的问题或者类别下没有填写问题，请填写完整！",{icon:5,time:5000});
             return false;
         }
         for(var i=0; i<questionnaire.types.length;i++){
