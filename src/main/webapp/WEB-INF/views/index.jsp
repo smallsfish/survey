@@ -35,7 +35,7 @@
                     <%--<li class="system-layout-item"><a href="javascript:;"><span class="item-hint-point"></span>皮肤</a>
                     </li>--%>
                     <li class="system-layout-item">
-                        <a href="javascript:;">账号<span class="square-icon"></span></a>
+                        <a href="javascript:;"><img src="uploadimage/${sessionScope.CurrentAdminUser.headimage=="" || sessionScope.CurrentAdminUser.headimage==null ? 'nohead.jpg' : sessionScope.CurrentAdminUser.headimage}" alt="" class="system-layout-item-nav-headimg"> ${sessionScope.CurrentAdminUser.account}<span class="square-icon"></span></a>
                         <!-- 导航子菜单，可以在每一个菜单项的a标签后面添加-->
                         <ul class="system-layout-item-child">
                             <li class="system-layout-item-child-li"><a href="javascript:;">个人中心</a></li>

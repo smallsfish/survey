@@ -19,52 +19,63 @@
 </head>
 
 <body oncontextmenu="return false" onselect="return false">
-<blockquote class="layui-elem-quote">注意：该用户的密码系统初始设置为000000，请让该用户登录后自行修改密码</blockquote>
-<form class="layui-form" id="adminUserForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
-    <%--<div class="upload-headimg" id="headimg">
+<form class="layui-form" id="adminUserForm">
+    <div class="upload-headimg" id="headimg">
+        <img src="uploadimage/${adminUser.headimage}" alt="个人头像">
         <button type="button" class="layui-btn" id="uploadheadimg">
             <i class="layui-icon">&#xe67c;</i>上传头像
         </button>
-    </div>--%>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>头像：</label>
-        <div class="layui-input-block">
-            <input type="file" name="file" lay-verify="required" class="layui-input">
-        </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>账号：</label>
         <div class="layui-input-block">
             <input type="text" name="account" lay-verify="required" placeholder="请输入账号" autocomplete="off"
-                   class="layui-input">
+                   class="layui-input" value="${adminUser.account}" disabled>
+            <input type="hidden" name="id" value="${adminUser.id}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>Email：</label>
         <div class="layui-input-block">
             <input type="email" name="email" placeholder="请输入Email" lay-verify="required|email" autocomplete="off"
-                   class="layui-input">
+                   class="layui-input" value="${adminUser.email}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">编号：</label>
         <div class="layui-input-block">
-            <input type="text" name="identifier" placeholder="请输入编号" autocomplete="off" class="layui-input">
+            <input type="text" name="identifier" placeholder="请输入编号" autocomplete="off" class="layui-input" value="${adminUser.identifier}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色：</label>
+        <div class="layui-input-block">
+            <input type="text" disabled placeholder="分配角色" class="layui-input" value="${adminUser.role}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">创建时间：</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" value="${adminUser.createdatetime}" disabled>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">最后一次登录时间：</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" value="${adminUser.lastlogintime}" disabled>
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">备注</label>
+        <label class="layui-form-label">备注：</label>
         <div class="layui-input-block">
-            <textarea name="remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
+            <textarea name="remarks" placeholder="请输入内容" class="layui-textarea">${adminUser.remarks}</textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即提交</button>
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即修改</button>
         </div>
     </div>
-    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
 </form>
 </body>
 <script>
@@ -74,35 +85,29 @@
         var upload = layui.upload;
         layer = layui.layer;
         //执行实例
-        /*var uploadInst = upload.render({
+        upload.render({
             elem: '#uploadheadimg', //绑定元素
-            auto:false,
-            url:'system/addAdminUser',
-            bindAction:'#adminUserSubmit',
-            data:dataForm,
-            choose:function (obj) {
-                //将每次选择的文件追加到文件队列
-                var files = obj.pushFile();
-                //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
-                obj.preview(function(index, file, result){
-                    $("#headimg img").remove();
-                    $("#headimg").prepend("<img src='"+result+"'>");
-                });
-            },
-            before:function (obj) {
-
-            },
+            auto:true,
+            url:'system/updateAdminHeadImage',
+            size:500,
+            method:'post',
+            data:{id:${adminUser.id},image:'${adminUser.headimage}'},
             done:function (res,index,upload) {
+                if(res.status==0){
+                    window.parent.reflashAdminTable();
+                    $("#headimg img").attr("src",res.data);
+                }
+                layer.msg(res.msg);
 
             }
-        });*/
+        });
         form.on('submit(addAdmin)', function (data) {
             var loadIndex = layer.load();
             var fromData = new FormData($("#adminUserForm")[0]);
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/addAdminUser',
+                url: 'system/updateAdminUser',
                 data: fromData,
                 async: false,
                 cache: false,
@@ -111,8 +116,9 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        $("#adminUserForm")[0].reset();
                         window.parent.reflashAdminTable();
+                        window.parent.layer.closeAll();
+                        window.parent.layer.msg(result.msg);
                     }
                     layer.msg(result.msg);
                 },
@@ -121,7 +127,7 @@
                     alert("出现异常！" + JSON.stringify(data));
                 }
             });
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            return false;
         });
     });
 </script>

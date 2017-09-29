@@ -1,6 +1,7 @@
 package com.hassdata.survey.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class AdminUser implements Serializable{
     private Integer id;

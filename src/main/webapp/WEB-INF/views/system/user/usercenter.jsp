@@ -63,7 +63,7 @@
 <script>
     var layui_tab_item_height = $('.layui-tab-item').height();
     var layui_tab_item_width = $('.layui-tab-item').width();
-    var table,adminTable,layer;
+    var table,adminTable,layer,loadIndex;
     layui.use(['layer', 'table'], function () {
         layer = layui.layer;
     });
@@ -107,10 +107,25 @@
                 if(data.length==0){
                     layer.msg("请选择要删除的信息！",{icon:2})
                 }else{
-                    layer.confirm("确定删除所选行？",{icon:2,title:'系统提示'},function (index) {
-
-                        layer.alert("删除成功"+JSON.stringify(checkStatus),{icon:1});
-                    })
+                    layer.confirm("确定删除所选用户吗？",{icon:2,title:'系统提示'},function (index) {
+                        $.each(checkStatus.data,function (index,obj) {
+                            loadIndex=layer.load();
+                            $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                url: 'system/adminUserDel',
+                                data: {'id':obj.id},
+                                success: function (result) {
+                                    layer.close(loadIndex);
+                                    layer.msg(result.msg);
+                                },
+                                error: function(data) {
+                                    layer.close(loadIndex);
+                                    layer.alert("出现异常！"+JSON.stringify(data));
+                                }
+                            });
+                        });
+                    });
                 }
             }
         };
@@ -121,17 +136,37 @@
         table.on('tool(adminTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值
-            var tr = obj.tr; //获得当前行 tr 的DOM对象
             if(layEvent === 'detail'){ //查看
                 //do somehing
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
-                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    layer.close(index);
-                    //向服务端发送删除指令
+                layer.open({
+                    title:'修改'+data.account+'管理员',
+                    type:2,
+                    area: ['50%', '70%'],
+                    content:'system/getEditorAdminUser?id='+data.id,
+                    skin:'layui-layer-molv'
                 });
-            } else if(layEvent === 'edit'){ //编辑
-
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除该用户吗？', function(index){
+                    loadIndex=layer.load();
+                    layer.close(index);
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/adminUserDel',
+                        data: {'id':data.id},
+                        success: function (result) {
+                            layer.close(loadIndex);
+                            if(result.status==0){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            }
+                            layer.msg(result.msg);
+                        },
+                        error: function(data) {
+                            layer.close(loadIndex);
+                            layer.alert("出现异常！"+JSON.stringify(data));
+                        }
+                    });
+                });
             }
         });
     });
@@ -164,11 +199,10 @@
     }
 </script>
 <script id="headimg" type="text/html">
-    <img src="{{d.headimg}}" style="width: 40px;height: 40px;">
+    <img src="uploadimage/{{d.headimage}}" style="width: 40px;height: 40px;">
 </script>
 <script id="adminToolBar" type="text/html">
     <a id="a" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 </html>

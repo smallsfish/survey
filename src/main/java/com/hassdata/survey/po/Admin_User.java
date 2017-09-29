@@ -1,6 +1,7 @@
 package com.hassdata.survey.po;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Admin_User implements Serializable{
     private Integer id;
@@ -9,8 +10,8 @@ public class Admin_User implements Serializable{
     private String email;
     private String headimage;
     private String identifier;
-    private String createdatetime;
-    private String lastlogintime;
+    private Date createdatetime;
+    private Date lastlogintime;
     private String remarks;
 
     public String getRemarks() {
@@ -69,19 +70,19 @@ public class Admin_User implements Serializable{
         this.identifier = identifier;
     }
 
-    public String getCreatedatetime() {
+    public Date getCreatedatetime() {
         return createdatetime;
     }
 
-    public void setCreatedatetime(String createdatetime) {
+    public void setCreatedatetime(Date createdatetime) {
         this.createdatetime = createdatetime;
     }
 
-    public String getLastlogintime() {
+    public Date getLastlogintime() {
         return lastlogintime;
     }
 
-    public void setLastlogintime(String lastlogintime) {
+    public void setLastlogintime(Date lastlogintime) {
         this.lastlogintime = lastlogintime;
     }
 

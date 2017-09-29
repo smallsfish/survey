@@ -41,7 +41,6 @@ public class ServerResponse<T> implements Serializable{
         this.msg = msg;
     }
 
-
     //确认响应是不是正确响应(true:成功)
     @JsonIgnore //序列化之后不会显示在json里面
     public boolean isSuccess(){

@@ -226,7 +226,7 @@ body,html{
 }
 .system-layout-item-child-li a{
 	color: #000;
-	width: 95%;
+	width: 98%;
 	border-radius: 5px;
 }
 .system-layout-item a:hover{
@@ -293,6 +293,13 @@ body,html{
 	height: 20px;
 	margin-top: -2px;
 	border:0;
+}
+.system-layout-item-nav-headimg{
+	width: 35px;
+	height: 35px;
+	margin-top: -2px;
+	border:2px solid #f7c21c;
+	border-radius: 25px;
 }
 /* 头部导航样式结束 */
 /* 侧边栏样式开始*/
