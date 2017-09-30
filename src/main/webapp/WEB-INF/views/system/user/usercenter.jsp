@@ -37,7 +37,7 @@
 <div class="layui-tab layui-tab-brief" style="margin: 0; height: 99.9%;" lay-filter="docDemoTabBrief">
     <ul class="layui-tab-title">
         <li class="layui-this">管理用户</li>
-        <li>普通用户</li>
+        <li>普通用户管理</li>
     </ul>
     <div class="layui-tab-content" style="height: calc( 100% - 60px );">
         <div class="layui-tab-item layui-show" style="height: 94%;">
@@ -47,14 +47,22 @@
                     <input type="search" name="qname" placeholder="请输入账号">
                     <div onclick="adminUserSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
                 </div>
-                <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中管理员" title="删除">
-                <img onclick="reflashAdminTable()" src="img/icon/icon-reflash.png" class="demoTable" alt="删除选中管理员" title="刷新">
+                <img src="img/icon/icon-delete.png" data-type="checkAdminData" class="demoTable" alt="删除选中管理员" title="删除">
+                <img onclick="reflashAdminTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
                 <img onclick="addAdminUser()" src="img/icon/icon-more2.png" alt="添加管理员" title="添加">
             </div>
             <table id="dynamic-table-admin" lay-filter="adminTable"></table>
         </div>
         <div class="layui-tab-item" style="height: 93%">
-            <table id="dynamic-table-user"></table>
+            <div class="usertools">
+                <div class="questionnaire-search" style="float:left; margin-top: -23px;">
+                    <input type="search" name="uname" placeholder="请输入普通用户名称">
+                    <div onclick="userSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
+                </div>
+                <img src="img/icon/icon-delete.png" data-type="checkUserData" class="userTableDel" alt="删除选中普通用户" title="删除">
+                <img onclick="reflashUserTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
+            </div>
+            <table id="dynamic-table-user" lay-filter="userTable"></table>
         </div>
     </div>
 </div>
@@ -63,18 +71,17 @@
 <script>
     var layui_tab_item_height = $('.layui-tab-item').height();
     var layui_tab_item_width = $('.layui-tab-item').width();
-    var table,adminTable,layer,loadIndex;
+    var table,adminTable,layer,loadIndex,userTable;
     layui.use(['layer', 'table'], function () {
         layer = layui.layer;
     });
     layui.use(['element', 'table'], function () {
         var element = layui.element;
         table = layui.table;
-        //一些事件监听
+        //一些事件监听---tab选项卡
         element.on('tab(demo)', function (data) {
-            console.log(data);
         });
-//        动态表格
+//        管理员动态表格
         adminTable=table.render({
             elem: '#dynamic-table-admin', //指定原始表格元素选择器（推荐id选择器）
             page: true,
@@ -101,7 +108,7 @@
             limit: 30 //默认采用30
         });
         var $ = layui.$, active = {
-            getCheckData: function(){ //获取选中数据
+            checkAdminData: function(){ //获取选中数据
                 var checkStatus = table.checkStatus('adminTable')
                     ,data = checkStatus.data;
                 if(data.length==0){
@@ -127,9 +134,16 @@
                         });
                     });
                 }
+            },
+            checkUserData:function () {
+                alert("删除选中普通用户");
             }
         };
         $('.usertools .demoTable').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        $('.usertools .userTableDel').on('click', function(){
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
@@ -169,6 +183,37 @@
                 });
             }
         });
+
+
+
+        //        普通用户动态表格
+        userTable=table.render({
+            elem: '#dynamic-table-user', //指定原始表格元素选择器（推荐id选择器）
+            page: true,
+            id: 'userTable',
+            url:'system/getUser',
+            method:'get',
+            loading:true,
+            height: layui_tab_item_height, //容器高度
+            cols:[[{width: layui_tab_item_width * 0.02,checkbox: true},
+                {width: layui_tab_item_width * 0.04,title:'序号',field:'uid'},
+                {width: layui_tab_item_width * 0.04,title:'ID',field:'id'},
+                {width: layui_tab_item_width * 0.1,title:'学校名称',field:'schoolname'},
+                {width: layui_tab_item_width * 0.1,title:'校长',field:'headmaster'},
+                {width: layui_tab_item_width * 0.13,title:'地址',field:'address'},
+                {width: layui_tab_item_width * 0.2,title:'留守儿童之家名称',field:'playhousename'},
+                {width: layui_tab_item_width * 0.208,title:'备注',field:'remarks'},
+                {width: layui_tab_item_width * 0.15,fixed:'right', align:'center',templet:'#userToolBar',title:'操作'}
+            ]],
+            size: 'lg',
+            limits: [30, 60, 90, 150, 300],
+            limit: 30 //默认采用30
+        });
+
+
+
+
+
     });
     function addAdminUser() {
         layui.use('layer', function(){
@@ -187,6 +232,12 @@
             url:'system/getAdminUser'
         });
     }
+
+    function reflashUserTable(){
+        userTable.reload({
+            url:'system/getUser'
+        });
+    }
     function adminUserSearch() {
         var account=$(":input[name='qname']").val();
         if(account===""){
@@ -197,12 +248,28 @@
             });
         }
     }
+
+    function userSearch() {
+        var account=$(":input[name='uname']").val();
+        if(account===""){
+            layer.msg("请输入普通用户账号！",{icon:5,time:3000});
+        }else{
+            userTable.reload({
+                url:'system/userSearch?account='+account
+            });
+        }
+    }
 </script>
 <script id="headimg" type="text/html">
     <img src="uploadimage/{{d.headimage}}" style="width: 40px;height: 40px;">
 </script>
 <script id="adminToolBar" type="text/html">
     <a id="a" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+</script>
+
+<script id="userToolBar" type="text/html">
+    <a id="u" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 </html>
