@@ -101,7 +101,7 @@
                 {width: layui_tab_item_width * 0.13, field: 'remarks', title: '备注'},
                 {width: layui_tab_item_width * 0.1, field: 'createdatetime', title: '创建时间'},
                 {width: layui_tab_item_width * 0.1, field: 'lastlogintime', title: '最后一次登录时间'},
-                {width: layui_tab_item_width * 0.15,fixed:'right', align:'center',templet:'#adminToolBar',title:'操作'}
+                {width: layui_tab_item_width * 0.141,fixed:'right', align:'center',templet:'#adminToolBar',title:'操作'}
             ]],
             size: 'lg',
             limits: [30, 60, 90, 150, 300],
@@ -123,8 +123,11 @@
                                 url: 'system/adminUserDel',
                                 data: {'id':obj.id},
                                 success: function (result) {
-                                    layer.close(loadIndex);
-                                    layer.msg(result.msg);
+                                    if(index==data.length-1){
+                                        layer.close(loadIndex);
+                                        layer.msg(result.msg);
+                                        reflashAdminTable();
+                                    }
                                 },
                                 error: function(data) {
                                     layer.close(loadIndex);
@@ -136,7 +139,34 @@
                 }
             },
             checkUserData:function () {
-                alert("删除选中普通用户");
+                var checkStatus = table.checkStatus('userTable')
+                    ,data = checkStatus.data;
+                if(data.length==0){
+                    layer.msg("请选择要删除的用户！",{icon:2})
+                }else{
+                    layer.confirm("确定删除所选用户吗？",{icon:2,title:'系统提示'},function (index) {
+                        $.each(checkStatus.data,function (index,obj) {
+                            loadIndex=layer.load();
+                            $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                url: 'system/userDel',
+                                data: {'id':obj.id},
+                                success: function (result) {
+                                    if(index==data.length-1){
+                                        layer.close(loadIndex);
+                                        layer.msg(result.msg);
+                                        reflashUserTable();
+                                    }
+                                },
+                                error: function(data) {
+                                    layer.close(loadIndex);
+                                    layer.alert("出现异常！"+JSON.stringify(data));
+                                }
+                            });
+                        });
+                    });
+                }
             }
         };
         $('.usertools .demoTable').on('click', function(){
@@ -196,21 +226,59 @@
             loading:true,
             height: layui_tab_item_height, //容器高度
             cols:[[{width: layui_tab_item_width * 0.02,checkbox: true},
-                {width: layui_tab_item_width * 0.04,title:'序号',field:'uid'},
+                {width: layui_tab_item_width * 0.04,title:'序号',field:'aid'},
                 {width: layui_tab_item_width * 0.04,title:'ID',field:'id'},
-                {width: layui_tab_item_width * 0.1,title:'学校名称',field:'schoolname'},
-                {width: layui_tab_item_width * 0.1,title:'校长',field:'headmaster'},
+                {width: layui_tab_item_width * 0.07,title:'学校名称',field:'schoolname'},
+                {width: layui_tab_item_width * 0.07,title:'校长',field:'headmaster'},
                 {width: layui_tab_item_width * 0.13,title:'地址',field:'address'},
-                {width: layui_tab_item_width * 0.2,title:'留守儿童之家名称',field:'playhousename'},
-                {width: layui_tab_item_width * 0.208,title:'备注',field:'remarks'},
-                {width: layui_tab_item_width * 0.15,fixed:'right', align:'center',templet:'#userToolBar',title:'操作'}
+                {width: layui_tab_item_width * 0.1,title:'留守儿童之家名称',field:'playhousename'},
+                {width: layui_tab_item_width * 0.06,title:'操作人',field:'operationuser'},
+                {width: layui_tab_item_width * 0.1,title:'状态',field:'status'},
+                {width: layui_tab_item_width * 0.108,title:'备注',field:'remarks'},
+                {width: layui_tab_item_width * 0.1,title:'审核说明',field:'explain'},
+                {width: layui_tab_item_width * 0.14,fixed:'right', align:'center',templet:'#userToolBar',title:'操作'}
             ]],
             size: 'lg',
             limits: [30, 60, 90, 150, 300],
             limit: 30 //默认采用30
         });
 
-
+        table.on('tool(userTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                layer.open({
+                    title:'审核'+data.account+'用户',
+                    type:2,
+                    area: ['50%', '70%'],
+                    content:'system/getEditorUser?id='+data.id,
+                    skin:'layui-layer-molv'
+                });
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除该用户吗？', function(index){
+                    loadIndex=layer.load();
+                    layer.close(index);
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/userDel',
+                        data: {'id':data.id},
+                        success: function (result) {
+                            layer.close(loadIndex);
+                            if(result.status==0){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            }
+                            layer.msg(result.msg);
+                        },
+                        error: function(data) {
+                            layer.close(loadIndex);
+                            layer.alert("出现异常！"+JSON.stringify(data));
+                        }
+                    });
+                });
+            }
+        });
 
 
 
@@ -269,7 +337,7 @@
 </script>
 
 <script id="userToolBar" type="text/html">
-    <a id="u" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <a id="u" class="layui-btn layui-btn-mini" lay-event="detail">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 </html>

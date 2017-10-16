@@ -23,4 +23,11 @@ public class DataCenterController {
 
         return "system/data/datacenter";
     }
+
+
+    @RequestMapping(value = "da",method = RequestMethod.GET)
+    public String getDataAnalyse(ModelMap map){
+
+        return "system/data/da";
+    }
 }

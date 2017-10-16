@@ -18,8 +18,10 @@
             playhousename,
             booknumber,
             remarks,
-            lastlogintime
-
+            lastlogintime,
+            status,
+            operationuser,
+            explains
 	    ]]>
     </sql>
 
@@ -56,6 +58,15 @@
             <if test="lastlogintime != null">
                 and lastlogintime = #{lastlogintime}
             </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="operationuser != null">
+                and operationuser = #{operationuser}
+            </if>
+            <if test="explain != null">
+                and explain = #{explain}
+            </if>
         </where>
     </sql>
 
@@ -72,7 +83,10 @@
 	        	playhousename,
 	        	booknumber,
 	        	remarks,
-	        	lastlogintime
+	        	lastlogintime,
+	        	status,
+	        	operationuser,
+	        	explain
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
 	        	#{account,jdbcType=VARCHAR},
@@ -83,7 +97,10 @@
 	        	#{playhousename,jdbcType=VARCHAR},
 	        	#{booknumber,jdbcType=INTEGER},
 	        	#{remarks,jdbcType=VARCHAR},
-	        	#{lastlogintime,jdbcType=TIMESTAMP}
+	        	#{lastlogintime,jdbcType=TIMESTAMP},
+	        	#{status,jdbcType=INTEGER},
+	        	#{operationuser,jdbcType=INTEGER},
+	        	#{explain,jdbcType=VARCHAR}
 	        )
 	    ]]>
     </insert>
@@ -99,7 +116,10 @@
 		        playhousename = #{playhousename,jdbcType=VARCHAR},
 		        booknumber = #{booknumber,jdbcType=INTEGER},
 		        remarks = #{remarks,jdbcType=VARCHAR},
-		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
+		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP},
+		        status = #{status,jdbcType=INTEGER},
+	        	operationuser = #{operationuser,jdbcType=INTEGER},
+	        	explain = #{explain,jdbcType=VARCHAR}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -134,7 +154,16 @@
                 remarks = #{remarks,jdbcType=VARCHAR},
             </if>
             <if test="lastlogintime != null">
-                lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
+                lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="operationuser != null">
+                operationuser = #{operationuser,jdbcType=INTEGER},
+            </if>
+            <if test="explain != null">
+                explain = #{explain,jdbcType=VARCHAR}
             </if>
         </set>
         WHERE
@@ -210,4 +239,68 @@
         <include refid="userDynamicWhere"/>
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="userLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="account != null">
+                and account LIKE #{account}
+            </if>
+            <if test="password != null">
+                and password LIKE #{password}
+            </if>
+            <if test="schoolname != null">
+                and schoolname LIKE #{schoolname}
+            </if>
+            <if test="headmaster != null">
+                and headmaster LIKE #{headmaster}
+            </if>
+            <if test="address != null">
+                and address LIKE #{address}
+            </if>
+            <if test="playhousename != null">
+                and playhousename LIKE #{playhousename}
+            </if>
+            <if test="booknumber != null">
+                and booknumber LIKE #{booknumber}
+            </if>
+            <if test="remarks != null">
+                and remarks LIKE #{remarks}
+            </if>
+            <if test="lastlogintime != null">
+                and lastlogintime LIKE #{lastlogintime}
+            </if>
+            <if test="status != null">
+                and status LIKE #{status}
+            </if>
+            <if test="operationuser != null">
+                and operationuser LIKE #{operationuser}
+            </if>
+            <if test="explain != null">
+                and explain LIKE #{explain}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="userResult" parameterType="map">
+        select
+        <include refid="userColumns"/>
+        from user
+        <include refid="userLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="int" parameterType="map">
+        select count(1) from user
+        <include refid="userLikeDynamicWhere"/>
+    </select>
 </mapper>

@@ -36,7 +36,7 @@ public class AdminUserController {
 
     @Resource
     private AdminUserService adminUserService;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @RequestMapping(value = "login",method = RequestMethod.GET)
     public String getSystemLogin(){

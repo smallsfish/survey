@@ -1,45 +1,44 @@
-package com.hassdata.survey.po;
+package com.hassdata.survey.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
-public class User implements Serializable{
+public class UserDTO implements Serializable{
     private Integer id;
+    private Integer aid;
     private String account;
     private String password;
     private String schoolname;
     private String headmaster;
     private String address;
     private String playhousename;
-    private Integer booknumber;
+    private String lastlogintime;
     private String remarks;
-    private Date lastlogintime;
-    private Integer status;
-    private Integer operationuser;
-    private String explains;
+    private String status;
+    private String explain;
+    private String operationuser;
 
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Integer getOperationuser() {
+    public String getExplain() {
+        return explain;
+    }
+
+    public void setExplain(String explain) {
+        this.explain = explain;
+    }
+
+    public String getOperationuser() {
         return operationuser;
     }
 
-    public void setOperationuser(Integer operationuser) {
+    public void setOperationuser(String operationuser) {
         this.operationuser = operationuser;
-    }
-
-    public String getExplains() {
-        return explains;
-    }
-
-    public void setExplains(String explain) {
-        this.explains = explain;
     }
 
     public Integer getId() {
@@ -48,6 +47,14 @@ public class User implements Serializable{
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getAid() {
+        return aid;
+    }
+
+    public void setAid(Integer aid) {
+        this.aid = aid;
     }
 
     public String getAccount() {
@@ -98,12 +105,12 @@ public class User implements Serializable{
         this.playhousename = playhousename;
     }
 
-    public Integer getBooknumber() {
-        return booknumber;
+    public String getLastlogintime() {
+        return lastlogintime;
     }
 
-    public void setBooknumber(Integer booknumber) {
-        this.booknumber = booknumber;
+    public void setLastlogintime(String lastlogintime) {
+        this.lastlogintime = lastlogintime;
     }
 
     public String getRemarks() {
@@ -112,13 +119,5 @@ public class User implements Serializable{
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
-    }
-
-    public Date getLastlogintime() {
-        return lastlogintime;
-    }
-
-    public void setLastlogintime(Date lastlogintime) {
-        this.lastlogintime = lastlogintime;
     }
 }
