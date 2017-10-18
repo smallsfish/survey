@@ -11,6 +11,8 @@ import com.hassdata.survey.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 @Service("questionnaireService")
 public class QuestionnaireServiceImpl extends BaseServiceImpl<Questionnaire> implements QuestionnaireService {
@@ -19,5 +21,17 @@ public class QuestionnaireServiceImpl extends BaseServiceImpl<Questionnaire> imp
     @Override
     public BaseDao<Questionnaire> getMapper() {
         return questionnaireDao;
+    }
+
+    @Override
+    public List<Questionnaire> getScrollDataByLike(Questionnaire params, String orderBy, Integer fromIndex, Integer pageSize) {
+        Map<String, Object> map = buildParams(params, orderBy, fromIndex, pageSize);
+        return questionnaireDao.getScrollDataByLike(map);
+    }
+
+    @Override
+    public long getScrollByLikeCount(Questionnaire params) {
+        Map<String, Object> map = buildParams(params, null, null, null);
+        return questionnaireDao.getScrollByLikeCount(map);
     }
 }

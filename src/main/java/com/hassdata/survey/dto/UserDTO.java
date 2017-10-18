@@ -11,11 +11,48 @@ public class UserDTO implements Serializable{
     private String headmaster;
     private String address;
     private String playhousename;
+    private long booknumber;
+    private long childrennumber;
+    private long teachernumber;
+    private long withquestionnairenumber;
+
     private String lastlogintime;
     private String remarks;
     private String status;
     private String explain;
     private String operationuser;
+
+    public long getBooknumber() {
+        return booknumber;
+    }
+
+    public void setBooknumber(long booknumber) {
+        this.booknumber = booknumber;
+    }
+
+    public long getChildrennumber() {
+        return childrennumber;
+    }
+
+    public void setChildrennumber(long childrennumber) {
+        this.childrennumber = childrennumber;
+    }
+
+    public long getTeachernumber() {
+        return teachernumber;
+    }
+
+    public void setTeachernumber(long teachernumber) {
+        this.teachernumber = teachernumber;
+    }
+
+    public long getWithquestionnairenumber() {
+        return withquestionnairenumber;
+    }
+
+    public void setWithquestionnairenumber(long withquestionnairenumber) {
+        this.withquestionnairenumber = withquestionnairenumber;
+    }
 
     public String getStatus() {
         return status;

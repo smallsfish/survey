@@ -38,8 +38,8 @@ public class User implements Serializable{
         return explains;
     }
 
-    public void setExplains(String explain) {
-        this.explains = explain;
+    public void setExplains(String explains) {
+        this.explains = explains;
     }
 
     public Integer getId() {

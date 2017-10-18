@@ -1,6 +1,7 @@
 package com.hassdata.survey.controller.user;
 
 import com.hassdata.survey.dto.UserDTO;
+import com.hassdata.survey.po.Admin_User;
 import com.hassdata.survey.po.User;
 import com.hassdata.survey.service.AdminUserService;
 import com.hassdata.survey.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,9 +79,20 @@ public class UserController {
     @ResponseBody
     public ServerResponse userDel(Integer id) {
         userService.delete(id);
-        return ServerResponse.createBySuccessMessage("管理员删除成功！");
+        return ServerResponse.createBySuccessMessage("用户删除成功！");
     }
 
+
+    @RequestMapping(value = "userAuditing", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse userAuditing(Integer id,HttpServletRequest request) {
+        HttpSession session= request.getSession(true);
+        User user=userService.find(id);
+        user.setStatus(1);
+        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
+        userService.update(user);
+        return ServerResponse.createBySuccessMessage("用户审核成功！");
+    }
 
 
 
@@ -98,7 +111,7 @@ public class UserController {
             e.printStackTrace();
         }
         user.setAccount("%"+account+"%");
-        long count = userService.getScrollCount(user);
+        long count = userService.getScrollByLikeCount(user);
         List<User> userList = userService.getScrollDataByLike(user, "id DESC", (page - 1) * limit, limit);
         List<UserDTO> userDTOList = new ArrayList<>();
         UserDTO userDTO = null;

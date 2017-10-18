@@ -19,7 +19,7 @@
          class="questionnaire-add"><img src="img/icon/icon-more2.png" alt="添加问卷"></div>
     <div class="questionnaire-search">
         <input type="search" name="qname" placeholder="请输入问卷名称">
-        <div class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
+        <div onclick="questionnaireSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
     </div>
 </div>
 <div class="questionnaire-content">
@@ -57,24 +57,44 @@
 </div>
 </body>
 <script>
-    var count=${count};
-    layui.use(['laypage','layer'], function () {
-        var laypage = layui.laypage;
-
-        //执行一个laypage实例
-        var qpage=laypage.render({
-            elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
-            count: count, //数据总数，从服务端得到
-            limit: 8,
-            limits: [8, 16, 32, 64],
-            layout: ['prev', 'page', 'next', 'limit', 'skip', 'count'],
-            jump: function (obj, first) {
-                //首次不执行
-                if (!first) {
-                    alert("跳转到第" + obj.curr);
-                }
+    /**
+     * 时间对象的格式化;
+     */
+    Date.prototype.format = function (format)
+    {
+        /*
+         * eg:format="YYYY-MM-dd hh:mm:ss";
+         */
+        var o =
+            {
+                "M+" : this.getMonth() + 1, // month
+                "d+" : this.getDate(), // day
+                "h+" : this.getHours(), // hour
+                "m+" : this.getMinutes(), // minute
+                "s+" : this.getSeconds(), // second
+                "q+" : Math.floor((this.getMonth() + 3)  / 3), // quarter
+                "S" : this.getMilliseconds() // millisecond
             }
-        });
+        if (/(y+)/.test(format))
+        {
+            format = format.replace(RegExp.$1, (this.getFullYear() + "") .substr(4 - RegExp.$1.length));
+        }
+        for ( var k in o)
+        {
+            if (new RegExp("(" + k + ")").test(format))
+            {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+            }
+        }
+        return format;
+    }
+</script>
+<script>
+    var count=${count};
+    var laypage=null;
+    layui.use(['laypage','layer'], function () {
+        laypage = layui.laypage;
+        setPageValue();
         var loadIndex=null;
         deleteQuestionnaire = function (id) {
             layer.confirm("确定删除当前问卷吗？此操作不可恢复！", function (index) {
@@ -92,19 +112,139 @@
                             if($(".questionnaire-item").length==0){
                                 $(".questionnaire-content").append("<div class=\"showEmpty\" style=\"text-align: center;font-size: 22px; color: #ff5040;width: 100%;\">暂无数据</div>");
                             }
-                            qpage.reload({
-                                count:count-1
-                            });
+
                         }
                         layer.msg(result.msg);
                     },
                     error: function(data) {
                         layer.close(loadIndex);
-                        alert("出现异常！"+JSON.stringify(data));
+                        alert("出现异常！");
                     }
                 });
             });
         }
     });
+    function setPageValue() {
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
+            count: count, //数据总数，从服务端得到
+            limit: 8,
+            limits: [8, 16, 32, 64],
+            layout: ['prev', 'page', 'next', 'limit', 'skip', 'count'],
+            jump: function (obj, first) {
+                //首次不执行
+                if (!first) {
+                    loadIndex = layer.load();
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/questionnairesList',
+                        data: {'page': obj.curr, 'limit': 8},
+                        success: function (result) {
+                            if (result.status == 0) {
+                                $(".questionnaire-item").remove();
+                                $(result.data).each(function (index, item) {
+                                    var cDate = new Date(item.questionnairecreatetime).format("yyyy-MM-dd hh:mm:ss");
+                                    var bDate = new Date(item.questionnairebegintime).format("yyyy-MM-dd hh:mm:ss");
+                                    var eDate = new Date(item.questionnaireendtime).format("yyyy-MM-dd hh:mm:ss");
+                                    $(".questionnaire-content").append("<div id=\"" + item.id + "\" class=\"questionnaire-item\">" +
+                                        "            <div class=\"questionnaire-one\">" +
+                                        "                <ul>\n" +
+                                        "                    <li>" + item.questionnairename + "</li>" +
+                                        "                    <li>C:" + cDate +
+                                        "                    <li>B:" + bDate +
+                                        "                    <li>E:" + eDate + "</li>" +
+                                        "                    <li>题目数量：" + item.questions + "</li>" +
+                                        "                    <li>制作者：" + item.author + "</li>" +
+                                        "                </ul>" +
+                                        "            </div>" +
+                                        "            <div class=\"questionnaire-two\">" +
+                                        "                <div style=\"display: block;\">" +
+                                        "                    <button onclick=\"window.parent.createTab({title:'" + item.questionnairename + "',isShowClose:true,url:'display/displayQuestionnaire?id=" + item.id + "'})\"" +
+                                        "                            class=\"layui-btn  layui-btn-radius\">预览" +
+                                        "                    </button>" +
+                                        "                    <br><br>" +
+                                        "                    <button onclick=\"window.parent.createTab({title:'" + item.questionnairename编辑 + "',isShowClose:true,url:'system/questionnaireEditor?id=" + item.id + "'})\"" +
+                                        "                            class=\"layui-btn  layui-btn-radius\">编辑" +
+                                        "                    </button>" +
+                                        "                    <br><br>" +
+                                        "                    <button onclick=\"deleteQuestionnaire('" + item.id + "')\" class=\"layui-btn  layui-btn-radius\">删除</button>" +
+                                        "                </div>" +
+                                        "            </div>" +
+                                        "        </div>");
+                                });
+                            }
+                            layer.close(loadIndex);
+                        },
+                        error: function (data) {
+                            layer.close(loadIndex);
+                            alert("出现异常！");
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+<script>
+    function questionnaireSearch(){
+        var questionnaireName=$(":input[name='qname']").val();
+        if(questionnaireName!==""){
+            loadIndex=layer.load();
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: 'system/questionnaireSearch',
+                data: {'name':questionnaireName},
+                success: function (result) {
+                    loadIndex=layer.load();
+                    if(result.status==0){
+                        $(".questionnaire-item").remove();
+                        $(result.data).each(function (index,item) {
+                            var cDate=new Date(item.questionnairecreatetime).format("yyyy-MM-dd hh:mm:ss");
+                            var bDate=new Date(item.questionnairebegintime).format("yyyy-MM-dd hh:mm:ss");
+                            var eDate=new Date(item.questionnaireendtime).format("yyyy-MM-dd hh:mm:ss");
+                            $(".questionnaire-content").append("<div id=\""+item.id+"\" class=\"questionnaire-item\">" +
+                                "            <div class=\"questionnaire-one\">" +
+                                "                <ul>\n" +
+                                "                    <li>"+item.questionnairename+"</li>" +
+                                "                    <li>C:" +cDate+
+                                "                    <li>B:" +bDate+
+                                "                    <li>E:"+eDate+"</li>" +
+                                "                    <li>题目数量："+item.questions+"</li>" +
+                                "                    <li>制作者："+item.author+"</li>" +
+                                "                </ul>" +
+                                "            </div>" +
+                                "            <div class=\"questionnaire-two\">" +
+                                "                <div style=\"display: block;\">" +
+                                "                    <button onclick=\"window.parent.createTab({title:'"+item.questionnairename+"',isShowClose:true,url:'display/displayQuestionnaire?id="+item.id+"'})\"" +
+                                "                            class=\"layui-btn  layui-btn-radius\">预览" +
+                                "                    </button>" +
+                                "                    <br><br>" +
+                                "                    <button onclick=\"window.parent.createTab({title:'"+item.questionnairename编辑+"',isShowClose:true,url:'system/questionnaireEditor?id="+item.id+"'})\"" +
+                                "                            class=\"layui-btn  layui-btn-radius\">编辑" +
+                                "                    </button>" +
+                                "                    <br><br>" +
+                                "                    <button onclick=\"deleteQuestionnaire('"+item.id+"')\" class=\"layui-btn  layui-btn-radius\">删除</button>" +
+                                "                </div>" +
+                                "            </div>" +
+                                "        </div>");
+                        });
+                        count=result.count;
+                        setPageValue();
+                    }
+                    layer.msg(result.msg);
+                    layer.close(loadIndex);
+                },
+                error: function(data) {
+                    layer.close(loadIndex);
+                    alert("出现异常！");
+                }
+            });
+        }else{
+            layer.msg("请输入问卷名称！",{icon:2,time:3000});
+        }
+    }
 </script>
 </html>

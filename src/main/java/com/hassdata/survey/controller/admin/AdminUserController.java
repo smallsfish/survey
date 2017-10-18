@@ -65,7 +65,7 @@ public class AdminUserController {
             return ServerResponse.createByErrorMessage("请输入密码！");
         }
         if(remind!=null){
-            System.out.println("记住密码");
+            //System.out.println("记住密码");
         }
         Admin_User au=null;
         adminUser.setPassword(MD5TUtils.threeMD5(adminUser.getPassword()));

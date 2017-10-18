@@ -64,8 +64,8 @@
             <if test="operationuser != null">
                 and operationuser = #{operationuser}
             </if>
-            <if test="explain != null">
-                and explain = #{explain}
+            <if test="explains != null">
+                and explains = #{explains}
             </if>
         </where>
     </sql>
@@ -86,7 +86,7 @@
 	        	lastlogintime,
 	        	status,
 	        	operationuser,
-	        	explain
+	        	explains
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
 	        	#{account,jdbcType=VARCHAR},
@@ -100,7 +100,7 @@
 	        	#{lastlogintime,jdbcType=TIMESTAMP},
 	        	#{status,jdbcType=INTEGER},
 	        	#{operationuser,jdbcType=INTEGER},
-	        	#{explain,jdbcType=VARCHAR}
+	        	#{explains,jdbcType=VARCHAR}
 	        )
 	    ]]>
     </insert>
@@ -119,7 +119,7 @@
 		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP},
 		        status = #{status,jdbcType=INTEGER},
 	        	operationuser = #{operationuser,jdbcType=INTEGER},
-	        	explain = #{explain,jdbcType=VARCHAR}
+	        	explains = #{explains,jdbcType=VARCHAR}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -162,8 +162,8 @@
             <if test="operationuser != null">
                 operationuser = #{operationuser,jdbcType=INTEGER},
             </if>
-            <if test="explain != null">
-                explain = #{explain,jdbcType=VARCHAR}
+            <if test="explains != null">
+                explains = #{explains,jdbcType=VARCHAR}
             </if>
         </set>
         WHERE
@@ -299,8 +299,9 @@
             limit #{fromIndex},#{pageSize}
         </if>
     </select>
-    <select id="getScrollByLikeCount" resultType="int" parameterType="map">
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
         select count(1) from user
         <include refid="userLikeDynamicWhere"/>
     </select>
+
 </mapper>

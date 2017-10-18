@@ -17,7 +17,6 @@
             uid
 	    ]]>
     </sql>
-
     <sql id="scoreDynamicWhere">
         <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
         <where>
@@ -41,7 +40,6 @@
             </if>
         </where>
     </sql>
-
     <insert id="save" parameterType="Score" useGeneratedKeys="true" keyProperty="id">
         <![CDATA[
 	        INSERT INTO
@@ -167,6 +165,10 @@
     <select id="getScrollCount" resultType="long" parameterType="map">
         select count(1) from score
         <include refid="scoreDynamicWhere"/>
+    </select>
+    <select id="getUserWithQuestionnaireNumber" resultMap="scoreResult" parameterType="int">
+        select <include refid="scoreColumns" />
+        from score where uid=#{uid} group by questionnaireid
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
 </mapper>

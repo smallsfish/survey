@@ -9,6 +9,7 @@ import com.hassdata.survey.dto.QuestionnaireModel;
 import com.hassdata.survey.po.*;
 import com.hassdata.survey.service.*;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.tools.ant.taskdefs.condition.Http;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -51,19 +53,7 @@ public class QuestionnaireController {
         List<QuestionnaireModel> questionnaireModels=new ArrayList<>();
         QuestionnaireModel questionnaireModel=null;
         Question question=null;
-        for (Questionnaire q : questionnaires){
-            questionnaireModel=new QuestionnaireModel();
-            questionnaireModel.setId(q.getId());
-            questionnaireModel.setQuestionnairebegintime(q.getQuestionnairebegintime());
-            questionnaireModel.setQuestionnaireendtime(q.getQuestionnaireendtime());
-            questionnaireModel.setQuestionnairecreatetime(q.getQuestionnairecreatetime());
-            questionnaireModel.setQuestionnairename(q.getQuestionnairename());
-            questionnaireModel.setAuthor(adminUserService.find(q.getAid()).getAccount());
-            question=new Question();
-            question.setQuestionnaireid(q.getId());
-            questionnaireModel.setQuestions(questionService.getAll(question).size());
-            questionnaireModels.add(questionnaireModel);
-        }
+        setQuestionnaireModelValue(questionnaires, questionnaireModels);
         map.addAttribute("count",count);
         map.addAttribute("qms",questionnaireModels);
         return "system/questionnaire/questionnaire";
@@ -77,10 +67,58 @@ public class QuestionnaireController {
             limit=8;
         }
         List<Questionnaire> questionnaires=questionnaireService.getScrollData(null,"id DESC",(page-1)*limit,limit);
+        return getServerResponse(questionnaires,0);
+    }
+
+    @RequestMapping(value = "questionnaireSearch",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse questionnaireSearch(HttpServletRequest request, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit){
+        if(page==null || limit==null){
+            page=1;
+            limit=8;
+        }
+        String name= null;
+        try {
+            name = new String(request.getParameter("name").getBytes("iso-8859-1"), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Questionnaire questionnaire=new Questionnaire();
+        System.out.println(name);
+        questionnaire.setQuestionnairename("%"+name+"%");
+        List<Questionnaire> questionnaires=questionnaireService.getScrollDataByLike(questionnaire,"id DESC",(page-1)*limit,limit);
+        long count=questionnaireService.getScrollByLikeCount(questionnaire);
+        System.out.println(count);
+        return getServerResponse(questionnaires,count);
+    }
+
+    private ServerResponse getServerResponse(List<Questionnaire> questionnaires,long count) {
         if(questionnaires.size()<=0){
-            return ServerResponse.createByErrorMessage("暂无数据");
+            return ServerResponse.createByErrorMessage("没有查到相关问卷");
         }else{
-            return ServerResponse.createBySuccess(questionnaires);
+            List<QuestionnaireModel> questionnaireModels=new ArrayList<>();
+            QuestionnaireModel questionnaireModel=null;
+            Question question=null;
+            setQuestionnaireModelValue(questionnaires, questionnaireModels);
+            return ServerResponse.createBySuccessForLayuiTable("搜索成功",questionnaireModels,count);
+        }
+    }
+
+    private void setQuestionnaireModelValue(List<Questionnaire> questionnaires, List<QuestionnaireModel> questionnaireModels) {
+        QuestionnaireModel questionnaireModel;
+        Question question;
+        for (Questionnaire q : questionnaires){
+            questionnaireModel=new QuestionnaireModel();
+            questionnaireModel.setId(q.getId());
+            questionnaireModel.setQuestionnairebegintime(q.getQuestionnairebegintime());
+            questionnaireModel.setQuestionnaireendtime(q.getQuestionnaireendtime());
+            questionnaireModel.setQuestionnairecreatetime(q.getQuestionnairecreatetime());
+            questionnaireModel.setQuestionnairename(q.getQuestionnairename());
+            questionnaireModel.setAuthor(adminUserService.find(q.getAid()).getAccount());
+            question=new Question();
+            question.setQuestionnaireid(q.getId());
+            questionnaireModel.setQuestions(questionService.getAll(question).size());
+            questionnaireModels.add(questionnaireModel);
         }
     }
 
@@ -100,7 +138,7 @@ public class QuestionnaireController {
         Admin_User admin_user= (Admin_User) session.getAttribute("CurrentAdminUser");
         Questionnaire questionnaire=new Questionnaire();
         String questionnaireid="";
-        if(isEditor){
+        if(!isEditor){
             questionnaireid=UUID.randomUUID().toString();
             questionnaire.setId(questionnaireid);
         }else{

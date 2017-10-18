@@ -2,10 +2,11 @@ package com.hassdata.survey.dao;
 
 import com.hassdata.survey.base.BaseDao;
 import com.hassdata.survey.po.Score;
-import com.hassdata.survey.po.User;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public interface ScoreDao extends BaseDao<Score> {
-
+    List<Score> getUserWithQuestionnaireNumber(Integer uid);
 }

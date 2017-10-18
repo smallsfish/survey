@@ -2,7 +2,9 @@ package com.hassdata.survey.service;
 
 import com.hassdata.survey.base.BaseService;
 import com.hassdata.survey.po.Score;
-import com.hassdata.survey.po.Student;
+
+import java.util.List;
 
 public interface ScoreService extends BaseService<Score> {
+    List<Score> getUserWithQuestionnaireNumber(Integer uid);
 }

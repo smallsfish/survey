@@ -1,38 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>test</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="layui/css/layui.css">
-    <style>
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 8px;
-        }
-
-        /*用户管理样式开始*/
-        .usertools {
-            height: 4.5%;
-        }
-
-        .usertools img {
-            width: 23px;
-            height: 23px;
-            float: right;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        /*用户管理样式结束*/
-    </style>
-</head>
 <body oncontextmenu="return false" onselect="return false">
 <div class="layui-tab layui-tab-brief" style="margin: 0; height: 99.9%;" lay-filter="docDemoTabBrief">
     <ul class="layui-tab-title">
@@ -101,7 +70,7 @@
                 {width: layui_tab_item_width * 0.13, field: 'remarks', title: '备注'},
                 {width: layui_tab_item_width * 0.1, field: 'createdatetime', title: '创建时间'},
                 {width: layui_tab_item_width * 0.1, field: 'lastlogintime', title: '最后一次登录时间'},
-                {width: layui_tab_item_width * 0.141,fixed:'right', align:'center',templet:'#adminToolBar',title:'操作'}
+                {width: layui_tab_item_width * 0.141,fixed:'right', align:'center',toolbar:'#adminToolBar',title:'操作'}
             ]],
             size: 'lg',
             limits: [30, 60, 90, 150, 300],
@@ -234,9 +203,8 @@
                 {width: layui_tab_item_width * 0.1,title:'留守儿童之家名称',field:'playhousename'},
                 {width: layui_tab_item_width * 0.06,title:'操作人',field:'operationuser'},
                 {width: layui_tab_item_width * 0.1,title:'状态',field:'status'},
-                {width: layui_tab_item_width * 0.108,title:'备注',field:'remarks'},
-                {width: layui_tab_item_width * 0.1,title:'审核说明',field:'explain'},
-                {width: layui_tab_item_width * 0.14,fixed:'right', align:'center',templet:'#userToolBar',title:'操作'}
+                {width: layui_tab_item_width * 0.21,title:'备注',field:'remarks'},
+                {width: layui_tab_item_width * 0.14,fixed:'right', align:'center',toolbar:'#userToolBar',title:'操作'}
             ]],
             size: 'lg',
             limits: [30, 60, 90, 150, 300],
@@ -248,12 +216,24 @@
             var layEvent = obj.event; //获得 lay-event 对应的值
             if(layEvent === 'detail'){ //查看
                 //do somehing
-                layer.open({
-                    title:'审核'+data.account+'用户',
-                    type:2,
-                    area: ['50%', '70%'],
-                    content:'system/getEditorUser?id='+data.id,
-                    skin:'layui-layer-molv'
+                layer.confirm('该用户通过审核？', function(index){
+                    loadIndex=layer.load();
+                    layer.close(index);
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/userAuditing',
+                        data: {'id':data.id},
+                        success: function (result) {
+                            layer.close(loadIndex);
+                            layer.msg(result.msg);
+                            reflashUserTable();
+                        },
+                        error: function(data) {
+                            layer.close(loadIndex);
+                            layer.alert("出现异常！");
+                        }
+                    });
                 });
             } else if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除该用户吗？', function(index){
@@ -309,7 +289,7 @@
     function adminUserSearch() {
         var account=$(":input[name='qname']").val();
         if(account===""){
-            layer.msg("请输入账号！",{icon:5,time:3000});
+            layer.msg("请输入账号！",{icon:2,time:3000});
         }else{
             adminTable.reload({
                 url:'system/adminUserSearch?account='+account
@@ -320,13 +300,14 @@
     function userSearch() {
         var account=$(":input[name='uname']").val();
         if(account===""){
-            layer.msg("请输入普通用户账号！",{icon:5,time:3000});
+            layer.msg("请输入普通用户账号！",{icon:2,time:3000});
         }else{
             userTable.reload({
                 url:'system/userSearch?account='+account
             });
         }
     }
+    reflashUserTable();
 </script>
 <script id="headimg" type="text/html">
     <img src="uploadimage/{{d.headimage}}" style="width: 40px;height: 40px;">
@@ -335,9 +316,40 @@
     <a id="a" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
-
 <script id="userToolBar" type="text/html">
     <a id="u" class="layui-btn layui-btn-mini" lay-event="detail">审核</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
+
+<head>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 8px;
+        }
+
+        /*用户管理样式开始*/
+        .usertools {
+            height: 4.5%;
+        }
+
+        .usertools img {
+            width: 23px;
+            height: 23px;
+            float: right;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        /*用户管理样式结束*/
+    </style>
+</head>
 </html>
