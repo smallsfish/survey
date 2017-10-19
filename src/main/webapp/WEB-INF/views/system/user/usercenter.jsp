@@ -38,7 +38,6 @@
 </div>
 </body>
 <script>
-    var layui_tab_item_height = $('.layui-tab-item').height();
     var layui_tab_item_width = $('.layui-tab-item').width();
     var table,adminTable,layer,loadIndex,userTable;
     layui.use(['layer', 'table'], function () {
@@ -58,7 +57,7 @@
             url:'system/getAdminUser',
             method:'get',
             loading:true,
-            height: layui_tab_item_height, //容器高度
+            height: 'full-115', //容器高度
             cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
                 {width: layui_tab_item_width * 0.04, field: 'aid', title: '序号',sort:true},
                 {width: layui_tab_item_width * 0.03, field: 'id', title: 'ID'},
@@ -193,7 +192,7 @@
             url:'system/getUser',
             method:'get',
             loading:true,
-            height: layui_tab_item_height, //容器高度
+            height: 'full-115', //容器高度
             cols:[[{width: layui_tab_item_width * 0.02,checkbox: true},
                 {width: layui_tab_item_width * 0.04,title:'序号',field:'aid'},
                 {width: layui_tab_item_width * 0.04,title:'ID',field:'id'},
@@ -307,7 +306,6 @@
             });
         }
     }
-    reflashUserTable();
 </script>
 <script id="headimg" type="text/html">
     <img src="uploadimage/{{d.headimage}}" style="width: 40px;height: 40px;">
