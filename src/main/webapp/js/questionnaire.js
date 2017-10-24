@@ -7,6 +7,7 @@
     var life = -1;
     var types = 0;
     var typesHave = false;
+
     questionnaireNameChange = function () {
         questionnaire.name = $(":input[name='qname']").val();
         $(".questionnaireadd-main-title").text(questionnaire.name);

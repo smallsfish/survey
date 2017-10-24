@@ -47,6 +47,7 @@ public class UserController {
         UserDTO userDTO = null;
         int i = 0;
         for (User u : userList) {
+            if(u.getStatus()==1) continue;
             userDTO = new UserDTO();
             userDTO.setAccount(u.getAccount());
             userDTO.setAddress(u.getAddress());
@@ -117,6 +118,7 @@ public class UserController {
         UserDTO userDTO = null;
         int i = 0;
         for (User u : userList) {
+            if(u.getStatus()==1) continue;
             userDTO = new UserDTO();
             userDTO.setAccount(u.getAccount());
             userDTO.setAddress(u.getAddress());

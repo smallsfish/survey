@@ -26,7 +26,7 @@
         <div onclick="searchSuccessUser()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
     </div>
     <div class="information-toolbar">
-        <img onclick="addSchoolUser()" src="img/icon/icon-more2.png" alt="添加学校" title="添加">
+        <img onclick="addUser()" src="img/icon/icon-more2.png" alt="添加学校" title="添加">
         <img onclick="reflashUserOnSuccessTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
         <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中学校" title="删除">
     </div>
@@ -96,7 +96,23 @@
                     layer.close(index);
                     //向服务端发送删除指令
                     loadIndex=layer.load();
-
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/userInfoDel',
+                        data: {'uid':data.id},
+                        success: function (result) {
+                            layer.close(loadIndex);
+                            if(result.status==0){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            }
+                            layer.msg(result.msg);
+                        },
+                        error: function(data) {
+                            layer.close(loadIndex);
+                            layer.alert("出现异常！");
+                        }
+                    });
                 });
             } else if(layEvent === 'edit'){ //编辑
                 layer.msg("编辑学校具体信息");
@@ -129,6 +145,21 @@
         }
         successUserTable.reload({
             url:'system/searchInfoList?schoolname='+schoolName
+        });
+    }
+
+
+
+    function addUser() {
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.open({
+                title:'添加普通用户',
+                type:2,
+                area: ['50%', '70%'],
+                content:'system/getUserAdd',
+                skin:'layui-layer-molv'
+            });
         });
     }
 </script>

@@ -167,7 +167,7 @@
         <include refid="scoreDynamicWhere"/>
     </select>
     <select id="getUserWithQuestionnaireNumber" resultMap="scoreResult" parameterType="int">
-        select <include refid="scoreColumns" />
+        select questionnaireid
         from score where uid=#{uid} group by questionnaireid
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->

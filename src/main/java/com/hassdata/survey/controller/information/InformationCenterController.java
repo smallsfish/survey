@@ -1,11 +1,13 @@
 package com.hassdata.survey.controller.information;
 
 import com.hassdata.survey.dto.UserDTO;
+import com.hassdata.survey.po.Admin_User;
 import com.hassdata.survey.po.Student;
 import com.hassdata.survey.po.User;
 import com.hassdata.survey.service.ScoreService;
 import com.hassdata.survey.service.StudentService;
 import com.hassdata.survey.service.UserService;
+import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,6 +88,7 @@ public class InformationCenterController {
     private void setUserDTO(List<User> userList, List<UserDTO> userDTOList, int aid) {
         UserDTO userDTO;
         for (User u : userList){
+            if(u.getStatus()!=1) continue;
             userDTO=new UserDTO();
             aid++;
             userDTO.setId(u.getId());
@@ -107,6 +111,53 @@ public class InformationCenterController {
             userDTOList.add(userDTO);
         }
     }
+
+    @RequestMapping(value = "userInfoDel" , method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse userInfoDel(Integer uid){
+        if(uid==null){
+            return ServerResponse.createByErrorMessage("操作失败!");
+        }
+        if(userService.delete(uid)>0){
+            return ServerResponse.createBySuccessMessage("删除成功！");
+        }else{
+            return ServerResponse.createByErrorMessage("操作失败!");
+        }
+    }
+
+
+    @RequestMapping(value = "addUser" , method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse addUser(User user,HttpServletRequest request){
+        HttpSession session=request.getSession(true);
+        if(user.getAccount().isEmpty()){
+            return ServerResponse.createByErrorMessage("用户名不能为空!");
+        }
+        if(user.getHeadmaster().isEmpty()){
+            return ServerResponse.createByErrorMessage("校长名称不能为空!");
+        }
+        if(user.getAddress().isEmpty()){
+            return ServerResponse.createByErrorMessage("学校地址不能为空!");
+        }
+        if(user.getPlayhousename().isEmpty()){
+            return ServerResponse.createByErrorMessage("留守儿童之家名称不能为空!");
+        }
+        if(user.getBooknumber()==null){
+            return ServerResponse.createByErrorMessage("图书数量不能为空!");
+        }
+        user.setSchoolname(user.getAccount());
+        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
+        user.setStatus(1);
+        user.setPassword(MD5TUtils.threeMD5("123456"));
+        userService.save(user);
+        return ServerResponse.createBySuccessMessage("用戶创建成功");
+    }
+
+    @RequestMapping(value = "getUserAdd" , method = RequestMethod.GET)
+    public String getAddUser(){
+        return "system/information/addUser";
+    }
+
 
 
 }
