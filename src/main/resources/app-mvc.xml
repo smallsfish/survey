@@ -46,6 +46,7 @@
 	<mvc:resources mapping="/js/**" location="/js/" />
 	<mvc:resources mapping="/layui/**" location="/layui/" />
 	<mvc:resources mapping="/uploadimage/**" location="/uploadimage/" />
+	<mvc:resources mapping="/uploadLoop/**" location="/uploadLoop/" />
 
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

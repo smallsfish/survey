@@ -77,7 +77,7 @@
             <div class="side-menu-item">
                 <div class="side-menu-item-title"><span class="side-menu-square"></span>数据管理</div>
                 <ul>
-                    <li><a  onclick="createTab({title:'数据中心',isShowClose:true,url:'system/data'})" href="javascript:;"><img src="img/icon/icon-data.png" class="side-menu-a-img">数据中心</a></li>
+                    <li><a onclick="createTab({title:'数据中心',isShowClose:true,url:'system/data'})" href="javascript:;"><img src="img/icon/icon-data.png" class="side-menu-a-img">数据中心</a></li>
                 </ul>
             </div>
             <div class="side-menu-item">
@@ -92,6 +92,16 @@
                     <li><a onclick="createTab({title:'信息中心',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-info-center.png" class="side-menu-a-img">信息中心</a></li>
                 </ul>
             </div>
+            <div class="side-menu-item">
+                <div class="side-menu-item-title"><span class="side-menu-square"></span>儿童之家网站</div>
+                <ul>
+                    <li><a onclick="createTab({title:'轮播图',isShowClose:true,url:'system/loop'})" href="javascript:;"><img src="img/icon/icon-loop.png" class="side-menu-a-img">轮播图</a></li>
+                    <li><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-a-img">儿童资讯</a></li>
+                    <li><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-a-img">儿童图片</a></li>
+                    <li><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-a-img">儿童视频</a></li>
+                    <li><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-a-img">留言板</a></li>
+                </ul>
+            </div>
         </div>
 
         <!-- 带文字的导航菜单项结束 -->
@@ -101,7 +111,7 @@
             <div class="side-menu-small-item">
                 <div data-toast="用户管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
-                    <li data-toast="用户中心"><a href="javascript:;"><img src="img/icon/icon-user.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="用户中心"><a onclick="createTab({title:'用户中心',isShowClose:true,url:'system/userCenter'})" href="javascript:;"><img src="img/icon/icon-user.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="角色管理"><a href="javascript:;"><img src="img/icon/icon-role-mgr.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="权限管理"><a href="javascript:;"><img src="img/icon/icon-limits-mgr.png" class="side-menu-small-a-img"></a></li>
                 </ul>
@@ -115,19 +125,29 @@
             <div class="side-menu-small-item">
                 <div data-toast="数据管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
-                    <li data-toast="数据中心"><a  href="javascript:;"><img src="img/icon/icon-data.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="数据中心"><a onclick="createTab({title:'数据中心',isShowClose:true,url:'system/data'})" href="javascript:;"><img src="img/icon/icon-data.png" class="side-menu-small-a-img"></a></li>
                 </ul>
             </div>
             <div class="side-menu-small-item">
                 <div data-toast="问卷管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
-                    <li data-toast="问卷中心"><a href="javascript:;"><img src="img/icon/icon-questionnaire.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="问卷中心"><a onclick="createTab({title:'问卷中心',isShowClose:true,url:'system/questionnaires'})" href="javascript:;"><img src="img/icon/icon-questionnaire.png" class="side-menu-small-a-img"></a></li>
                 </ul>
             </div>
             <div class="side-menu-small-item">
                 <div data-toast="信息管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
-                    <li data-toast="信息中心"><a href="javascript:;"><img src="img/icon/icon-info-center.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="信息中心"><a onclick="createTab({title:'信息中心',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-info-center.png" class="side-menu-small-a-img"></a></li>
+                </ul>
+            </div>
+            <div class="side-menu-small-item">
+                <div data-toast="儿童之家网站" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
+                <ul>
+                    <li data-toast="轮播图"><a onclick="createTab({title:'轮播图',isShowClose:true,url:'system/loop'})" href="javascript:;"><img src="img/icon/icon-loop.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="儿童资讯"><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="儿童图片"><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="儿童视频"><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="留言板"><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-small-a-img"></a></li>
                 </ul>
             </div>
         </div>

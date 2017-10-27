@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.LoopDao">
+    <resultMap id="pictureloopResult" type="Loop">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="pictureloopColumns">
+        <![CDATA[
+        	id,
+            url,
+            imageurl,
+            isshow,
+            sort
+	    ]]>
+    </sql>
+
+    <sql id="pictureloopDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="url != null">
+                and url = #{url}
+            </if>
+            <if test="imageurl != null">
+                and imageurl = #{imageurl}
+            </if>
+            <if test="isshow != null">
+                and isshow = #{isshow}
+            </if>
+            <if test="sort != null">
+                and sort = #{sort}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Loop" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        pictureloop (
+	        	id,
+                url,
+                imageurl,
+                isshow,
+                sort
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{url,jdbcType=VARCHAR},
+	        	#{imageurl,jdbcType=VARCHAR},
+	        	#{isshow,jdbcType=BIT},
+	        	#{sort,jdbcType=TINYINT}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Loop">
+        <![CDATA[
+	        UPDATE pictureloop SET
+		        url = #{url,jdbcType=VARCHAR},
+		        imageurl = #{imageurl,jdbcType=VARCHAR},
+		        isshow = #{isshow,jdbcType=BIT},
+		        sort = #{sort,jdbcType=TINYINT}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Loop">
+        UPDATE
+        pictureloop
+        <set>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="imageurl != null">
+                imageurl = #{imageurl,jdbcType=VARCHAR},
+            </if>
+            <if test="isshow != null">
+                isshow = #{isshow,jdbcType=BIT},
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=TINYINT},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from pictureloop where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from pictureloop where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="pictureloopResult">
+        select <include refid="pictureloopColumns" />
+        <![CDATA[
+		    from pictureloop
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="pictureloopResult">
+        select <include refid="pictureloopColumns" />
+        <![CDATA[
+		    from pictureloop
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Loop">
+        select count(1) from pictureloop
+        <include refid="pictureloopDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="pictureloopResult" parameterType="map">
+        select <include refid="pictureloopColumns"/> from pictureloop
+        <include refid="pictureloopDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="pictureloopResult" parameterType="map">
+        select <include refid="pictureloopColumns"/> from pictureloop
+        <include refid="pictureloopDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="pictureloopResult" parameterType="map">
+        select <include refid="pictureloopColumns" />
+        from pictureloop
+        <include refid="pictureloopDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from pictureloop
+        <include refid="pictureloopDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+</mapper>

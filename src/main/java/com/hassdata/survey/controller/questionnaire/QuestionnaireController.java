@@ -176,7 +176,6 @@ public class QuestionnaireController {
             for (int i = 0; i < jsonArrayTypes.size(); i++) {
                 jsonObjectType = jsonArrayTypes.getJSONObject(i);
                 if (jsonObjectType != null) {
-                    System.out.println(jsonObjectType.getString("title"));
                     questionType = new QuestionType();
                     String questionTypeId = UUID.randomUUID().toString();
                     questionType.setId(questionTypeId);

@@ -13,6 +13,7 @@
 		<typeAlias alias="Options" type="com.hassdata.survey.po.Options" />
 		<typeAlias alias="Student" type="com.hassdata.survey.po.Student" />
 		<typeAlias alias="Score" type="com.hassdata.survey.po.Score" />
+		<typeAlias alias="Loop" type="com.hassdata.survey.po.Loop" />
 	</typeAliases>
 </configuration>
 
