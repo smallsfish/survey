@@ -38,7 +38,7 @@
 <script>
     var layui_tab_item_width = $('.information-content').width();
     var successUserTable;
-    layui.use(['element', 'table'], function () {
+    layui.use(['element', 'table','flow'], function () {
         var element = layui.element;
         var table = layui.table;
         //一些事件监听

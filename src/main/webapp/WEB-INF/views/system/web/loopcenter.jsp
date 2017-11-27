@@ -142,7 +142,13 @@
                     });
                 });
             } else if(layEvent === 'edit'){ //编辑
-                layer.msg("编辑学校具体信息");
+                layer.open({
+                    title:'编辑轮播图',
+                    type:2,
+                    area: ['50%', '70%'],
+                    content:'system/getLoopEditor?id='+data.id,
+                    skin:'layui-layer-molv'
+                });
             }
         });
         table.on('edit(loopTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -190,7 +196,7 @@
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 <script id="loopimg" type="text/html">
-    <img  src="{{d.imageurl}}" style="width: 40px;"/>
+    <img onmouseover="loopPictureMouseOver(this)"  onmouseout="loopPictureMouseOut(this)" src="{{d.imageurl}}" style="width: 40px;"/>
 </script>
 <script id="isshow" type="text/html">
     <form class="layui-form">
@@ -200,5 +206,13 @@
                {{# } }}
                value="{{d.id}}" lay-filter="loopShow" lay-skin="switch">
     </form>
+</script>
+<script>
+    function loopPictureMouseOver(obj) {
+
+    }
+    function loopPictureMouseOut(obj) {
+
+    }
 </script>
 </html>

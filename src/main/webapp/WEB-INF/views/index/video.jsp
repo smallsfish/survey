@@ -52,7 +52,6 @@
     </div>
 </section>
 <footer>
-
 </footer>
 </body>
 <script>

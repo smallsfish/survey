@@ -14,10 +14,6 @@
 		<typeAlias alias="Student" type="com.hassdata.survey.po.Student" />
 		<typeAlias alias="Score" type="com.hassdata.survey.po.Score" />
 		<typeAlias alias="Loop" type="com.hassdata.survey.po.Loop" />
+		<typeAlias alias="MessageBoard" type="com.hassdata.survey.po.MessageBoard" />
 	</typeAliases>
 </configuration>
-
-
-
-
-

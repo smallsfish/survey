@@ -186,8 +186,9 @@
 
     });
     function systemExit(){
-        var loadIndex=layer.load(0);
+
         layer.confirm("确定退出系统吗？",function (index) {
+            var loadIndex=layer.load(0);
             layer.close(index);
             $.get( 'system/exit',function () {
                 layer.close(loadIndex);

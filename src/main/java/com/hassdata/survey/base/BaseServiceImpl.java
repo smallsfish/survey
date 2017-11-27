@@ -14,6 +14,7 @@ import java.util.Map;
 public abstract class BaseServiceImpl <T> implements BaseService<T> {
     @Resource
     protected SqlSessionFactory sqlSessionFactory;
+
     public abstract BaseDao<T> getMapper();
 
     /**

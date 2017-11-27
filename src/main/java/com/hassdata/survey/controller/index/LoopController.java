@@ -8,6 +8,7 @@ import com.hassdata.survey.util.ServerResponse;
 import org.apache.regexp.RE;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +39,13 @@ public class LoopController {
     @RequestMapping(value = "getLoopAdd",method = RequestMethod.GET)
     public String getLoopAdd(){
         return "system/web/addPictureLoop";
+    }
+
+    @RequestMapping(value = "getLoopEditor",method = RequestMethod.GET)
+    public String getLoopEditor(ModelMap map,Integer id){
+        Loop loop=loopService.find(id);
+        map.addAttribute("loop",loop);
+        return "system/web/editorPictureLoop";
     }
 
 
@@ -81,6 +91,47 @@ public class LoopController {
         return ServerResponse.createBySuccessMessage("轮播图添加成功");
     }
 
+
+    @RequestMapping(value = "updateLoopImage", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse updateLoopImage(Integer id, MultipartFile file, HttpServletRequest request, String image) {
+        Loop loop = new Loop();
+        loop.setId(id);
+        if (file.isEmpty()) {
+            return ServerResponse.createByErrorMessage("请上传轮播图！");
+        }
+        String fn = file.getOriginalFilename();
+        String suffix = fn.substring(fn.lastIndexOf('.') + 1, fn.length());
+        long fileSize = file.getSize();
+        if (fileSize > 2097152) {
+            return ServerResponse.createByErrorMessage("请上传小于2M的图片");
+        }
+        if (suffix.equals("jpg") || suffix.equals("JPG") || suffix.equals("jpeg") || suffix.equals("JPEG") || suffix.equals("PNG") || suffix.equals("png") || suffix.equals("GIF") || suffix.equals("gif")) {
+        } else return ServerResponse.createByErrorMessage("请上传jpg/jpeg/png/gif格式的图片！");
+        String path = request.getSession().getServletContext().getRealPath("uploadLoop");
+        String fileName = new Date().getTime() + "." + suffix;
+        try {
+            FileUploadUtils.uploadSingleImage(path, fileName, file.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("上传图片失败");
+        }
+        File file1 = new File(path + "/" + image.substring(image.indexOf("/")+1,image.length()));
+        if (file1.exists()) {
+            file1.delete();
+        }
+
+        loop.setImageurl("uploadLoop/"+fileName);
+        loopService.updateParams(loop);
+        return ServerResponse.createBySuccess("图片上传成功", "uploadLoop/" + fileName);
+    }
+
+    @RequestMapping(value = "loopEditor",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse loopEditor(Loop loop){
+        loopService.updateParams(loop);
+        return ServerResponse.createBySuccessMessage("轮播图信息修改成功");
+    }
 
     @RequestMapping(value = "loopDel",method = RequestMethod.GET)
     @ResponseBody

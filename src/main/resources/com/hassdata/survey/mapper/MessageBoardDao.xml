@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.MessageBoardDao">
+    <resultMap id="messageBoardResult" type="MessageBoard">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="messageBoardColumns">
+        <![CDATA[
+        	id,
+            name,
+            telphone,
+            msg,
+            isread,
+            createtime
+	    ]]>
+    </sql>
+
+    <sql id="messageBoardDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+            <if test="telphone != null">
+                and telphone = #{telphone}
+            </if>
+            <if test="msg != null">
+                and msg = #{msg}
+            </if>
+            <if test="isread != null">
+                and isread = #{isread}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="MessageBoard" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        messageboard (
+	        	id,
+                name,
+                telphone,
+                msg,
+                isread,
+                createtime
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{name,jdbcType=VARCHAR},
+	        	#{telphone,jdbcType=VARCHAR},
+	        	#{msg,jdbcType=BLOB},
+	        	#{isread,jdbcType=BIT},
+	        	#{createtime,jdbcType=TIMESTAMP}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="MessageBoard">
+        <![CDATA[
+	        UPDATE messageboard SET
+		        name = #{name,jdbcType=VARCHAR},
+		        telphone = #{telphone,jdbcType=VARCHAR},
+		        msg = #{msg,jdbcType=BLOB},
+		        isread = #{isread,jdbcType=BIT},
+		        createtime = #{createtime,jdbcType=TIMESTAMP}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="MessageBoard">
+        UPDATE
+        messageboard
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="telphone != null">
+                telphone = #{telphone,jdbcType=VARCHAR},
+            </if>
+            <if test="msg != null">
+                msg = #{msg,jdbcType=BLOB},
+            </if>
+            <if test="isread != null">
+                isread = #{isread,jdbcType=BIT},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from messageboard where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from messageboard where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="messageBoardResult">
+        select <include refid="messageBoardColumns" />
+        <![CDATA[
+		    from messageboard
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="messageBoardResult">
+        select <include refid="messageBoardColumns" />
+        <![CDATA[
+		    from messageboard
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="MessageBoard">
+        select count(1) from messageboard
+        <include refid="messageBoardDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="messageBoardResult" parameterType="map">
+        select <include refid="messageBoardColumns"/> from messageboard
+        <include refid="messageBoardDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="messageBoardResult" parameterType="map">
+        select <include refid="messageBoardColumns"/> from messageboard
+        <include refid="messageBoardDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="messageBoardResult" parameterType="map">
+        select <include refid="messageBoardColumns" />
+        from messageboard
+        <include refid="messageBoardDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from messageboard
+        <include refid="messageBoardDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="messageBoardLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="name != null">
+                and name LIKE #{name}
+            </if>
+            <if test="telphone != null">
+                and telphone LIKE #{telphone}
+            </if>
+            <if test="msg != null">
+                and msg LIKE #{msg}
+            </if>
+            <if test="isread != null">
+                and isread LIKE #{isread}
+            </if>
+            <if test="createtime != null">
+                and createtime LIKE #{createtime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="messageBoardResult" parameterType="map">
+        select
+        <include refid="messageBoardColumns"/>
+        from messageboard
+        <include refid="messageBoardLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from messageboard
+        <include refid="messageBoardLikeDynamicWhere"/>
+    </select>
+
+</mapper>

@@ -98,6 +98,7 @@
     </update>
 
     <update id="updateParams" parameterType="AdminUser">
+        <![CDATA[
         UPDATE
         admin_user
         <set>
@@ -128,6 +129,7 @@
         </set>
         WHERE
         id = #{id}
+        ]]>
     </update>
 
     <delete id="delete" parameterType="java.lang.Integer">

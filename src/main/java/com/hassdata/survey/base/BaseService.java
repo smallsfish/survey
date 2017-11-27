@@ -75,7 +75,7 @@ public interface BaseService <T>{
      * @param params 参数（注意Model与数据库对应的字段不要写primitive type）
      * @param orderBy 排序条件 a asc, b desc ...
      */
-    public List<T> getAll(T params);
+    List<T> getAll(T params);
 
     /**
      * 根据条件获取列表
