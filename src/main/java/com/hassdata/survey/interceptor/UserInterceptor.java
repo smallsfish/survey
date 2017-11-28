@@ -14,12 +14,26 @@ public class UserInterceptor extends HandlerInterceptorAdapter{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
+		String path=request.getServletPath();
+		String parameter=request.getParameter("id");
+		String redirectPath="login";
 		HttpSession session = request.getSession(true);
 		
 		User user = (User) session.getAttribute("CurrentUser");
 		
 		if(user == null) {
-			response.sendRedirect(request.getContextPath() + "/login");
+
+			if(path!=null || !path.equals("")){
+				redirectPath=redirectPath+"?path="+path;
+			}
+			if(parameter!=null || !parameter.equals("")){
+				if(redirectPath.contains("?")){
+					redirectPath=redirectPath+"&parameter="+parameter;
+				}else {
+					redirectPath=redirectPath+"?parameter="+parameter;
+				}
+			}
+			response.sendRedirect(request.getContextPath() + redirectPath);
 			return false;
 		}
 		return super.preHandle(request, response, handler);

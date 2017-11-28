@@ -5,8 +5,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-	<meta name="description" content="。。。" />
-	<meta name="keywords" content="留守儿童问卷调查" />
+	<meta name="description" content="${displayQuestionnaireModel.questionnaire.questionnairename}" />
+	<meta name="keywords" content="留守儿童问卷调查,${displayQuestionnaireModel.questionnaire.questionnairename}" />
 	<title>留守儿童问卷调查</title>
 	<%@ include file="../../base.jsp"%>
 	<style type="text/css">
@@ -144,8 +144,8 @@
 			<input type="text" name="persongrade" placeholder="年级" required>
 			<input type="text" name="personclass" placeholder="班级" required>
 		</div>
-		<c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}">
-			<div class="bigtitle" id="bigtitle1" style="border:1px solid #3280FC; box-shadow: 5px 0px 10px #3280FC;">
+		<c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}" varStatus="str">
+			<div class="bigtitle" id="bigtitle${str.index+1}" style="border:1px solid #3280FC; box-shadow: 5px 0px 10px #3280FC;">
 				<span class="titlespan" style="font-weight: bold; font-size: 18px; color:#fff; line-height: 40px;">${qt.questionType.questionTypename}</span>
 				<c:forEach var="q" items="${qt.displayQuestionModels}">
 					<div class="question">
@@ -166,11 +166,11 @@
 	</form>
 	<div id="md">
 		<ul>
-			<li ><a href="/display/displayQuestionnaire#top">头部</a></li>
-			<li ><a href="/display/displayQuestionnaire#bigtitle1">一</a></li>
-			<li ><a href="/display/displayQuestionnaire#bigtitle2">二</a></li>
-			<li ><a href="/display/displayQuestionnaire#bigtitle3">三</a></li>
-			<li ><a href="/display/displayQuestionnaire#bottom">底部</a></li>
+			<li ><a href="/display/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#top">头部</a></li>
+			<c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}" varStatus="str">
+				<li ><a href="/display/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bigtitle${str.index+1}">${str.index+1}</a></li>
+			</c:forEach>
+			<li ><a href="/display/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bottom">底部</a></li>
 		</ul>
 	</div>
 </body>

@@ -1,33 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<meta name="keywords" content="留守儿童问卷调查" />
 	<title>留守儿童问卷调查登录</title>
-	<link rel="stylesheet" type="text/css" href="../../../../../../../../Users/Administrator/Desktop/wjdc/WebContent/css/style.css">
-	<script type="text/javascript" src="../../../../../../../../Users/Administrator/Desktop/wjdc/WebContent/js/jquery-3.2.1.min.js"></script>
+	<%@ include file="../base.jsp"%>
+	<link rel="stylesheet" type="text/css" href="css/displaystyle.css">
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 </head>
 <body>
-	<img id="bobybg" src="../../../../../../../../Users/Administrator/Desktop/wjdc/WebContent/img/bg.jpg">
+	<img id="bobybg" src="img/bg.jpg">
 	<div id="contentbody">
-		<form action="javascript:void(0)" method="POST" onsubmit="return volidateSubmit()">
+		<form action="/display/login" method="POST">
+			<input type="hidden" name="path" value="${path}">
+			<input type="hidden" name="parameter" value="${parameter}">
 			<table cellspacing="30" >
 				<tr>
 					<td>留守儿童问卷调查</td>
+					<span style="color: red;position: absolute; display: block; top:90px;width: 100%;text-align: center">${error}</span>
 				</tr>
 				<tr>
 					<td>
-						<input type="text" name="uname" placeholder="请输入您的姓名" required="required"><br>
-						<input id="phone" type='text' title="请输入正确手机号！" name="cellphone" required="required" maxlength="11" minlength="11" placeholder="请输入您的手机号" onkeyup="this.value=this.value.replace(/[^0-9-]+/,'');" pattern="^1[3-9]\d{9}$" />
+						<input type="text" name="account" placeholder="请输入您的账号" required="required"><br>
+						<input id="phone" type='password' title="请输入密码！" name="password" required="required"  placeholder="请输入密码" />
 					</td>
 				</tr>
 				<tr>
 					<td><input type="submit" value="登录"></td>
 				</tr>
 			</table>
-			<img style="top:133px;left:90px;" src="../../../../../../../../Users/Administrator/Desktop/wjdc/WebContent/img/user.png">
-			<img style="top:184px;left:90px;" src="../../../../../../../../Users/Administrator/Desktop/wjdc/WebContent/img/tel.png">
+			<img style="top:133px;left:90px;" src="img/user.png">
+			<img style="top:184px;left:90px;" src="img/tel.png">
+			<%--<a style="top:244px; left:80PX; color:rgba(255,0,0,0.8);" href="javascript:alert('正在施工中...')">忘记密码?</a>--%>
+			<a style="top:244px; right:80px;" href="javascript:void(0)">立即注册</a>
 		</form>
 	</div>
 </body>
@@ -40,13 +47,6 @@
 		windowWidth=$(window).width();
 		$("#contentbody").css({"top":(windowHeight-350)/2,"left":(windowWidth-500)/2});
 	}
-
-	function volidateSubmit() {
-		window.location.href="../../../../../../../../Users/Administrator/Desktop/wjdc/WebContent/index.html";
-		return false;
-	}
-	
-	
 	loadimg();
 	//加载背景图的函数，该函数使图片适配所有屏幕的尺寸大小，尽可能的让图片显示正常
 	function loadimg(){

@@ -38,6 +38,11 @@
 			<mvc:exclude-mapping path="/system/login" />
 			<bean class="com.hassdata.survey.interceptor.AdminUserInterceptor"></bean>
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/display/**" />
+			<mvc:exclude-mapping path="/display/login" />
+			<bean class="com.hassdata.survey.interceptor.UserInterceptor"></bean>
+		</mvc:interceptor>
 	</mvc:interceptors>
 
 
