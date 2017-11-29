@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -13,6 +13,16 @@
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="img/iconfont/iconfont.css">
     <script src="js/index.js"></script>
+    <style>
+        .loop-pic{
+            width: 100%;
+            height: 100%;
+        }
+        .loop-pic img{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -31,11 +41,9 @@
     <div class="pictureLoopContent">
         <div class="layui-carousel" id="pictureLoop">
             <div carousel-item>
-                <div>条目1</div>
-                <div>条目2</div>
-                <div>条目3</div>
-                <div>条目4</div>
-                <div>条目5</div>
+                <c:forEach items="${loops}" var="loop">
+                    <div class="loop-pic"><img src="${loop.imageurl}"></div>
+                </c:forEach>
             </div>
         </div>
     </div>

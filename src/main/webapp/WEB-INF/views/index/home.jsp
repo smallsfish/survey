@@ -51,28 +51,28 @@
     <aside class="home-aside-left">
         <ul>
             <li><span>热点资讯</span><a href="javascript:;">更多...</a></li>
-            <li><a href="javascript:;">新闻1</a></li>
-            <li><a href="javascript:;">新闻2</a></li>
-            <li><a href="javascript:;">新闻3</a></li>
-            <li><a href="javascript:;">新闻4</a></li>
-            <li><a href="javascript:;">新闻5</a></li>
-            <li><a href="javascript:;">新闻6</a></li>
-            <li><a href="javascript:;">新闻7</a></li>
-            <li><a href="javascript:;">新闻8</a></li>
-            <li><a href="javascript:;">新闻9</a></li>
-            <li><a href="javascript:;">新闻10</a></li>
+            <li><a href="http://www.scxxb.com.cn/html/2017/hdxw_1122/402149.html" target="_blank">重庆永川：关爱留守儿童在行动</a></li>
+            <li><a href="http://news.xwh.cn/2017/1126/384825.shtml" target="_blank">爱心义卖情暖村小留守儿童</a></li>
+            <li><a href="http://news.xxrb.com.cn/html/2017/ycxx_1127/210187.html" target="_blank">“暖流计划”温暖我市留守儿童</a></li>
+            <li><a href="http://yb.newssc.org/system/20171122/002312692.html">关爱留守儿童 屏山公安构建警民和谐</a></li>
+            <li><a href="http://e.hznews.com/paper/hzrb/20171115/A6/5/" target="_blank">情暖留守儿童</a></li>
+            <li><a href="http://www.ahwang.cn/city/hn/fouce/20171128/1707963.shtml" target="_blank">淮南小橘灯爱心社志愿者带百名留守儿童游学</a></li>
+            <li><a href="http://www.gx211.com/news/20171128/n15118461902981.html" target="_blank">铜仁幼儿师范高等专科学校志愿者协会开展关爱留守儿童活动</a></li>
+            <li><a href="http://www.nmgcb.com.cn/chengshi/tongliao/2017/1121/146922.html">左中400名留守儿童 将收到爱心包裹</a></li>
+            <li><a href="http://www.gs.chinanews.com/news/2017/11-27/296757.shtml" target="_blank">庄浪县举行关爱贫困留守儿童“温暖包”发放仪式</a></li>
+            <li><a href="http://www.mxrb.cn/lyxws/content/2017-11/13/content_1657701.htm">永定区培丰镇关爱留守儿童</a></li>
         </ul>
     </aside>
     <aside class="home-aside-right">
         <ul>
             <li><span>热点图片</span><a href="javascript:;">更多...</a></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
-            <li><img src="img/icon/AI.png" alt=""></li>
+            <li><img src="img/l1.jpg" alt=""></li>
+            <li><img src="img/l2.jpg" alt=""></li>
+            <li><img src="img/l3.jpg" alt=""></li>
+            <li><img src="img/l4.jpg" alt=""></li>
+            <li><img src="img/l5.jpg" alt=""></li>
+            <li><img src="img/l6.jpg" alt=""></li>
+            <li><img src="img/l7.jpg" alt=""></li>
         </ul>
     </aside>
     <div class="home-video">
@@ -81,12 +81,13 @@
         </ul>
         <div class="video-list">
             <ol>
-                <li><img src="img/icon/AVI.png" alt=""><span>1</span></li>
-                <li><img src="img/icon/AVI.png" alt=""><span>2</span></li>
-                <li><img src="img/icon/AVI.png" alt=""><span>3</span></li>
-                <li><img src="img/icon/AVI.png" alt=""><span>5</span></li>
-                <li><img src="img/icon/AVI.png" alt=""><span>6</span></li>
-                <li><img src="img/icon/AVI.png" alt=""><span>7</span></li>
+                <li><a href="http://www.iqiyi.com/w_19rtilr855.html?share_sTime=0-share_eTime=55" target="_blank"> <img src="img/1.png" alt=""></a></li>
+                <li><a href="http://www.iqiyi.com/w_19rsjcw5x1.html?share_sTime=0-share_eTime=193" target="_blank"> <img src="img/2.png" alt=""></a></li>
+                <li><a href="http://www.iqiyi.com/w_19rscf57hx.html?share_sTime=0-share_eTime=27" target="_blank"> <img src="img/3.png" alt=""></a></li>
+                <li><a href="http://www.iqiyi.com/w_19rtilr855.html?share_sTime=0-share_eTime=55" target="_blank"> <img src="img/4.png" alt=""></a></li>
+                <li><a href="http://www.iqiyi.com/w_19rqzkddyt.html" target="_blank"> <img src="img/5.png" alt=""></a></li>
+                <li><a href="http://www.iqiyi.com/w_19rtic67r1.html?share_sTime=0-share_eTime=86" target="_blank"> <img src="img/6.png" alt=""></a></li>
+                <li><a href="" target="_blank"> <img src="img/7.png" alt=""></a></li>
             </ol>
         </div>
     </div>
@@ -102,7 +103,7 @@
         carousel.render({
             elem: '#pictureLoop'
             , width: '100%' //设置容器宽度
-            , arrow: 'hover' //始终显示箭头
+            , arrow: 'hover' //鼠标进入显示箭头
             , height: '380px'
             , anim: 'fade' //切换动画方式
         });

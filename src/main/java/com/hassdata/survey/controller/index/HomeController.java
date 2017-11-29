@@ -21,27 +21,36 @@ public class HomeController {
 
     @RequestMapping(value = "home",method = RequestMethod.GET)
     public String getIndexHome(ModelMap map){
+        setLoopAttribute(map);
+        return "index/home";
+    }
+
+    @RequestMapping(value = "news",method = RequestMethod.GET)
+    public String getIndexNews(ModelMap map){
+        setLoopAttribute(map);
+        return "index/news";
+    }
+
+    @RequestMapping(value = "picture",method = RequestMethod.GET)
+    public String getIndexPicture(ModelMap map){
+        setLoopAttribute(map);
+        return "index/pictures";
+    }
+    @RequestMapping(value = "video",method = RequestMethod.GET)
+    public String getIndexVideo(ModelMap map){
+        setLoopAttribute(map);
+        return "index/video";
+    }
+    @RequestMapping(value = "msg",method = RequestMethod.GET)
+    public String getIndexMsg(ModelMap map){
+        setLoopAttribute(map);
+        return "index/msg";
+    }
+
+    private void setLoopAttribute(ModelMap map) {
         Loop loop=new Loop();
         loop.setIsshow(true);
         List<Loop> loops=loopService.getAll(loop,"sort desc");
         map.addAttribute("loops",loops);
-        return "index/home";
     }
-    @RequestMapping(value = "news",method = RequestMethod.GET)
-    public String getIndexNews(){
-        return "index/news";
-    }
-    @RequestMapping(value = "picture",method = RequestMethod.GET)
-    public String getIndexPicture(){
-        return "index/pictures";
-    }
-    @RequestMapping(value = "video",method = RequestMethod.GET)
-    public String getIndexVideo(){
-        return "index/video";
-    }
-    @RequestMapping(value = "msg",method = RequestMethod.GET)
-    public String getIndexMsg(){
-        return "index/msg";
-    }
-
 }
