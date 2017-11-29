@@ -55,7 +55,7 @@
 	        	#{questionnaireid,jdbcType=INTEGER},
 	        	#{questionid,jdbcType=BIGINT},
 	        	#{options,jdbcType=VARCHAR},
-	        	#{sid,jdbcType=BIGINT},
+	        	#{sid,jdbcType=VARCHAR},
 	        	#{uid,jdbcType=INTEGER}
 	        )
 	    ]]>
@@ -67,7 +67,7 @@
 		        questionnaireid = #{questionnaireid,jdbcType=INTEGER},
 		        questionid = #{questionid,jdbcType=BIGINT},
 		        options = #{options,jdbcType=VARCHAR},
-		        sid = #{sid,jdbcType=BIGINT},
+		        sid = #{sid,jdbcType=VARCHAR},
 		        uid = #{uid,jdbcType=INTEGER}
 			WHERE
 				id = #{id}
@@ -88,7 +88,7 @@
                 options = #{options,jdbcType=VARCHAR},
             </if>
             <if test="sid != null">
-                sid = #{sid,jdbcType=BIGINT},
+                sid = #{sid,jdbcType=VARCHAR},
             </if>
             <if test="uid != null">
                 uid = #{uid,jdbcType=INTEGER}
@@ -169,6 +169,10 @@
     <select id="getUserWithQuestionnaireNumber" resultMap="scoreResult" parameterType="int">
         select questionnaireid
         from score where uid=#{uid} group by questionnaireid
+    </select>
+    <select id="getStudentWithQuestionnaireNumber" resultMap="scoreResult" parameterType="string">
+        select questionnaireid
+        from score where sid=#{sid} group by questionnaireid
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
 </mapper>

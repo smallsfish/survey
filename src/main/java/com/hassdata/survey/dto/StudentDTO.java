@@ -1,15 +1,24 @@
-package com.hassdata.survey.po;
+package com.hassdata.survey.dto;
 
 import java.io.Serializable;
 
-public class Student implements Serializable{
+public class StudentDTO implements Serializable {
     private String id;
+    private Integer aid;
     private String studentname;
     private String sex;
     private Integer age;
     private String grade;
     private String classes;
-    private Integer uid;
+    private Integer questionnairenumber;
+
+    public Integer getQuestionnairenumber() {
+        return questionnairenumber;
+    }
+
+    public void setQuestionnairenumber(Integer questionnairenumber) {
+        this.questionnairenumber = questionnairenumber;
+    }
 
     public String getId() {
         return id;
@@ -17,6 +26,14 @@ public class Student implements Serializable{
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getAid() {
+        return aid;
+    }
+
+    public void setAid(Integer aid) {
+        this.aid = aid;
     }
 
     public String getStudentname() {
@@ -57,13 +74,5 @@ public class Student implements Serializable{
 
     public void setClasses(String classes) {
         this.classes = classes;
-    }
-
-    public Integer getUid() {
-        return uid;
-    }
-
-    public void setUid(Integer uid) {
-        this.uid = uid;
     }
 }

@@ -20,7 +20,6 @@
         <div class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
     </div>
     <div class="information-toolbar">
-        <img onclick="addSchoolUser()" src="img/icon/icon-more2.png" alt="添加管理员" title="添加">
         <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中管理员" title="删除">
         <img src="img/icon/icon-reflash2.png" alt="刷新当前页面" title="刷新">
     </div>
@@ -42,34 +41,18 @@
         table.render({
             elem: '#dynamic-table-student-info', //指定原始表格元素选择器（推荐id选择器）
             page: true,
+            url:'system/getStudentList?uid=${uid}',
             id: 'infoTable',
             height: 'full-110', //容器高度
             cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
-                {width: layui_tab_item_width * 0.04, field: 'id', title: '序号', sort: true},
-                {width: layui_tab_item_width * 0.08, field: 'schoolName', title: '学校名称'},
-                {width: layui_tab_item_width * 0.05, field: 'headMaster', title: '校长'},
-                {width: layui_tab_item_width * 0.06, field: 'address', title: '地址'},
-                {width: layui_tab_item_width * 0.07, field: 'familyName', title: '儿童之家名称'},
-                {width: layui_tab_item_width * 0.06, field: 'bookNumber', title: '图书数量'},
-                {width: layui_tab_item_width * 0.06, field: 'childrenNumber', title: '儿童数量',edit:'text'},
-                {width: layui_tab_item_width * 0.06, field: 'teacherNumber', title: '老师数量'},
-                {width: layui_tab_item_width * 0.06, field: 'withQuestionnaireNumber', title: '参与问卷'},
-                {width: layui_tab_item_width * 0.1, field: 'lastLoginTime', title: '最后一次登录时间'},
-                {width: layui_tab_item_width * 0.22, align:'center',templet:'#infoToolBar',title:'操作'}
+                {width: layui_tab_item_width * 0.08, field: 'aid', title: '序号', sort: true},
+                {width: layui_tab_item_width * 0.18, field: 'studentname', title: '姓名'},
+                {width: layui_tab_item_width * 0.16, field: 'grade', title: '年级'},
+                {width: layui_tab_item_width * 0.15, field: 'classes', title: '班级'},
+                {width: layui_tab_item_width * 0.1, field: 'questionnairenumber', title: '参与问卷数量'},
+                {width: layui_tab_item_width * 0.3, align:'center',templet:'#infoToolBar',title:'操作'}
             ]],
-            size: 'lg',
-            data: [{
-                id:1,
-                schoolName:'合肥一小',
-                headMaster:'xxx',
-                address:'合肥市xxxxx',
-                familyName:'xxxx',
-                bookNumber:90,
-                childrenNumber:35,
-                teacherNumber:123,
-                withQuestionnaireNumber:234,
-                lastLoginTime:'2017-06-14 14:25:45'
-            }],
+            size: 'sm',
             limits: [30, 60, 90, 150, 300],
             limit: 30 //默认采用30
         });
@@ -110,8 +93,7 @@
     });
 </script>
 <script id="infoToolBar" type="text/html">
-    <a class="layui-btn " lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-normal" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 </html>

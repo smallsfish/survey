@@ -11,6 +11,7 @@ import com.hassdata.survey.service.OptionsService;
 import com.hassdata.survey.service.QuestionService;
 import com.hassdata.survey.service.QuestionTypeService;
 import com.hassdata.survey.service.QuestionnaireService;
+import com.hassdata.survey.util.QuestionnaireSort;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,48 +46,11 @@ public class DisplayQuestionnaireController {
         List<QuestionType> questionTypes=questionTypeService.getAll(questionType);
         DisplayQuestionTypeModel displayQuestionTypeModel=null;
         List<DisplayQuestionTypeModel> displayQuestionTypeModels=new ArrayList<>();
-        for (QuestionType qt : questionTypes){
-            displayQuestionTypeModel=new DisplayQuestionTypeModel();
-            displayQuestionTypeModel.setQuestionType(qt);
-            Question question = new Question();
-            question.setQuestiontypeid(qt.getId());
-            List<Question> questions=questionService.getAll(question);
-            DisplayQuestionModel displayQuestionModel=null;
-            List<DisplayQuestionModel> displayQuestionModels=new ArrayList<>();
-            for(Question q : questions){
-                displayQuestionModel=new DisplayQuestionModel();
-                displayQuestionModel.setQuestion(q);
-                Options options=new Options();
-                options.setQuestionid(q.getId());
-                List<Options> optionsList=optionsService.getAll(options);
-                displayQuestionModels.add(displayQuestionModel);
-                displayQuestionModel.setOptionsList(optionsList);
-            }
-            Collections.sort(displayQuestionModels, new Comparator<DisplayQuestionModel>() {
-                @Override
-                public int compare(DisplayQuestionModel o1, DisplayQuestionModel o2) {
-                    int i = o1.getQuestion().getQuestionsort() - o2.getQuestion().getQuestionsort();
-                    if(i == 0){
-                        return o1.getQuestion().getQuestionsort() - o2.getQuestion().getQuestionsort();
-                    }
-                    return i;
-                }
-            });
-            displayQuestionTypeModels.add(displayQuestionTypeModel);
-            displayQuestionTypeModel.setDisplayQuestionModels(displayQuestionModels);
-        }
-        Collections.sort(displayQuestionTypeModels, new Comparator<DisplayQuestionTypeModel>() {
-            @Override
-            public int compare(DisplayQuestionTypeModel o1, DisplayQuestionTypeModel o2) {
-                int i = o1.getQuestionType().getQuestionTypesort() - o2.getQuestionType().getQuestionTypesort();
-                if(i == 0){
-                    return o1.getQuestionType().getQuestionTypesort() - o2.getQuestionType().getQuestionTypesort();
-                }
-                return i;
-            }
-        });
+        QuestionnaireSort questionnaireSort=new QuestionnaireSort();
+        questionnaireSort.questionSort(questionTypes, displayQuestionTypeModels,questionService,optionsService);
         displayQuestionnaireModel.setDisplayQuestionTypeModels(displayQuestionTypeModels);
         map.addAttribute("displayQuestionnaireModel",displayQuestionnaireModel);
+        map.addAttribute("questionnaireId",id);
         return "display/questionnaire/index";
     }
 }

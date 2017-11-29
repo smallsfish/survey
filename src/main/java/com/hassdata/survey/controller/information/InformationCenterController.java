@@ -11,6 +11,7 @@ import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -130,6 +131,17 @@ public class InformationCenterController {
     @ResponseBody
     public ServerResponse addUser(User user,HttpServletRequest request){
         HttpSession session=request.getSession(true);
+        ServerResponse x = userValidate(user);
+        if (x != null) return x;
+        user.setSchoolname(user.getAccount());
+        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
+        user.setStatus(1);
+        user.setPassword(MD5TUtils.threeMD5("123456"));
+        userService.save(user);
+        return ServerResponse.createBySuccessMessage("用戶创建成功");
+    }
+
+    private ServerResponse userValidate(User user) {
         if(user.getAccount().isEmpty()){
             return ServerResponse.createByErrorMessage("用户名不能为空!");
         }
@@ -145,12 +157,7 @@ public class InformationCenterController {
         if(user.getBooknumber()==null){
             return ServerResponse.createByErrorMessage("图书数量不能为空!");
         }
-        user.setSchoolname(user.getAccount());
-        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
-        user.setStatus(1);
-        user.setPassword(MD5TUtils.threeMD5("123456"));
-        userService.save(user);
-        return ServerResponse.createBySuccessMessage("用戶创建成功");
+        return null;
     }
 
     @RequestMapping(value = "getUserAdd" , method = RequestMethod.GET)
@@ -158,6 +165,28 @@ public class InformationCenterController {
         return "system/information/addUser";
     }
 
+    @RequestMapping(value = "getEditorAdd" , method = RequestMethod.GET)
+    public String getEditorUser(Integer id, ModelMap map){
+        User user=userService.find(id);
+        map.addAttribute("user",user);
+        return "system/information/editorUser";
+    }
 
+    @RequestMapping(value = "editorUser" , method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse editorUser(User user,HttpServletRequest request){
+        HttpSession session=request.getSession(true);
+        ServerResponse x = userValidate(user);
+        if (x != null) return x;
+        user.setSchoolname(user.getAccount());
+        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
+        if(user.getPassword()!=null && !user.getPassword().equals("")) {
+            user.setPassword(MD5TUtils.threeMD5(user.getPassword()));
+        }else{
+            user.setPassword(null);
+        }
+        userService.updateParams(user);
+        return ServerResponse.createBySuccessMessage("用戶修改成功");
+    }
 
 }

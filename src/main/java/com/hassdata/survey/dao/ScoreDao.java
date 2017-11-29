@@ -9,4 +9,5 @@ import java.util.List;
 @Component
 public interface ScoreDao extends BaseDao<Score> {
     List<Score> getUserWithQuestionnaireNumber(Integer uid);
+    List<Score> getStudentWithQuestionnaireNumber(String sid);
 }

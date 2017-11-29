@@ -115,7 +115,7 @@
                     });
                 });
             } else if(layEvent === 'edit'){ //编辑
-                layer.msg("编辑学校具体信息");
+                editorUser(data);
             } else if(layEvent==='studentManager'){
                 if(data.childrennumber==="" || data.childrennumber==0){
                     layer.msg("该用户下没有学生");
@@ -158,6 +158,18 @@
                 type:2,
                 area: ['50%', '70%'],
                 content:'system/getUserAdd',
+                skin:'layui-layer-molv'
+            });
+        });
+    }
+    function editorUser(data) {
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.open({
+                title: data.schoolname+' 用户编辑',
+                type:2,
+                area: ['50%', '70%'],
+                content:'system/getEditorAdd?id='+data.id,
                 skin:'layui-layer-molv'
             });
         });

@@ -58,7 +58,7 @@
                 classes,
                 uid
 	        ) VALUES (
-	        	#{id,jdbcType=BIGINT} ,
+	        	#{id,jdbcType=VARCHAR} ,
 	        	#{studentname,jdbcType=VARCHAR},
 	        	#{sex,jdbcType=VARCHAR},
 	        	#{age,jdbcType=INTEGER},

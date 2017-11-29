@@ -23,4 +23,9 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
     public List<Score> getUserWithQuestionnaireNumber(Integer uid) {
         return scoreDao.getUserWithQuestionnaireNumber(uid);
     }
+
+    @Override
+    public List<Score> getStudentWithQuestionnaireNumber(String sid) {
+        return scoreDao.getStudentWithQuestionnaireNumber(sid);
+    }
 }

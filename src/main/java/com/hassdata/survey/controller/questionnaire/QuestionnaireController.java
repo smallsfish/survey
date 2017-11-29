@@ -8,6 +8,7 @@ import com.hassdata.survey.dto.DisplayQuestionnaireModel;
 import com.hassdata.survey.dto.QuestionnaireModel;
 import com.hassdata.survey.po.*;
 import com.hassdata.survey.service.*;
+import com.hassdata.survey.util.QuestionnaireSort;
 import com.hassdata.survey.util.ServerResponse;
 import org.apache.tools.ant.taskdefs.condition.Http;
 import org.springframework.context.annotation.Scope;
@@ -248,46 +249,8 @@ public class QuestionnaireController {
         List<QuestionType> questionTypes=questionTypeService.getAll(questionType);
         DisplayQuestionTypeModel displayQuestionTypeModel=null;
         List<DisplayQuestionTypeModel> displayQuestionTypeModels=new ArrayList<>();
-        for (QuestionType qt : questionTypes){
-            displayQuestionTypeModel=new DisplayQuestionTypeModel();
-            displayQuestionTypeModel.setQuestionType(qt);
-            Question question = new Question();
-            question.setQuestiontypeid(qt.getId());
-            List<Question> questions=questionService.getAll(question);
-            DisplayQuestionModel displayQuestionModel=null;
-            List<DisplayQuestionModel> displayQuestionModels=new ArrayList<>();
-            for(Question q : questions){
-                displayQuestionModel=new DisplayQuestionModel();
-                displayQuestionModel.setQuestion(q);
-                Options options=new Options();
-                options.setQuestionid(q.getId());
-                List<Options> optionsList=optionsService.getAll(options);
-                displayQuestionModels.add(displayQuestionModel);
-                displayQuestionModel.setOptionsList(optionsList);
-            }
-            Collections.sort(displayQuestionModels, new Comparator<DisplayQuestionModel>() {
-                @Override
-                public int compare(DisplayQuestionModel o1, DisplayQuestionModel o2) {
-                    int i = o1.getQuestion().getQuestionsort() - o2.getQuestion().getQuestionsort();
-                    if(i == 0){
-                        return o1.getQuestion().getQuestionsort() - o2.getQuestion().getQuestionsort();
-                    }
-                    return i;
-                }
-            });
-            displayQuestionTypeModels.add(displayQuestionTypeModel);
-            displayQuestionTypeModel.setDisplayQuestionModels(displayQuestionModels);
-        }
-        Collections.sort(displayQuestionTypeModels, new Comparator<DisplayQuestionTypeModel>() {
-            @Override
-            public int compare(DisplayQuestionTypeModel o1, DisplayQuestionTypeModel o2) {
-                int i = o1.getQuestionType().getQuestionTypesort() - o2.getQuestionType().getQuestionTypesort();
-                if(i == 0){
-                    return o1.getQuestionType().getQuestionTypesort() - o2.getQuestionType().getQuestionTypesort();
-                }
-                return i;
-            }
-        });
+        QuestionnaireSort questionnaireSort=new QuestionnaireSort();
+        questionnaireSort.questionSort(questionTypes, displayQuestionTypeModels,questionService,optionsService);
         displayQuestionnaireModel.setDisplayQuestionTypeModels(displayQuestionTypeModels);
         map.addAttribute("displayQuestionnaireModel",displayQuestionnaireModel);
         return "system/questionnaire/questionnaireEditor";
@@ -305,6 +268,24 @@ public class QuestionnaireController {
         questionnaireService.deleteByStringId(id);
         questionnaireAddUtils(id,json,request,true);
         return ServerResponse.createBySuccessMessage("修改成功");
+    }
+
+
+    @RequestMapping(value = "displayQuestionnaire",method = RequestMethod.GET)
+    public String getDisplayQuestionnaire(String id, ModelMap map){
+        Questionnaire questionnaire = questionnaireService.findByStringId(id);
+        DisplayQuestionnaireModel displayQuestionnaireModel=new DisplayQuestionnaireModel();
+        displayQuestionnaireModel.setQuestionnaire(questionnaire);
+        QuestionType questionType=new QuestionType();
+        questionType.setQuestionnaireid(questionnaire.getId());
+        List<QuestionType> questionTypes=questionTypeService.getAll(questionType);
+        DisplayQuestionTypeModel displayQuestionTypeModel=null;
+        List<DisplayQuestionTypeModel> displayQuestionTypeModels=new ArrayList<>();
+        QuestionnaireSort questionnaireSort=new QuestionnaireSort();
+        questionnaireSort.questionSort(questionTypes, displayQuestionTypeModels,questionService,optionsService);
+        displayQuestionnaireModel.setDisplayQuestionTypeModels(displayQuestionTypeModels);
+        map.addAttribute("displayQuestionnaireModel",displayQuestionnaireModel);
+        return "system/questionnaire/index";
     }
 
 }

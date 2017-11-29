@@ -139,11 +139,10 @@
 	<p style="text-indent: 2em;margin-left: 20px;">${displayQuestionnaireModel.questionnaire.questionnaireexplain}</p>
 	<p style="text-indent: 2em; text-align: right;margin-right: 20px;">${displayQuestionnaireModel.questionnaire.questionnairefrom}</p>
 	<form id="formQ" action="javascript:;" onsubmit="return volidateSubmit()">
-		<input type="hidden" name="questionnaireId" value="${questionnaireId}">
 		<div class="person-info">
-			<input type="text" name="studentname" placeholder="姓名" required>
-			<input type="text" name="grade" placeholder="年级" required>
-			<input type="text" name="classes" placeholder="班级" required>
+			<input type="text" name="personname" placeholder="姓名" required>
+			<input type="text" name="persongrade" placeholder="年级" required>
+			<input type="text" name="personclass" placeholder="班级" required>
 		</div>
 		<c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}" varStatus="str">
 			<div class="bigtitle" id="bigtitle${str.index+1}" style="border:1px solid #3280FC; box-shadow: 5px 0px 10px #3280FC;">
@@ -155,7 +154,7 @@
 							<c:forEach var="o" items="${q.optionsList}">
 								<br>
 								<br>
-								<input id="${o.id}" type="${q.question.questionstyle}" name="${displayQuestionnaireModel.questionnaire.id}'_'${qt.questionType.id}'_'${q.question.id}" value="${o.id}">
+								<input id="${o.id}" type="${q.question.questionstyle}" name="${displayQuestionnaireModel.questionnaire.id}'_'${qt.questionType.id}'_'${q.question.id}" value="${o.optionsname}">
 								<label for="${o.id}">${o.optionsname}</label>
 							</c:forEach>
 						</div>
@@ -167,19 +166,15 @@
 	</form>
 	<div id="md">
 		<ul>
-			<li ><a href="/display/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#top">头部</a></li>
+			<li ><a href="/system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#top">头部</a></li>
 			<c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}" varStatus="str">
-				<li ><a href="/display/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bigtitle${str.index+1}">${str.index+1}</a></li>
+				<li ><a href="/system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bigtitle${str.index+1}">${str.index+1}</a></li>
 			</c:forEach>
-			<li ><a href="/display/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bottom">底部</a></li>
+			<li ><a href="/system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bottom">底部</a></li>
 		</ul>
 	</div>
 </body>
 <script type="text/javascript">
-	var layer=null;
-    layui.use(['layer'],function () {
-        layer = layui.layer;
-    });
 	var questionSpanLength=$(".question span").length;
 	var windowHeight=$(window).height();
 	var questionSpan=$(".question span");
@@ -241,29 +236,7 @@
 		return isGo;
 	}
 	$("#formQ").submit(function () {
-		var loadIndex=layer.load();
-        $.ajax({
-            type: "POST",
-            dataType: "json",
-            contentType: 'application/json;charset=utf-8',
-            url: 'display/submitQuestionnaire',
-            data: JSON.stringify($("#formQ").serializeArray()),
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (result) {
-                layer.close(loadIndex);
-                if (result.status == 0) {
-                    //$("#formQ")[0].reset();
-                }
-                layer.msg(result.msg);
-            },
-            error: function (data) {
-                layer.close(loadIndex);
-                alert("出现异常！");
-            }
-        });
+		alert(JSON.stringify($("#formQ").serializeArray()));
     });
 	$("#md").css({"right":10,"top":(windowHeight-$("#md").height())/2});
 

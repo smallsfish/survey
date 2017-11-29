@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ScoreService extends BaseService<Score> {
     List<Score> getUserWithQuestionnaireNumber(Integer uid);
+    List<Score> getStudentWithQuestionnaireNumber(String sid);
 }

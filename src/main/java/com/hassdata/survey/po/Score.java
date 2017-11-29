@@ -7,7 +7,7 @@ public class Score implements Serializable{
     private String questionnaireid;
     private String questionid;
     private String options;
-    private Long sid;
+    private String sid;
     private Integer uid;
 
     public Long getId() {
@@ -42,11 +42,11 @@ public class Score implements Serializable{
         this.options = options;
     }
 
-    public Long getSid() {
+    public String getSid() {
         return sid;
     }
 
-    public void setSid(Long sid) {
+    public void setSid(String sid) {
         this.sid = sid;
     }
 
