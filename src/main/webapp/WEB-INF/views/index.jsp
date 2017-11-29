@@ -38,8 +38,7 @@
                         <a href="javascript:;"><img src="uploadimage/${sessionScope.CurrentAdminUser.headimage=="" || sessionScope.CurrentAdminUser.headimage==null ? 'nohead.jpg' : sessionScope.CurrentAdminUser.headimage}" alt="" class="system-layout-item-nav-headimg"> ${sessionScope.CurrentAdminUser.account}<span class="square-icon"></span></a>
                         <!-- 导航子菜单，可以在每一个菜单项的a标签后面添加-->
                         <ul class="system-layout-item-child">
-                            <li class="system-layout-item-child-li"><a href="javascript:;">个人中心</a></li>
-                            <li class="system-layout-item-child-li"><a href="javascript:;">修改密码</a></li>
+                            <li class="system-layout-item-child-li"><a onclick="updateAdminUserPassword()" href="javascript:;">修改密码</a></li>
                         </ul>
                     </li>
                     <li class="system-layout-item">
@@ -183,7 +182,6 @@
     var layer;
     layui.use(['layer'],function () {
         layer=layui.layer;
-
     });
     function systemExit(){
 
@@ -196,6 +194,15 @@
             });
         },function () {
             layer.close(loadIndex);
+        });
+    }
+    function updateAdminUserPassword() {
+        layer.open({
+            title:'修改${sessionScope.CurrentAdminUser.account}管理员密码',
+            type:2,
+            area: ['30%', '21%'],
+            content:'system/getUpdateAdminPassword',
+            skin:'layui-layer-molv'
         });
     }
 </script>

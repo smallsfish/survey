@@ -248,4 +248,32 @@ public class AdminUserController {
         adminUserService.updateParams(admin_user);
         return ServerResponse.createBySuccessMessage("更新成功");
     }
+
+    @RequestMapping(value = "getUpdateAdminPassword",method = RequestMethod.GET)
+    public String getUpdateAdminPassword(){
+        return "system/user/updateAdminPassword";
+    }
+
+
+    @RequestMapping(value = "adminPasswordUpdate",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse adminPasswordUpdate(String oldPassword,String newPassword,HttpServletRequest request){
+        HttpSession session=request.getSession(true);
+        Admin_User admin_user= (Admin_User) session.getAttribute("CurrentAdminUser");
+        String p=MD5TUtils.threeMD5(oldPassword);
+        Admin_User au=adminUserService.getOne(admin_user);
+        if(au.getPassword().equals(p)){
+            if(!newPassword.equals("") && newPassword!=null) {
+                Admin_User aur = new Admin_User();
+                aur.setPassword(MD5TUtils.threeMD5(newPassword));
+                aur.setId(au.getId());
+                adminUserService.updateParams(aur);
+                return ServerResponse.createBySuccessMessage("密码重置成功，下次登录将失效");
+            }
+        }else{
+            return ServerResponse.createByErrorMessage("原密码错误!");
+        }
+        return ServerResponse.createByErrorMessage("密码重置失败");
+    }
+
 }

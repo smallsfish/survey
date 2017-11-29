@@ -9,6 +9,7 @@
     <!-- 用于select查询公用抽取的列 -->
     <sql id="adminUserColumns">
         <![CDATA[
+
         	id,
             account,
             password,
@@ -18,6 +19,7 @@
             remarks,
             createdatetime,
             lastlogintime
+
         ]]>
     </sql>
 
@@ -56,6 +58,7 @@
 
     <insert id="save" parameterType="AdminUser" useGeneratedKeys="true" keyProperty="id">
         <![CDATA[
+
 	        INSERT INTO
 	        admin_user (
 	        	id,
@@ -78,11 +81,13 @@
 	        	#{createdatetime,jdbcType=TIMESTAMP},
 	        	#{lastlogintime,jdbcType=TIMESTAMP}
 	        )
+
         ]]>
     </insert>
 
     <update id="update" parameterType="AdminUser">
         <![CDATA[
+
 	        UPDATE admin_user SET
 		        account = #{account,jdbcType=VARCHAR},
 		        password = #{password,jdbcType=VARCHAR},
@@ -94,11 +99,11 @@
 		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
 			WHERE
 				id = #{id}
+
         ]]>
     </update>
 
     <update id="updateParams" parameterType="AdminUser">
-        <![CDATA[
         UPDATE
         admin_user
         <set>
@@ -129,19 +134,22 @@
         </set>
         WHERE
         id = #{id}
-        ]]>
     </update>
 
     <delete id="delete" parameterType="java.lang.Integer">
         <![CDATA[
+
 	        delete from admin_user where
 	        id = #{id}
+
         ]]>
     </delete>
     <delete id="deleteByStringId" parameterType="java.lang.String">
         <![CDATA[
+
 	        delete from admin_user where
 	        id = #{id}
+
         ]]>
     </delete>
 
