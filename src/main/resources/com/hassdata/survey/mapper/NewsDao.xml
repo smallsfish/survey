@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.NewsDao">
+    <resultMap id="newsResult" type="News">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="newsColumns">
+        <![CDATA[
+        	id,
+            imageurl,
+            newstitle,
+            comeform,
+            createtime,
+            status,
+            operator,
+            newstype,
+            newscontent
+	    ]]>
+    </sql>
+
+    <sql id="newsDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="imageurl != null">
+                and imageurl = #{imageurl}
+            </if>
+            <if test="newstitle != null">
+                and newstitle = #{newstitle}
+            </if>
+            <if test="comeform != null">
+                and comeform = #{comeform}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="operator != null">
+                and operator = #{operator}
+            </if>
+            <if test="newstype != null">
+                and newstype = #{newstype}
+            </if>
+            <if test="newscontent != null">
+                and newscontent = #{newscontent}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="News" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        news (
+	        	id,
+	        	imageurl,
+	        	newstitle,
+	        	comeform,
+	        	createtime,
+	        	status,
+	        	operator,
+	        	newstype,
+	        	newscontent
+	        ) VALUES (
+	        	#{id,jdbcType=BIGINT} ,
+	        	#{imageurl,jdbcType=VARCHAR},
+	        	#{newstitle,jdbcType=VARCHAR},
+	        	#{comeform,jdbcType=VARCHAR},
+	        	#{createtime,jdbcType=TIMESTAMP},
+	        	#{status,jdbcType=BIT},
+	        	#{operator,jdbcType=INTEGER},
+	        	#{newstype,jdbcType=INTEGER},
+	        	#{newscontent,jdbcType=BLOB}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="News">
+        <![CDATA[
+	        UPDATE news SET
+		        imageurl = #{imageurl,jdbcType=VARCHAR},
+		        newstitle = #{newstitle,jdbcType=VARCHAR},
+		        comeform = #{comeform,jdbcType=VARCHAR},
+		        createtime = #{createtime,jdbcType=TIMESTAMP},
+		        status = #{status,jdbcType=BIT},
+		        operator = #{operator,jdbcType=INTEGER},
+		        newstype = #{newstype,jdbcType=INTEGER},
+		        newscontent = #{newscontent,jdbcType=BLOB}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="News">
+        UPDATE
+        news
+        <set>
+            <if test="imageurl != null">
+                imageurl = #{imageurl,jdbcType=VARCHAR},
+            </if>
+            <if test="newstitle != null">
+                newstitle = #{newstitle,jdbcType=VARCHAR},
+            </if>
+            <if test="comeform != null">
+                comeform = #{comeform,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="operator != null">
+                operator = #{operator,jdbcType=VARCHAR},
+            </if>
+            <if test="newstype != null">
+                newstype = #{newstype,jdbcType=INTEGER},
+            </if>
+            <if test="newscontent != null">
+                newscontent = #{newscontent,jdbcType=BLOB}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        <![CDATA[
+	        delete from news where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from news where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Long" resultMap="newsResult">
+        select <include refid="newsColumns" />
+        <![CDATA[
+		    from news
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="newsResult">
+        select <include refid="newsColumns" />
+        <![CDATA[
+		    from news
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="News">
+        select count(1) from news
+        <include refid="newsDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="newsResult" parameterType="map">
+        select <include refid="newsColumns"/> from news
+        <include refid="newsDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="newsResult" parameterType="map">
+        select <include refid="newsColumns"/> from news
+        <include refid="newsDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="newsResult" parameterType="map">
+        select <include refid="newsColumns" />
+        from news
+        <include refid="newsDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from news
+        <include refid="newsDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="newsLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="imageurl != null">
+                and imageurl LIKE #{imageurl}
+            </if>
+            <if test="newstitle != null">
+                and newstitle LIKE #{newstitle}
+            </if>
+            <if test="comeform != null">
+                and comeform LIKE #{comeform}
+            </if>
+            <if test="createtime != null">
+                and createtime LIKE #{createtime}
+            </if>
+            <if test="status != null">
+                and status LIKE #{status}
+            </if>
+            <if test="operator != null">
+                and operator LIKE #{operator}
+            </if>
+            <if test="newstype != null">
+                and newstype LIKE #{newstype}
+            </if><if test="newscontent != null">
+                and newscontent LIKE #{newscontent}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="newsResult" parameterType="map">
+        select
+        <include refid="newsColumns"/>
+        from news
+        <include refid="newsLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from news
+        <include refid="newsLikeDynamicWhere"/>
+    </select>
+
+</mapper>

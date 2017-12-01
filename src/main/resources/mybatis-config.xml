@@ -15,5 +15,10 @@
 		<typeAlias alias="Score" type="com.hassdata.survey.po.Score" />
 		<typeAlias alias="Loop" type="com.hassdata.survey.po.Loop" />
 		<typeAlias alias="MessageBoard" type="com.hassdata.survey.po.MessageBoard" />
+		<typeAlias alias="Video" type="com.hassdata.survey.po.Video" />
+		<typeAlias alias="News" type="com.hassdata.survey.po.News" />
+		<typeAlias alias="Pictures" type="com.hassdata.survey.po.Pictures" />
+		<typeAlias alias="Newstype" type="com.hassdata.survey.po.Newstype" />
+		<typeAlias alias="Picturetype" type="com.hassdata.survey.po.Picturetype" />
 	</typeAliases>
 </configuration>

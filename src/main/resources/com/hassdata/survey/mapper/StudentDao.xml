@@ -179,4 +179,50 @@
         <include refid="StudentDynamicWhere"/>
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+    <sql id="StudentDynamicLikeWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="studentname != null">
+                and studentname LIKE #{studentname}
+            </if>
+            <if test="sex != null">
+                and sex  #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade}
+            </if>
+            <if test="classes != null">
+                and classes = #{classes}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="StudentResult" parameterType="map">
+        select <include refid="StudentColumns" />
+        from student
+        <include refid="StudentDynamicLikeWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from student
+        <include refid="StudentDynamicLikeWhere"/>
+    </select>
+
 </mapper>

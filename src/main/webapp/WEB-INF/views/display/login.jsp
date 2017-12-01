@@ -23,7 +23,7 @@
 				</tr>
 				<tr>
 					<td>
-						<input type="text" name="account" placeholder="请输入您的账号" required="required"><br>
+						<input type="text" name="account" placeholder="请输入账号" required="required"><br>
 						<input id="phone" type='password' title="请输入密码！" name="password" required="required"  placeholder="请输入密码" />
 					</td>
 				</tr>
@@ -32,9 +32,9 @@
 				</tr>
 			</table>
 			<img style="top:133px;left:90px;" src="img/user.png">
-			<img style="top:184px;left:90px;" src="img/tel.png">
+			<img style="top:184px;left:90px;" src="img/pw.png">
 			<%--<a style="top:244px; left:80PX; color:rgba(255,0,0,0.8);" href="javascript:alert('正在施工中...')">忘记密码?</a>--%>
-			<a style="top:244px; right:80px;" href="javascript:void(0)">立即注册</a>
+			<%--<a style="top:244px; right:80px;" href="javascript:void(0)">立即注册</a>--%>
 		</form>
 	</div>
 </body>

@@ -1,6 +1,7 @@
 package com.hassdata.survey.controller.student;
 
 import com.hassdata.survey.dto.StudentDTO;
+import com.hassdata.survey.po.Score;
 import com.hassdata.survey.po.Student;
 import com.hassdata.survey.service.ScoreService;
 import com.hassdata.survey.service.StudentService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +43,41 @@ public class StudentController {
         long count=studentService.getScrollCount(student);
         List<Student> students=studentService.getScrollData(student,"id desc",(page-1)*limit,limit);
         List<StudentDTO> studentDTOS=new ArrayList<>();
-        StudentDTO studentDTO=null;
+        setSutdentDTO(students,studentDTOS);
+        return ServerResponse.createBySuccessForLayuiTable("查询成功",studentDTOS,count);
+    }
+
+    @RequestMapping(value = "studentSearch",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse studentSearch(HttpServletRequest request,Integer uid, @RequestParam(required = false,defaultValue = "1") Integer page, @RequestParam(required = false,defaultValue = "30") Integer limit){
+        String studentName= null;
+        try {
+            studentName = new String(request.getParameter("studentName").getBytes("iso-8859-1"), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if(studentName==null || studentName.equals("")){
+            return ServerResponse.createByErrorMessage("请输入学生姓名");
+        }
+        Student student=new Student();
+        student.setStudentname("%"+studentName+"%");
+        student.setUid(uid);
+        long count=studentService.getScrollByLikeCount(student);
+        List<Student> students=studentService.getScrollDataByLike(student,"id desc",(page-1)*limit,limit);
+        List<StudentDTO> studentDTOS=new ArrayList<>();
+        setSutdentDTO(students, studentDTOS);
+        return ServerResponse.createBySuccessForLayuiTable("搜索成功",studentDTOS,count);
+    }
+
+    @RequestMapping(value = "studentDel",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse studentDel(String id){
+        studentService.deleteByStringId(id);
+        return ServerResponse.createBySuccessMessage("删除成功");
+    }
+
+    private void setSutdentDTO(List<Student> students, List<StudentDTO> studentDTOS) {
+        StudentDTO studentDTO;
         int i=1;
         for(Student s: students){
             studentDTO=new StudentDTO();
@@ -55,7 +92,6 @@ public class StudentController {
             studentDTOS.add(studentDTO);
             i++;
         }
-        return ServerResponse.createBySuccessForLayuiTable("查询成功",studentDTOS,count);
     }
 
 }

@@ -1,11 +1,9 @@
 package com.hassdata.survey.controller.index;
 
-import com.hassdata.survey.po.Admin_User;
 import com.hassdata.survey.po.Loop;
 import com.hassdata.survey.service.LoopService;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
-import org.apache.regexp.RE;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -33,19 +31,19 @@ public class LoopController {
 
     @RequestMapping(value = "loop",method = RequestMethod.GET)
     public String getSystemLoop(){
-        return "system/web/loopcenter";
+        return "system/web/loop/loopcenter";
     }
 
     @RequestMapping(value = "getLoopAdd",method = RequestMethod.GET)
     public String getLoopAdd(){
-        return "system/web/addPictureLoop";
+        return "system/web/loop/addPictureLoop";
     }
 
     @RequestMapping(value = "getLoopEditor",method = RequestMethod.GET)
     public String getLoopEditor(ModelMap map,Integer id){
         Loop loop=loopService.find(id);
         map.addAttribute("loop",loop);
-        return "system/web/editorPictureLoop";
+        return "system/web/loop/editorPictureLoop";
     }
 
 

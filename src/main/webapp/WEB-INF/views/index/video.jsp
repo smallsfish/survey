@@ -42,7 +42,7 @@
         <div class="layui-carousel" id="pictureLoop">
             <div carousel-item>
                 <c:forEach items="${loops}" var="loop">
-                    <div class="loop-pic"><img src="${loop.imageurl}"></div>
+                    <div class="loop-pic"><a href="${(loop.url==null || loop.url.equals("")) ? 'javascript;:': loop.url}"><img src="${loop.imageurl}"></a></div>
                 </c:forEach>
             </div>
         </div>

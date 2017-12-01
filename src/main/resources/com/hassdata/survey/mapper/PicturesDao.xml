@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.PictureDao">
+    <resultMap id="picturesResult" type="Pictures">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="picturesColumns">
+        <![CDATA[
+        	id,
+            pictureurl,
+            picturetitle,
+            pricturetype,
+            status,
+            operator
+	    ]]>
+    </sql>
+
+    <sql id="picturesDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="pictureurl != null">
+                and pictureurl = #{pictureurl}
+            </if>
+            <if test="picturetitle != null">
+                and picturetitle = #{picturetitle}
+            </if>
+            <if test="pricturetype != null">
+                and pricturetype = #{pricturetype}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="operator != null">
+                and operator = #{operator}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Pictures" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        pictures (
+	        	id,
+	        	pictureurl,
+	        	picturetitle,
+	        	pricturetype,
+	        	status,
+	        	operator
+	        ) VALUES (
+	        	#{id,jdbcType=BIGINT} ,
+	        	#{pictureurl,jdbcType=VARCHAR},
+	        	#{picturetitle,jdbcType=VARCHAR},
+	        	#{pricturetype,jdbcType=INTEGER},
+	        	#{status,jdbcType=BIT},
+	        	#{operator,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Pictures">
+        <![CDATA[
+	        UPDATE pictures SET
+		        pictureurl = #{pictureurl,jdbcType=VARCHAR},
+		        picturetitle = #{picturetitle,jdbcType=VARCHAR},
+		        pricturetype = #{pricturetype,jdbcType=INTEGER},
+		        status = #{status,jdbcType=BIT},
+		        operator = #{operator,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Pictures">
+        UPDATE
+        pictures
+        <set>
+            <if test="pictureurl != null">
+                pictureurl = #{pictureurl,jdbcType=VARCHAR},
+            </if>
+            <if test="picturetitle != null">
+                picturetitle = #{picturetitle,jdbcType=VARCHAR},
+            </if>
+            <if test="pricturetype != null">
+                pricturetype = #{pricturetype,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="operator != null">
+                operator = #{operator,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        <![CDATA[
+	        delete from pictures where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from pictures where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Long" resultMap="picturesResult">
+        select <include refid="picturesColumns" />
+        <![CDATA[
+		    from pictures
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="picturesResult">
+        select <include refid="picturesColumns" />
+        <![CDATA[
+		    from pictures
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Pictures">
+        select count(1) from pictures
+        <include refid="picturesDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="picturesResult" parameterType="map">
+        select <include refid="picturesColumns"/> from pictures
+        <include refid="picturesDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="picturesResult" parameterType="map">
+        select <include refid="picturesColumns"/> from pictures
+        <include refid="picturesDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="picturesResult" parameterType="map">
+        select <include refid="picturesColumns" />
+        from pictures
+        <include refid="picturesDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from pictures
+        <include refid="picturesDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="picturesLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="pictureurl != null">
+                and pictureurl LIKE #{pictureurl}
+            </if>
+            <if test="picturetitle != null">
+                and picturetitle LIKE #{picturetitle}
+            </if>
+            <if test="pricturetype != null">
+                and pricturetype = #{pricturetype}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="operator != null">
+                and operator = #{operator}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="picturesResult" parameterType="map">
+        select
+        <include refid="picturesColumns"/>
+        from pictures
+        <include refid="picturesLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from pictures
+        <include refid="picturesLikeDynamicWhere"/>
+    </select>
+
+</mapper>

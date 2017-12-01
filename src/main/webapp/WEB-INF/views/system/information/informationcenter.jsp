@@ -38,7 +38,8 @@
 <script>
     var layui_tab_item_width = $('.information-content').width();
     var successUserTable;
-    layui.use(['element', 'table','flow'], function () {
+    var loadIndex;
+    layui.use(['element', 'table'], function () {
         var element = layui.element;
         var table = layui.table;
         //一些事件监听
@@ -76,8 +77,26 @@
                     layer.msg("请选择要删除的信息！",{icon:2})
                 }else{
                     layer.confirm("确定删除所选行？",{icon:2,title:'系统提示'},function (index) {
-
-                        layer.alert("删除成功"+JSON.stringify(checkStatus),{icon:1});
+                        $.each(checkStatus.data,function (index,obj) {
+                            loadIndex=layer.load();
+                            $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                url: 'system/userInfoDel',
+                                data: {'id':obj.id},
+                                success: function (result) {
+                                    if(index==data.length-1){
+                                        layer.close(loadIndex);
+                                        layer.msg(result.msg);
+                                        reflashUserOnSuccessTable();
+                                    }
+                                },
+                                error: function(data) {
+                                    layer.close(loadIndex);
+                                    layer.alert("出现异常！"+JSON.stringify(data));
+                                }
+                            });
+                        });
                     })
                 }
             }

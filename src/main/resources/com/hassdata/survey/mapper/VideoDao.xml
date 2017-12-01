@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.VideoDao">
+    <resultMap id="videoResult" type="Video">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="videoColumns">
+        <![CDATA[
+
+        	id,
+            imageurl,
+            videotitle,
+            videourl,
+            status,
+            createtime,
+            operator
+
+        ]]>
+    </sql>
+
+    <sql id="videoDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="imageurl != null">
+                and imageurl = #{imageurl}
+            </if>
+            <if test="videotitle != null">
+                and videotitle = #{videotitle}
+            </if>
+            <if test="videourl != null">
+                and videourl = #{videourl}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="operator != null">
+                and operator = #{operator}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Video" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+
+	        INSERT INTO
+	        video (
+	        	id,
+            imageurl,
+            videotitle,
+            videourl,
+            status,
+            createtime,
+            operator
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{imageurl,jdbcType=VARCHAR},
+	        	#{videotitle,jdbcType=VARCHAR},
+	        	#{videourl,jdbcType=VARCHAR},
+	        	#{status,jdbcType=BIT},
+	        	#{createtime,jdbcType=TIMESTAMP},
+	        	#{operator,jdbcType=INTEGER}
+	        )
+
+        ]]>
+    </insert>
+
+    <update id="update" parameterType="Video">
+        <![CDATA[
+
+	        UPDATE video SET
+		        imageurl = #{imageurl,jdbcType=VARCHAR},
+		        videotitle = #{videotitle,jdbcType=VARCHAR},
+		        videourl = #{videourl,jdbcType=VARCHAR},
+		        status = #{status,jdbcType=BIT},
+		        createtime = #{createtime,jdbcType=TIMESTAMP},
+		        operator = #{operator,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+
+        ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Video">
+        UPDATE
+        video
+        <set>
+            <if test="imageurl != null">
+                imageurl = #{imageurl,jdbcType=VARCHAR},
+            </if>
+            <if test="videotitle != null">
+                videotitle = #{videotitle,jdbcType=VARCHAR},
+            </if>
+            <if test="videourl != null">
+                videourl = #{videourl,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=BIT},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operator != null">
+                operator = #{operator,jdbcType=INTEGER}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        <![CDATA[
+
+	        delete from video where
+	        id = #{id}
+
+        ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+
+	        delete from video where
+	        id = #{id}
+
+        ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Long" resultMap="videoResult">
+        select
+        <include refid="videoColumns"/>
+        <![CDATA[
+		    from video
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="videoResult">
+        select
+        <include refid="videoColumns"/>
+        <![CDATA[
+		    from video
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Video">
+        select count(1) from video
+        <include refid="videoDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="videoResult" parameterType="map">
+        select
+        <include refid="videoColumns"/>
+        from video
+        <include refid="videoDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="videoResult" parameterType="map">
+        select
+        <include refid="videoColumns"/>
+        from video
+        <include refid="videoDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="videoResult" parameterType="map">
+        select
+        <include refid="videoColumns"/>
+        from video
+        <include refid="videoDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from video
+        <include refid="videoDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+    <sql id="videoLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="imageurl != null">
+                and imageurl LIKE #{imageurl}
+            </if>
+            <if test="videotitle != null">
+                and videotitle LIKE #{videotitle}
+            </if>
+            <if test="videourl != null">
+                and videourl LIKE #{videourl}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="operator != null">
+                and operator = #{operator}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="videoResult" parameterType="map">
+        select
+        <include refid="videoColumns"/>
+        from video
+        <include refid="videoLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from video
+        <include refid="videoLikeDynamicWhere"/>
+    </select>
+
+</mapper>

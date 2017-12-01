@@ -95,7 +95,7 @@
                 <div class="side-menu-item-title"><span class="side-menu-square"></span>儿童之家网站</div>
                 <ul>
                     <li><a onclick="createTab({title:'轮播图',isShowClose:true,url:'system/loop'})" href="javascript:;"><img src="img/icon/icon-loop.png" class="side-menu-a-img">轮播图</a></li>
-                    <li><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-a-img">儿童资讯</a></li>
+                    <li><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/getNewsCenter'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-a-img">儿童资讯</a></li>
                     <li><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-a-img">儿童图片</a></li>
                     <li><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-a-img">儿童视频</a></li>
                     <li><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-a-img">留言板</a></li>
@@ -143,7 +143,7 @@
                 <div data-toast="儿童之家网站" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
                     <li data-toast="轮播图"><a onclick="createTab({title:'轮播图',isShowClose:true,url:'system/loop'})" href="javascript:;"><img src="img/icon/icon-loop.png" class="side-menu-small-a-img"></a></li>
-                    <li data-toast="儿童资讯"><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="儿童资讯"><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/getNewsCenter'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="儿童图片"><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="儿童视频"><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="留言板"><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-small-a-img"></a></li>
@@ -184,16 +184,13 @@
         layer=layui.layer;
     });
     function systemExit(){
-
         layer.confirm("确定退出系统吗？",function (index) {
-            var loadIndex=layer.load(0);
             layer.close(index);
             $.get( 'system/exit',function () {
+                var loadIndex=layer.load(0);
                 layer.close(loadIndex);
                 window.location.href="system/login";
             });
-        },function () {
-            layer.close(loadIndex);
         });
     }
     function updateAdminUserPassword() {

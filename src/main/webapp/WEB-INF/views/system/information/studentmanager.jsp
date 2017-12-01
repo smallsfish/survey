@@ -17,19 +17,20 @@
 <div class="questionnaire-top">
     <div class="questionnaire-search" style="float:left; margin-left: 25px;">
         <input type="search" name="qname" placeholder="请输入学生名称">
-        <div class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
+        <div class="questionnaire-search-button"><img onclick="searchSuccessStudent()" src="img/icon/icon-search.png"></div>
     </div>
     <div class="information-toolbar">
         <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中管理员" title="删除">
-        <img src="img/icon/icon-reflash2.png" alt="刷新当前页面" title="刷新">
+        <img onclick="reflashStudentTable()" src="img/icon/icon-reflash.png" alt="刷新当前页面" title="刷新">
     </div>
 </div>
 <div class="information-content">
-    <table id="dynamic-table-student-info" lay-filter="infoTable"></table>
+    <table id="dynamic-table-questionnaire-info" lay-filter="infoTable"></table>
 </div>
 </body>
 <script>
     var layui_tab_item_width = $('.information-content').width();
+    var studentTable;
     layui.use(['element', 'table'], function () {
         var element = layui.element;
         var table = layui.table;
@@ -38,8 +39,8 @@
             console.log(data);
         });
 //        动态表格
-        table.render({
-            elem: '#dynamic-table-student-info', //指定原始表格元素选择器（推荐id选择器）
+        studentTable=table.render({
+            elem: '#dynamic-table-questionnaire-info', //指定原始表格元素选择器（推荐id选择器）
             page: true,
             url:'system/getStudentList?uid=${uid}',
             id: 'infoTable',
@@ -64,9 +65,27 @@
                     layer.msg("请选择要删除的信息！",{icon:2})
                 }else{
                     layer.confirm("确定删除所选行？",{icon:2,title:'系统提示'},function (index) {
-
-                        layer.alert("删除成功"+JSON.stringify(checkStatus),{icon:1});
-                    })
+                        $.each(checkStatus.data,function (index,obj) {
+                            loadIndex=layer.load();
+                            $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                url: 'system/studentDel',
+                                data: {'id':obj.id},
+                                success: function (result) {
+                                    if(index==data.length-1){
+                                        layer.close(loadIndex);
+                                        layer.msg(result.msg);
+                                        reflashStudentTable();
+                                    }
+                                },
+                                error: function(data) {
+                                    layer.close(loadIndex);
+                                    layer.alert("出现异常！"+JSON.stringify(data));
+                                }
+                            });
+                        });
+                    });
                 }
             }
         };
@@ -85,12 +104,44 @@
                     obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                     layer.close(index);
                     //向服务端发送删除指令
+                    loadIndex=layer.load();
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/studentDel',
+                        data: {'id':data.id},
+                        success: function (result) {
+                            layer.close(loadIndex);
+                            if(result.status==0){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            }
+                            layer.msg(result.msg);
+                        },
+                        error: function(data) {
+                            layer.close(loadIndex);
+                            layer.alert("出现异常！");
+                        }
+                    });
+
                 });
-            } else if(layEvent === 'edit'){ //编辑
-                layer.msg("编辑学校具体信息");
             }
         });
     });
+    function reflashStudentTable (){
+        studentTable.reload({
+            url:'system/getStudentList?uid=${uid}'
+        });
+    }
+    function searchSuccessStudent(){
+        var studentName=$(":input[name='qname']").val();
+        if(studentName===""){
+            layer.msg("请输入学生名称！",{icon:2,time:3000});
+            return;
+        }
+        studentTable.reload({
+            url:'system/studentSearch?studentName='+studentName+'&uid=${uid}'
+        });
+    }
 </script>
 <script id="infoToolBar" type="text/html">
     <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
