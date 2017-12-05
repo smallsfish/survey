@@ -12,7 +12,7 @@
         	id,
             pictureurl,
             picturetitle,
-            pricturetype,
+            picturetype,
             status,
             operator
 	    ]]>
@@ -30,8 +30,8 @@
             <if test="picturetitle != null">
                 and picturetitle = #{picturetitle}
             </if>
-            <if test="pricturetype != null">
-                and pricturetype = #{pricturetype}
+            <if test="picturetype != null">
+                and picturetype = #{picturetype}
             </if>
             <if test="status != null">
                 and status = #{status}
@@ -49,14 +49,14 @@
 	        	id,
 	        	pictureurl,
 	        	picturetitle,
-	        	pricturetype,
+	        	picturetype,
 	        	status,
 	        	operator
 	        ) VALUES (
 	        	#{id,jdbcType=BIGINT} ,
 	        	#{pictureurl,jdbcType=VARCHAR},
 	        	#{picturetitle,jdbcType=VARCHAR},
-	        	#{pricturetype,jdbcType=INTEGER},
+	        	#{picturetype,jdbcType=INTEGER},
 	        	#{status,jdbcType=BIT},
 	        	#{operator,jdbcType=INTEGER}
 	        )
@@ -68,7 +68,7 @@
 	        UPDATE pictures SET
 		        pictureurl = #{pictureurl,jdbcType=VARCHAR},
 		        picturetitle = #{picturetitle,jdbcType=VARCHAR},
-		        pricturetype = #{pricturetype,jdbcType=INTEGER},
+		        picturetype = #{picturetype,jdbcType=INTEGER},
 		        status = #{status,jdbcType=BIT},
 		        operator = #{operator,jdbcType=INTEGER}
 			WHERE
@@ -86,8 +86,8 @@
             <if test="picturetitle != null">
                 picturetitle = #{picturetitle,jdbcType=VARCHAR},
             </if>
-            <if test="pricturetype != null">
-                pricturetype = #{pricturetype,jdbcType=INTEGER},
+            <if test="picturetype != null">
+                picturetype = #{picturetype,jdbcType=INTEGER},
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=BIT},
@@ -184,8 +184,8 @@
             <if test="picturetitle != null">
                 and picturetitle LIKE #{picturetitle}
             </if>
-            <if test="pricturetype != null">
-                and pricturetype = #{pricturetype}
+            <if test="picturetype != null">
+                and picturetype = #{picturetype}
             </if>
             <if test="status != null">
                 and status = #{status}

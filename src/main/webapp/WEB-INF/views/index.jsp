@@ -96,8 +96,8 @@
                 <ul>
                     <li><a onclick="createTab({title:'轮播图',isShowClose:true,url:'system/loop'})" href="javascript:;"><img src="img/icon/icon-loop.png" class="side-menu-a-img">轮播图</a></li>
                     <li><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/getNewsCenter'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-a-img">儿童资讯</a></li>
-                    <li><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-a-img">儿童图片</a></li>
-                    <li><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-a-img">儿童视频</a></li>
+                    <li><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/getPictureCenter'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-a-img">儿童图片</a></li>
+                    <li><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/getVideoCenter'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-a-img">儿童视频</a></li>
                     <li><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-a-img">留言板</a></li>
                 </ul>
             </div>
@@ -144,8 +144,8 @@
                 <ul>
                     <li data-toast="轮播图"><a onclick="createTab({title:'轮播图',isShowClose:true,url:'system/loop'})" href="javascript:;"><img src="img/icon/icon-loop.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="儿童资讯"><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/getNewsCenter'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-small-a-img"></a></li>
-                    <li data-toast="儿童图片"><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-small-a-img"></a></li>
-                    <li data-toast="儿童视频"><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="儿童图片"><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/getPictureCenter'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="儿童视频"><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/getVideoCenter'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="留言板"><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-small-a-img"></a></li>
                 </ul>
             </div>
@@ -197,7 +197,7 @@
         layer.open({
             title:'修改${sessionScope.CurrentAdminUser.account}管理员密码',
             type:2,
-            area: ['30%', '21%'],
+            area: ['30%', '25%'],
             content:'system/getUpdateAdminPassword',
             skin:'layui-layer-molv'
         });

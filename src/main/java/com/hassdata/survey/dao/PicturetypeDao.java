@@ -5,8 +5,11 @@ import com.hassdata.survey.po.Newstype;
 import com.hassdata.survey.po.Picturetype;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 @Component
 public interface PicturetypeDao extends BaseDao<Picturetype> {
-//    List<Picturetype> getScrollDataByLike(Map<String, Object> params);
-//    long getScrollByLikeCount(Map<String, Object> params);
+    List<Picturetype> getScrollDataByLike(Map<String, Object> params);
+    long getScrollByLikeCount(Map<String, Object> params);
 }

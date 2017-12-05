@@ -1,36 +1,25 @@
-package com.hassdata.survey.po;
-
-import org.springframework.format.annotation.DateTimeFormat;
+package com.hassdata.survey.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
-public class News implements Serializable {
+public class NewsDTO implements Serializable {
+    private Integer aid;
     private Long id;
     private String imageurl;
     private String newstitle;
     private String comeform;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createtime;
-    private Boolean status;
-    private Integer operator;
-    private Integer newstype;
+    private String createtime;
+    private String status;
+    private String operator;
+    private String newstype;
     private String newscontent;
 
-    public String getNewscontent() {
-        return newscontent;
+    public Integer getAid() {
+        return aid;
     }
 
-    public void setNewscontent(String newscontent) {
-        this.newscontent = newscontent;
-    }
-
-    public Integer getNewstype() {
-        return newstype;
-    }
-
-    public void setNewstype(Integer newstype) {
-        this.newstype = newstype;
+    public void setAid(Integer aid) {
+        this.aid = aid;
     }
 
     public Long getId() {
@@ -65,27 +54,43 @@ public class News implements Serializable {
         this.comeform = comeform;
     }
 
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Integer getOperator() {
+    public String getOperator() {
         return operator;
     }
 
-    public void setOperator(Integer operator) {
+    public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public String getNewstype() {
+        return newstype;
+    }
+
+    public void setNewstype(String newstype) {
+        this.newstype = newstype;
+    }
+
+    public String getNewscontent() {
+        return newscontent;
+    }
+
+    public void setNewscontent(String newscontent) {
+        this.newscontent = newscontent;
     }
 }

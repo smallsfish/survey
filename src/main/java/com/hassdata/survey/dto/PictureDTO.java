@@ -1,14 +1,21 @@
-package com.hassdata.survey.po;
+package com.hassdata.survey.dto;
 
-import java.io.Serializable;
-
-public class Pictures implements Serializable {
+public class PictureDTO {
+    private Integer aid;
     private Long id;
     private String pictureurl;
     private String picturetitle;
-    private Integer picturetype;
-    private Boolean status;
-    private Integer operator;
+    private String picturetype;
+    private String status;
+    private String operator;
+
+    public Integer getAid() {
+        return aid;
+    }
+
+    public void setAid(Integer aid) {
+        this.aid = aid;
+    }
 
     public Long getId() {
         return id;
@@ -34,27 +41,27 @@ public class Pictures implements Serializable {
         this.picturetitle = picturetitle;
     }
 
-    public Integer getPicturetype() {
+    public String getPicturetype() {
         return picturetype;
     }
 
-    public void setPicturetype(Integer picturetype) {
+    public void setPicturetype(String picturetype) {
         this.picturetype = picturetype;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Integer getOperator() {
+    public String getOperator() {
         return operator;
     }
 
-    public void setOperator(Integer operator) {
+    public void setOperator(String operator) {
         this.operator = operator;
     }
 }

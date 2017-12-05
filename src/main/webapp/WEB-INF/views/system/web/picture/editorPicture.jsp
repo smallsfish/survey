@@ -28,60 +28,41 @@
 </head>
 
 <body oncontextmenu="return false" onselect="return false">
-<form class="layui-form" id="newsForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<form class="layui-form" id="pictureForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input type="hidden" name="id" value="${p.id}">
     <div class="layui-form-item" style="margin-top: 20px;">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>资讯标题：</label>
+        <label class="layui-form-label"><span style="color: #f00;">*</span>图片标题：</label>
         <div class="layui-input-block">
-            <input type="text" name="newstitle" lay-verify="required" placeholder="请输入资讯标题" autocomplete="off"
-                   class="layui-input">
+            <input type="text" name="picturetitle" lay-verify="required" placeholder="请输入图片标题" autocomplete="off"
+                   class="layui-input" value="${p.picturetitle}">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>资讯缩略图：</label>
-        <div class="layui-input-block">
-            <input type="file" name="file" lay-verify="required" class="layui-input">
-        </div>
+    <div class="upload-headimg" style="border-radius: 0;" id="headimg">
+        <img src="uploadimage/${p.pictureurl}" alt="资讯缩略图">
+        <button type="button" class="layui-btn" id="uploadheadimg">
+            <i class="layui-icon">&#xe67c;</i>上传缩略图
+        </button>
     </div>
     <div class="layui-form-item layui-form-text" style="position: relative">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>资讯类型：</label>
+        <label class="layui-form-label"><span style="color: #f00;">*</span>图片类型：</label>
         <div class="layui-input-block">
-            <select name="newstype" lay-verify="required">
-                <c:forEach items="${newsType}" var="type">
-                    <option value="${type.id}">${type.name}</option>
+            <select name="picturetype" lay-verify="required">
+                <c:forEach items="${pls}" var="type">
+                    <option value="${type.id}" ${type.id == p.picturetype ? 'selected':''}>${type.name}</option>
                 </c:forEach>
             </select>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>资讯来源：</label>
-        <div class="layui-input-block">
-            <input type="text" name="comeform" placeholder="请输入资讯来源" lay-verify="required" autocomplete="off"
-                   class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">发布时间：</label>
-        <div class="layui-input-block">
-            <input id="comefrom" type="text" name="createtime" placeholder="请输入发布时间(注意：如果不填写则使用当前时间   格式---》2001-01-05)" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-
-    <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>状态：</label>
         <div class="layui-input-block">
-            <input type="radio" name="status" value="1" title="显示" checked>
-            <input type="radio" name="status" value="0" title="隐藏">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>新闻内容：</label>
-        <div class="layui-input-block">
-            <textarea id="newsContent" lay-verify="required" name="newscontent" style="height: 500px;margin-bottom: 30px;"></textarea>
+            <input type="radio" name="status" value="1" title="显示" ${p.status ? 'checked':''}>
+            <input type="radio" name="status" value="0" title="隐藏" ${p.status ? '' : 'checked'}>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addAdmin" id="newsSubmit">立即提交</button>
+            <button class="layui-btn" lay-submit lay-filter="addAdmin" id="pictureSubmit">立即修改</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -93,7 +74,24 @@
     layui.use(['form', 'upload', 'layer','laydate'], function () {
         var form = layui.form;
         layer = layui.layer;
+        var upload=layui.upload;
         var laydate = layui.laydate;
+
+        upload.render({
+            elem: '#uploadheadimg', //绑定元素
+            auto:true,
+            url:'system/updatePictureImage',
+            size:2*1024*1024,
+            method:'post',
+            data:{id:${p.id},image:'${p.pictureurl}'},
+            done:function (res,index,upload) {
+                if(res.status==0){
+                    window.parent.reflashPicturesTable();
+                    $("#headimg img").attr("src",res.data);
+                }
+                layer.msg(res.msg);
+            }
+        });
 
         //执行一个laydate实例
         laydate.render({
@@ -101,11 +99,11 @@
         });
         form.on('submit(addAdmin)', function (data) {
             var loadIndex = layer.load();
-            var fromData = new FormData($("#newsForm")[0]);
+            var fromData = new FormData($("#pictureForm")[0]);
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/addNews',
+                url: 'system/editorPicture',
                 data: fromData,
                 async: false,
                 cache: false,
@@ -114,7 +112,7 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        $("#newsForm")[0].reset();
+                        window.parent.reflashPicturesTable();
                     }
                     layer.msg(result.msg);
                 },
@@ -128,6 +126,6 @@
     });
 </script>
 <script type="text/javascript">
-    var ue = UE.getEditor("newsContent");
+    var ue = UE.getEditor("pictureContent");
 </script>
 </html>

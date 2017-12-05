@@ -206,7 +206,7 @@
         <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
         <where>
             <if test="id != null">
-                and id LIKE #{id}
+                and id = #{id}
             </if>
             <if test="imageurl != null">
                 and imageurl LIKE #{imageurl}
@@ -218,16 +218,16 @@
                 and comeform LIKE #{comeform}
             </if>
             <if test="createtime != null">
-                and createtime LIKE #{createtime}
+                and createtime = #{createtime}
             </if>
             <if test="status != null">
-                and status LIKE #{status}
+                and status = #{status}
             </if>
             <if test="operator != null">
-                and operator LIKE #{operator}
+                and operator = #{operator}
             </if>
             <if test="newstype != null">
-                and newstype LIKE #{newstype}
+                and newstype = #{newstype}
             </if><if test="newscontent != null">
                 and newscontent LIKE #{newscontent}
             </if>

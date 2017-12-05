@@ -194,7 +194,7 @@
             loading:true,
             height: 'full-115', //容器高度
             cols:[[{width: layui_tab_item_width * 0.02,checkbox: true},
-                {width: layui_tab_item_width * 0.04,title:'序号',field:'aid'},
+                {width: layui_tab_item_width * 0.04,title:'序号',field:'aid',sort:true},
                 {width: layui_tab_item_width * 0.04,title:'ID',field:'id'},
                 {width: layui_tab_item_width * 0.07,title:'学校名称',field:'schoolname'},
                 {width: layui_tab_item_width * 0.07,title:'校长',field:'headmaster'},
