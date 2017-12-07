@@ -52,23 +52,23 @@
     </div>
 </header>
 <section>
-    <form class="layui-form" id="sendMsg">
+    <form class="layui-form" id="sendMsg" action="javascript:;" method="POST">
         <div class="layui-form-item">
             <label class="layui-form-label">姓名：</label>
             <div class="layui-input-block">
-                <input type="text" name="identifier" required placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                <input type="text" name="name" lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">联系电话：</label>
             <div class="layui-input-block">
-                <input type="text" name="identifier" required placeholder="请输入电话" autocomplete="off" class="layui-input">
+                <input type="text" name="telphone" lay-verify="required|phone|number" placeholder="请输入电话" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">留言</label>
             <div class="layui-input-block">
-                <textarea name="remarks" required placeholder="请输入内容" class="layui-textarea"></textarea>
+                <textarea name="msg" lay-verify="required" placeholder="请输入内容" class="layui-textarea"></textarea>
             </div>
         </div>
         <div class="layui-form-item">
@@ -88,7 +88,30 @@
         var carousel = layui.carousel;
         var form = layui.form;
         form.on('submit(sendMSG)', function (data) {
-            return true;
+            var loadIndex = layer.load();
+            var fromData = new FormData($("#sendMsg")[0]);
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: 'index/submitMsg',
+                data: fromData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    layer.close(loadIndex);
+                    if (result.status == 0) {
+                        $("#sendMsg")[0].reset();
+                    }
+                    layer.msg(result.msg);
+                },
+                error: function (data) {
+                    layer.close(loadIndex);
+                    alert("出现异常！");
+                }
+            });
+            return false;
         });
         //建造实例
         carousel.render({

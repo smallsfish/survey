@@ -22,23 +22,22 @@
 <body oncontextmenu="return false" onselect="return false">
 <div class="questionnaire-top">
     <div class="questionnaire-search" style="float:left; margin-left: 25px;">
-        <input type="search" name="vname" placeholder="请输入视频标题">
-        <div onclick="searchSuccessVideo()" class="questionnaire-search-button"><img src="img/icon/icon-search.png">
+        <input type="search" name="vname" placeholder="请输入姓名">
+        <div onclick="searchSuccessMSG()" class="questionnaire-search-button"><img src="img/icon/icon-search.png">
         </div>
     </div>
     <div class="information-toolbar">
-        <img onclick="addVideo()" src="img/icon/icon-more2.png" alt="添加视频" title="添加">
-        <img onclick="reflashVideoOnSuccessTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
-        <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中视频" title="删除">
+        <img onclick="reflashMSGOnSuccessTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
+        <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中留言信息" title="删除">
     </div>
 </div>
-<div class="information-content">
-    <table id="dynamic-table-info" lay-filter="infoTable"></table>
+<div class="msgrmation-content">
+    <table id="dynamic-table-msg" lay-filter="msgTable"></table>
 </div>
 </body>
 <script>
-    var layui_tab_item_width = $('.information-content').width();
-    var successVideoTable;
+    var layui_tab_item_width = $('.msgrmation-content').width();
+    var successMSGTable;
     var loadIndex;
     layui.use(['element', 'table'], function () {
         var element = layui.element;
@@ -47,24 +46,24 @@
         element.on('tab(demo)', function (data) {
         });
 //        动态表格
-        successVideoTable = table.render({
-            elem: '#dynamic-table-info', //指定原始表格元素选择器（推荐id选择器）
+        successMSGTable = table.render({
+            elem: '#dynamic-table-msg', //指定原始表格元素选择器（推荐id选择器）
             page: true,
-            id: 'infoTable',
-            url: 'system/getVideoList',
+            id: 'msgTable',
+            url: 'system/getMSGList',
             height: 'full-115', //容器高度
             cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
                 {width: layui_tab_item_width * 0.04, field: 'aid', title: '序号', sort: true},
-                {width: layui_tab_item_width * 0.1, field: 'imageurl', templet: '#headimg', title: '缩略图'},
-                {width: layui_tab_item_width * 0.22, field: 'videotitle', title: '视频标题'},
-                {width: layui_tab_item_width * 0.13, field: 'status', title: '状态'},
-                {width: layui_tab_item_width * 0.16, field: 'createtime', title: '发布时间'},
-                {width: layui_tab_item_width * 0.134, field: 'operator', title: '操作人'},
+                {width: layui_tab_item_width * 0.08, field: 'name', title: '真实姓名'},
+                {width: layui_tab_item_width * 0.15, field: 'telphone', title: '联系电话'},
+                {width: layui_tab_item_width * 0.274, field: 'msg', title: '内容'},
+                {width: layui_tab_item_width * 0.08, field: 'isread', title: '状态'},
+                {width: layui_tab_item_width * 0.16, field: 'createtime', title: '提交时间'},
                 {
                     width: layui_tab_item_width * 0.18,
                     fixed: 'right',
                     align: 'center',
-                    toolbar: '#infoToolBar',
+                    toolbar: '#msgToolBar',
                     title: '操作'
                 }
             ]],
@@ -74,7 +73,7 @@
         });
         var $ = layui.$, active = {
             getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('infoTable')
+                var checkStatus = table.checkStatus('msgTable')
                     , data = checkStatus.data;
                 if (data.length == 0) {
                     layer.msg("请选择要删除的信息！", {icon: 2})
@@ -85,13 +84,13 @@
                             $.ajax({
                                 type: "GET",
                                 dataType: "json",
-                                url: 'system/videoDel',
-                                data: {'id': obj.id},
+                                url: 'system/msgDel',
+                                data: { 'id': obj.id },
                                 success: function (result) {
                                     if (index == data.length - 1) {
                                         layer.close(loadIndex);
                                         layer.msg(result.msg);
-                                        reflashVideoOnSuccessTable();
+                                        reflashMSGOnSuccessTable();
                                     }
                                 },
                                 error: function (data) {
@@ -108,12 +107,12 @@
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
-        table.on('tool(infoTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(msgTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
                 var data = obj.data; //获得当前行数据
                 var layEvent = obj.event; //获得 lay-event 对应的值
                 var tr = obj.tr; //获得当前行 tr 的DOM对象
                 if (layEvent === 'del') { //删除
-                    layer.confirm('真的删除该视频吗？该操作无法恢复', function (index) {
+                    layer.confirm('真的删除该留言信息吗？该操作无法恢复', function (index) {
                         obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                         layer.close(index);
                         //向服务端发送删除指令
@@ -121,7 +120,7 @@
                         $.ajax({
                             type: "GET",
                             dataType: "json",
-                            url: 'system/videoDel',
+                            url: 'system/msgDel',
                             data: {'id': data.id},
                             success: function (result) {
                                 layer.close(loadIndex);
@@ -137,57 +136,51 @@
                         });
                     });
                 } else if (layEvent === 'edit') { //编辑
-                    editorVideo(data);
+                    editorMSG(data);
                 }
             }
         );
     });
 
-    function reflashVideoOnSuccessTable() {
-        successVideoTable.reload({
-            url: 'system/getVideoList'
+    function reflashMSGOnSuccessTable() {
+        successMSGTable.reload({
+            url: 'system/getMSGList'
         });
     }
 
-    function searchSuccessVideo() {
-        var videoTitle = $(":input[name='vname']").val();
-        if (videoTitle === "") {
-            layer.msg("请输入视频标题！", {icon: 2, time: 3000});
+    function searchSuccessMSG() {
+        var msgTitle = $(":input[name='vname']").val();
+        if (msgTitle === "") {
+            layer.msg("请输入留言信息标题！", {icon: 2, time: 3000});
             return;
         }
-        successVideoTable.reload({
-            url: 'system/searchVideoList?videoTitle=' + videoTitle
+        successMSGTable.reload({
+            url: 'system/searchMsg?name=' + msgTitle
         });
     }
 
 
-    function addVideo() {
-        layui.use('layer', function () {
-            var layer = layui.layer;
-            layer.open({
-                title: '添加视频',
-                type: 2,
-                area: ['50%', '70%'],
-                content: 'system/getVideoAdd',
-                skin: 'layui-layer-molv'
-            });
-        });
-    }
 
-    function editorVideo(data) {
+    function editorMSG(data) {
         layui.use('layer', function () {
+            var isread;
+            if(data.isread==="已读"){
+                isread=true;
+            }else{
+                isread=false;
+            }
             var layer = layui.layer;
             layer.open({
-                title: data.videotitle + ' 视频编辑',
+                title: data.msgtitle + ' 留言信息编辑',
                 type: 2,
                 area: ['50%', '70%'],
-                content: 'system/getEditorVideo?id=' + data.id,
+                content: 'system/getEditorMsg?id=' + data.id+'&isRead='+isread,
                 skin: 'layui-layer-molv'
             });
         });
     }
 </script>
-<script id="infoToolBar" type="text/html">
+<script id="msgToolBar" type="text/html">
     <a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>

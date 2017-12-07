@@ -24,36 +24,31 @@
 </head>
 
 <body oncontextmenu="return false" onselect="return false">
-<form class="layui-form" id="videoForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<form class="layui-form" id="msgForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input type="hidden" name="id" value="${msg.id}">
     <div class="layui-form-item" style="margin-top: 20px;">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>视频标题：</label>
+        <label class="layui-form-label"><span style="color: #f00;">*</span>真实姓名：</label>
         <div class="layui-input-block">
-            <input type="text" name="videotitle" lay-verify="required" placeholder="请输入视频标题" autocomplete="off"
-                   class="layui-input">
+            <input type="text" name="name" lay-verify="required" placeholder="请输入真实姓名" autocomplete="off"
+                   class="layui-input" value="${msg.name}">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>视频缩略图：</label>
+    <div class="layui-form-item" style="margin-top: 20px;">
+        <label class="layui-form-label"><span style="color: #f00;">*</span>联系电话：</label>
         <div class="layui-input-block">
-            <input type="file" name="file" lay-verify="required" class="layui-input">
+            <input type="text" name="telphone" lay-verify="required|phone|number" placeholder="请输入联系电话" autocomplete="off"
+                   class="layui-input" value="${msg.telphone}">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>视频文件：</label>
+    <div class="layui-form-item" style="margin-top: 20px;">
+        <label class="layui-form-label"><span style="color: #f00;">*</span>内容：</label>
         <div class="layui-input-block">
-            <input type="file" name="vfile" lay-verify="required" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>状态：</label>
-        <div class="layui-input-block">
-            <input type="radio" name="status" value="1" title="显示" checked>
-            <input type="radio" name="status" value="0" title="隐藏">
+            <textarea name="msg" lay-verify="required" placeholder="请输入内容" rows="10" cols="30" class="layui-textarea">${msg.msg}</textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addVideo" id="videoSubmit">立即提交</button>
+            <button class="layui-btn" lay-submit lay-filter="addMsg" id="msgSubmit">立即修改</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -71,13 +66,13 @@
         laydate.render({
             elem: '#comefrom' //指定元素
         });
-        form.on('submit(addVideo)', function (data) {
+        form.on('submit(addMsg)', function (data) {
             var loadIndex = layer.load();
-            var fromData = new FormData($("#videoForm")[0]);
+            var fromData = new FormData($("#msgForm")[0]);
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/addVideo',
+                url: 'system/updateMsg',
                 data: fromData,
                 async: false,
                 cache: false,
@@ -86,8 +81,7 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        $("#videoForm")[0].reset();
-                        window.parent.reflashVideoOnSuccessTable();
+                        window.parent.reflashMSGOnSuccessTable();
                     }
                     layer.msg(result.msg);
                 },

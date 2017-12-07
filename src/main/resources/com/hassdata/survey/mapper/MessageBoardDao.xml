@@ -53,7 +53,7 @@
                 isread,
                 createtime
 	        ) VALUES (
-	        	#{id,jdbcType=INTEGER} ,
+	        	#{id,jdbcType=BIGINT} ,
 	        	#{name,jdbcType=VARCHAR},
 	        	#{telphone,jdbcType=VARCHAR},
 	        	#{msg,jdbcType=BLOB},
@@ -100,7 +100,7 @@
         id = #{id}
     </update>
 
-    <delete id="delete" parameterType="java.lang.Integer">
+    <delete id="delete" parameterType="java.lang.Long">
         <![CDATA[
 	        delete from messageboard where
 	        id = #{id}
@@ -113,7 +113,7 @@
 	    ]]>
     </delete>
 
-    <select id="find" parameterType="java.lang.Integer" resultMap="messageBoardResult">
+    <select id="find" parameterType="java.lang.Long" resultMap="messageBoardResult">
         select <include refid="messageBoardColumns" />
         <![CDATA[
 		    from messageboard

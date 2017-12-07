@@ -1,15 +1,23 @@
-package com.hassdata.survey.po;
+package com.hassdata.survey.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
-public class MessageBoard implements Serializable {
+public class MessageBoardDTO implements Serializable {
+    private Integer aid;
     private Long id;
     private String name;
     private String telphone;
     private String msg;
-    private boolean isread;
-    private Date createtime;
+    private String isread;
+    private String createtime;
+
+    public Integer getAid() {
+        return aid;
+    }
+
+    public void setAid(Integer aid) {
+        this.aid = aid;
+    }
 
     public Long getId() {
         return id;
@@ -43,19 +51,19 @@ public class MessageBoard implements Serializable {
         this.msg = msg;
     }
 
-    public boolean isIsread() {
+    public String getIsread() {
         return isread;
     }
 
-    public void setIsread(boolean isread) {
+    public void setIsread(String isread) {
         this.isread = isread;
     }
 
-    public Date getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
     }
 }

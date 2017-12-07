@@ -98,7 +98,7 @@
                     <li><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/getNewsCenter'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-a-img">儿童资讯</a></li>
                     <li><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/getPictureCenter'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-a-img">儿童图片</a></li>
                     <li><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/getVideoCenter'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-a-img">儿童视频</a></li>
-                    <li><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-a-img">留言板</a></li>
+                    <li><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/getMessageBoardCenter'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-a-img">留言板</a></li>
                 </ul>
             </div>
         </div>
@@ -146,7 +146,7 @@
                     <li data-toast="儿童资讯"><a onclick="createTab({title:'儿童资讯',isShowClose:true,url:'system/getNewsCenter'})" href="javascript:;"><img src="img/icon/icon-news.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="儿童图片"><a onclick="createTab({title:'儿童图片',isShowClose:true,url:'system/getPictureCenter'})" href="javascript:;"><img src="img/icon/icon-picture.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="儿童视频"><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/getVideoCenter'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-small-a-img"></a></li>
-                    <li data-toast="留言板"><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/info'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-small-a-img"></a></li>
+                    <li data-toast="留言板"><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/getMessageBoardCenter'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-small-a-img"></a></li>
                 </ul>
             </div>
         </div>

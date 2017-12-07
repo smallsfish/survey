@@ -25,35 +25,36 @@
 
 <body oncontextmenu="return false" onselect="return false">
 <form class="layui-form" id="videoForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input type="hidden" name="id" value="${video.id}">
     <div class="layui-form-item" style="margin-top: 20px;">
         <label class="layui-form-label"><span style="color: #f00;">*</span>视频标题：</label>
         <div class="layui-input-block">
             <input type="text" name="videotitle" lay-verify="required" placeholder="请输入视频标题" autocomplete="off"
-                   class="layui-input">
+                   class="layui-input" value="${video.videotitle}">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>视频缩略图：</label>
-        <div class="layui-input-block">
-            <input type="file" name="file" lay-verify="required" class="layui-input">
-        </div>
+    <div class="upload-picture" id="headimg">
+        <img src="uploadimage/${video.imageurl}" alt="资讯缩略图">
+        <button type="button" class="layui-btn" id="uploadheadimg">
+            <i class="layui-icon">&#xe67c;</i>上传缩略图
+        </button>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>视频文件：</label>
-        <div class="layui-input-block">
-            <input type="file" name="vfile" lay-verify="required" class="layui-input">
-        </div>
+    <div class="upload-video" style="border-radius: 0;" id="videoFile">
+        <video src="uploadvideo/${video.videourl}" controls></video>
+        <button type="button" class="layui-btn" id="uploadVideoFile">
+            <i class="layui-icon">&#xe67c;</i>上传视频
+        </button>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>状态：</label>
         <div class="layui-input-block">
-            <input type="radio" name="status" value="1" title="显示" checked>
-            <input type="radio" name="status" value="0" title="隐藏">
+            <input type="radio" name="status" value="1" title="显示" ${video.status ? 'checked':''}>
+            <input type="radio" name="status" value="0" title="隐藏" ${video.status ? '':'checked'}>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addVideo" id="videoSubmit">立即提交</button>
+            <button class="layui-btn" lay-submit lay-filter="addVideo" id="videoSubmit">立即修改</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -65,7 +66,43 @@
     layui.use(['form', 'upload', 'layer','laydate'], function () {
         var form = layui.form;
         layer = layui.layer;
+        var upload=layui.upload;
         var laydate = layui.laydate;
+
+        upload.render({
+            elem: '#uploadheadimg', //绑定元素
+            auto:true,
+            url:'system/updateVideoPicture',
+            size:2*1024*1024,
+            method:'post',
+            data:{id:${video.id},image:'${video.imageurl}'},
+            done:function (res,index,upload) {
+                if(res.status==0){
+                    window.parent.reflashVideoOnSuccessTable();
+                    $("#headimg img").attr("src",res.data);
+                }
+                layer.msg(res.msg);
+            }
+        });
+
+
+        upload.render({
+            elem: '#videoFile', //绑定元素
+            auto:true,
+            url:'system/updateVideoFile',
+            size:2*1024*1024,
+            method:'post',
+            exts: 'mp4',
+            data:{id:${video.id},videoUrl:'${video.videourl}'},
+            done:function (res,index,upload) {
+                if(res.status==0){
+                    window.parent.reflashVideoOnSuccessTable();
+                    $("#videoFile video").attr("src",res.data);
+                }
+                layer.msg(res.msg);
+            }
+        });
+
 
         //执行一个laydate实例
         laydate.render({
@@ -77,7 +114,7 @@
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/addVideo',
+                url: 'system/updateVideo',
                 data: fromData,
                 async: false,
                 cache: false,
@@ -86,7 +123,6 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        $("#videoForm")[0].reset();
                         window.parent.reflashVideoOnSuccessTable();
                     }
                     layer.msg(result.msg);

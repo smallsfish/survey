@@ -737,6 +737,25 @@ body,html{
 	height: 100%;
 	z-index: 2;
 }
+.upload-picture{
+	margin-left: 25px;
+}
+.upload-picture img{
+	width: 280px;
+}
+.upload-picture button{
+	margin-left: 25px;
+}
+.upload-video{
+	margin-left: 25px;
+	margin-top: 20px;
+}
+.upload-video video{
+	width: 280px;
+}
+.upload-video button{
+	margin-left: 25px;
+}
 /*添加管理员样式结束*/
 
 /*问卷调查样式开始*/
