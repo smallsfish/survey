@@ -2,7 +2,6 @@ package com.hassdata.survey.controller.questionnaire;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hassdata.survey.dto.DisplayQuestionModel;
 import com.hassdata.survey.dto.DisplayQuestionTypeModel;
 import com.hassdata.survey.dto.DisplayQuestionnaireModel;
 import com.hassdata.survey.dto.QuestionnaireModel;
@@ -10,7 +9,6 @@ import com.hassdata.survey.po.*;
 import com.hassdata.survey.service.*;
 import com.hassdata.survey.util.QuestionnaireSort;
 import com.hassdata.survey.util.ServerResponse;
-import org.apache.tools.ant.taskdefs.condition.Http;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

@@ -2,13 +2,11 @@ package com.hassdata.survey.controller.index;
 
 import com.hassdata.survey.dto.VideoDTO;
 import com.hassdata.survey.po.Admin_User;
-import com.hassdata.survey.po.News;
 import com.hassdata.survey.po.Video;
 import com.hassdata.survey.service.AdminUserService;
 import com.hassdata.survey.service.VideoService;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
-import net.sf.jsqlparser.schema.Server;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
