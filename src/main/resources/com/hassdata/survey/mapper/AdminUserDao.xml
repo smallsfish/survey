@@ -18,8 +18,9 @@
             identifier,
             remarks,
             createdatetime,
-            lastlogintime
-
+            lastlogintime,
+            salt,
+            locked
         ]]>
     </sql>
 
@@ -53,6 +54,12 @@
             <if test="lastlogintime != null">
                 and lastlogintime = #{lastlogintime}
             </if>
+            <if test="salt != null">
+                and salt = #{salt}
+            </if>
+            <if test="locked != null">
+                and locked = #{locked}
+            </if>
         </where>
     </sql>
 
@@ -69,7 +76,9 @@
                 identifier,
                 remarks,
                 createdatetime,
-                lastlogintime
+                lastlogintime,
+                salt,
+                locked
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
 	        	#{account,jdbcType=VARCHAR},
@@ -79,7 +88,9 @@
 	        	#{identifier,jdbcType=VARCHAR},
 	        	#{remarks,jdbcType=VARCHAR},
 	        	#{createdatetime,jdbcType=TIMESTAMP},
-	        	#{lastlogintime,jdbcType=TIMESTAMP}
+	        	#{lastlogintime,jdbcType=TIMESTAMP},
+	        	#{salt,jdbcType=VARCHAR},
+	        	#{locked,jdbcType=BIT}
 	        )
 
         ]]>
@@ -96,7 +107,9 @@
 		        identifier = #{identifier,jdbcType=VARCHAR},
 		        remarks = #{remarks,jdbcType=VARCHAR},
 		        createdatetime = #{createdatetime,jdbcType=TIMESTAMP},
-		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
+		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP},
+		        salt = #{salt,jdbcType=VARCHAR},
+		        locked = #{locked,jdbcType=BIT}
 			WHERE
 				id = #{id}
 
@@ -130,6 +143,14 @@
             </if>
             <if test="lastlogintime != null">
                 lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="salt != null">
+                salt = #{salt,jdbcType=VARCHAR}
+            </if>
+
+            <if test="locked != null">
+                locked = #{locked,jdbcType=BIT}
             </if>
         </set>
         WHERE
@@ -223,7 +244,7 @@
         <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
         <where>
             <if test="id != null">
-                and id LIKE #{id}
+                and id = #{id}
             </if>
             <if test="account != null">
                 and account LIKE #{account}
@@ -244,10 +265,16 @@
                 and remarks LIKE #{remarks}
             </if>
             <if test="createdatetime != null">
-                and createdatetime LIKE #{createdatetime}
+                and createdatetime = #{createdatetime}
             </if>
             <if test="lastlogintime != null">
-                and lastlogintime LIKE #{lastlogintime}
+                and lastlogintime = #{lastlogintime}
+            </if>
+            <if test="salt != null">
+                and salt = #{salt}
+            </if>
+            <if test="locked != null">
+                and locked = #{locked}
             </if>
         </where>
     </sql>
@@ -268,4 +295,14 @@
         select count(1) from admin_user
         <include refid="adminUserLikeDynamicWhere"/>
     </select>
+
+
+    <select id="findRoleByAccount" resultType="string" parameterType="string">
+        select rolename from role where id in (select rid from admin_role where aid = (select id from admin_user where account=#{account}))
+    </select>
+
+    <select id="findPermissionByAccount" resultType="string" parameterType="string">
+        select permission from resource where id in (select reid from role_resource where rid in (select rid from admin_role where aid=(select id from admin_user where account=#{account}) ) ) and available = 1 and permission is not null
+    </select>
+
 </mapper>

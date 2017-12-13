@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.RoleDao">
+    <resultMap id="roleResult" type="Role">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="roleColumns">
+        <![CDATA[
+        	id,
+            rolename,
+            descirption,
+            available
+	    ]]>
+    </sql>
+
+    <sql id="roleDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="rolename != null">
+                and rolename = #{rolename}
+            </if>
+            <if test="descirption != null">
+                and descirption = #{descirption}
+            </if>
+            <if test="available != null">
+                and available = #{available}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Role" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        role (
+	        	id,
+	        	rolename,
+	        	descirption,
+	        	available
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{rolename,jdbcType=VARCHAR},
+	        	#{descirption,jdbcType=VARCHAR},
+	        	#{available,jdbcType=BIT}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Role">
+        <![CDATA[
+	        UPDATE role SET
+		        rolename = #{rolename,jdbcType=VARCHAR},
+		        descirption = #{descirption,jdbcType=VARCHAR},
+		        available = #{available,jdbcType=BIT}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Role">
+        UPDATE
+        role
+        <set>
+            <if test="rolename != null">
+                rolename = #{rolename,jdbcType=VARCHAR},
+            </if>
+            <if test="descirption != null">
+                descirption = #{descirption,jdbcType=VARCHAR},
+            </if>
+            <if test="available != null">
+                available = #{available,jdbcType=BIT}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from role where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from role where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="roleResult">
+        select <include refid="roleColumns" />
+        <![CDATA[
+		    from role
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="roleResult">
+        select <include refid="roleColumns" />
+        <![CDATA[
+		    from role
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Role">
+        select count(1) from role
+        <include refid="roleDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="roleResult" parameterType="map">
+        select <include refid="roleColumns"/> from role
+        <include refid="roleDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="roleResult" parameterType="map">
+        select <include refid="roleColumns"/> from role
+        <include refid="roleDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="roleResult" parameterType="map">
+        select <include refid="roleColumns" />
+        from role
+        <include refid="roleDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from role
+        <include refid="roleDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="roleLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="rolename != null">
+                and rolename LIKE #{rolename}
+            </if>
+            <if test="descirption != null">
+                and descirption LIKE #{descirption}
+            </if>
+            <if test="available != null">
+                and available = #{available}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="roleResult" parameterType="map">
+        select
+        <include refid="roleColumns"/>
+        from role
+        <include refid="roleLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from role
+        <include refid="roleLikeDynamicWhere"/>
+    </select>
+
+</mapper>

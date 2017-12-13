@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -59,21 +59,23 @@
         <!-- 导航菜单项开始 -->
         <div class="side-menu-items">
             <!-- 带文字的导航菜单项 -->
-            <div class="side-menu-item">
-                <div class="side-menu-item-title"><span class="side-menu-square"></span>用户管理</div>
-                <ul>
-                    <li><a onclick="createTab({title:'用户中心',isShowClose:true,url:'system/userCenter'})" href="javascript:;"><img src="img/icon/icon-user.png" class="side-menu-a-img">用户中心</a></li>
-                    <li><a href="javascript:;"><img src="img/icon/icon-role-mgr.png" class="side-menu-a-img">角色管理</a></li>
-                    <li><a href="javascript:;"><img src="img/icon/icon-limits-mgr.png" class="side-menu-a-img">权限管理</a></li>
-                </ul>
-            </div>
+            <c:forEach var="m" items="${menu}">
+                <div class="side-menu-item">
+                    <div class="side-menu-item-title"><span class="side-menu-square"></span>${m.name}</div>
+                    <ul>
+                        <c:forEach var="mu" items="${m.menuUrlList}">
+                            <li><a onclick="createTab({title:'${mu.name}',isShowClose:true,url:'${mu.url}'})" href="javascript:;"><img src="${mu.iconUrl}" class="side-menu-a-img">${mu.name}</a></li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </c:forEach>
             <%--<div class="side-menu-item">
                 <div class="side-menu-item-title"><span class="side-menu-square"></span>题库管理</div>
                 <ul>
                     <li><a href="javascript:;"><img src="img/icon/icon-question-bank.png" class="side-menu-a-img">题库中心</a></li>
                 </ul>
             </div>--%>
-            <div class="side-menu-item">
+            <%--<div class="side-menu-item">
                 <div class="side-menu-item-title"><span class="side-menu-square"></span>数据管理</div>
                 <ul>
                     <li><a onclick="createTab({title:'数据中心',isShowClose:true,url:'system/data'})" href="javascript:;"><img src="img/icon/icon-data.png" class="side-menu-a-img">数据中心</a></li>
@@ -100,28 +102,30 @@
                     <li><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/getVideoCenter'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-a-img">儿童视频</a></li>
                     <li><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/getMessageBoardCenter'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-a-img">留言板</a></li>
                 </ul>
-            </div>
+            </div>--%>
         </div>
 
         <!-- 带文字的导航菜单项结束 -->
         <!-- 关闭后小图标菜单项开始 -->
         <div class="side-menu-small-items">
             <!-- 小图标菜单项 -->
-            <div class="side-menu-small-item">
-                <div data-toast="用户管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
-                <ul>
-                    <li data-toast="用户中心"><a onclick="createTab({title:'用户中心',isShowClose:true,url:'system/userCenter'})" href="javascript:;"><img src="img/icon/icon-user.png" class="side-menu-small-a-img"></a></li>
-                    <li data-toast="角色管理"><a href="javascript:;"><img src="img/icon/icon-role-mgr.png" class="side-menu-small-a-img"></a></li>
-                    <li data-toast="权限管理"><a href="javascript:;"><img src="img/icon/icon-limits-mgr.png" class="side-menu-small-a-img"></a></li>
-                </ul>
-            </div>
+            <c:forEach var="m" items="${menu}">
+                <div class="side-menu-small-item">
+                    <div data-toast="${m.name}" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
+                    <ul>
+                        <c:forEach var="mu" items="${m.menuUrlList}">
+                            <li data-toast="${mu.name}"><a onclick="createTab({title:'${mu.name}',isShowClose:true,url:'${mu.url}'})" href="javascript:;"><img src="${mu.iconUrl}" class="side-menu-small-a-img"></a></li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </c:forEach>
             <%--<div class="side-menu-small-item">
                 <div data-toast="题库管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
                     <li data-toast="题库中心"><a href="javascript:;"><img src="img/icon/icon-question-bank.png" class="side-menu-small-a-img"></a></li>
                 </ul>
             </div>--%>
-            <div class="side-menu-small-item">
+            <%--<div class="side-menu-small-item">
                 <div data-toast="数据管理" class="side-menu-small-item-icon"><span class="side-menu-small-square" ></span></div>
                 <ul>
                     <li data-toast="数据中心"><a onclick="createTab({title:'数据中心',isShowClose:true,url:'system/data'})" href="javascript:;"><img src="img/icon/icon-data.png" class="side-menu-small-a-img"></a></li>
@@ -148,7 +152,7 @@
                     <li data-toast="儿童视频"><a onclick="createTab({title:'儿童视频',isShowClose:true,url:'system/getVideoCenter'})" href="javascript:;"><img src="img/icon/icon-video.png" class="side-menu-small-a-img"></a></li>
                     <li data-toast="留言板"><a onclick="createTab({title:'留言板',isShowClose:true,url:'system/getMessageBoardCenter'})" href="javascript:;"><img src="img/icon/icon-panel.png" class="side-menu-small-a-img"></a></li>
                 </ul>
-            </div>
+            </div>--%>
         </div>
         <!-- 小图标导航菜单项结束 -->
     </div>

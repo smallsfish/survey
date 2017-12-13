@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.Admin_RoleDao">
+    <resultMap id="admin_roleResult" type="Admin_Role">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="admin_roleColumns">
+        <![CDATA[
+        	id,
+            aid,
+            rid
+	    ]]>
+    </sql>
+
+    <sql id="admin_roleDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="aid != null">
+                and aid = #{aid}
+            </if>
+            <if test="rid != null">
+                and rid = #{rid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Admin_Role" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        admin_role (
+	        	id,
+	        	aid,
+	        	rid
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{aid,jdbcType=INTEGER},
+	        	#{rid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Admin_Role">
+        <![CDATA[
+	        UPDATE admin_role SET
+		        aid = #{aid,jdbcType=INTEGER},
+		        rid = #{rid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Admin_Role">
+        UPDATE
+        admin_role
+        <set>
+            <if test="aid != null">
+                aid = #{aid,jdbcType=INTEGER},
+            </if>
+            <if test="rid != null">
+                rid = #{rid,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from admin_role where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from admin_role where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="admin_roleResult">
+        select <include refid="admin_roleColumns" />
+        <![CDATA[
+		    from admin_role
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="admin_roleResult">
+        select <include refid="admin_roleColumns" />
+        <![CDATA[
+		    from admin_role
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Admin_Role">
+        select count(1) from admin_role
+        <include refid="admin_roleDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="admin_roleResult" parameterType="map">
+        select <include refid="admin_roleColumns"/> from admin_role
+        <include refid="admin_roleDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="admin_roleResult" parameterType="map">
+        select <include refid="admin_roleColumns"/> from admin_role
+        <include refid="admin_roleDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="admin_roleResult" parameterType="map">
+        select <include refid="admin_roleColumns" />
+        from admin_role
+        <include refid="admin_roleDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from admin_role
+        <include refid="admin_roleDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="admin_roleLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="aid != null">
+                and aid = #{aid}
+            </if>
+            <if test="rid != null">
+                and rid = #{rid}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="admin_roleResult" parameterType="map">
+        select
+        <include refid="admin_roleColumns"/>
+        from admin_role
+        <include refid="admin_roleLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from admin_role
+        <include refid="admin_roleLikeDynamicWhere"/>
+    </select>
+
+</mapper>

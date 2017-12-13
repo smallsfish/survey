@@ -761,18 +761,22 @@ body,html{
 /*问卷调查样式开始*/
 .questionnaire-top{
 	width: 100%;
-	height: 80px;
+	height: 60px;
 	border-bottom: 1px #2c3031 solid;
 }
 .questionnaire-add{
 	float: left;
-	width: 60px;
-	height: 60px;
-	margin-top: 10px;
+	width: 88px;
+	height: 50px;
+	margin-top: 5px;
 	margin-left: 5%;
 	background-color: #34a8ff;
 	border-radius: 15px;
+	text-align: center;
 	cursor: pointer;
+	line-height: 50px;
+	font-size: 15px;
+	font-weight: bold;
 }
 .questionnaire-add:hover{
 	background-color: #50b1ff;
@@ -792,7 +796,7 @@ body,html{
 	display: block;
 	width: 300px;
 	height: 40px;
-	margin-top: 20px;
+	margin-top: 10px;
 	border:1px gray solid;
 	border-right: 0;
 	border-radius: 5px 0 0 5px;
@@ -815,7 +819,7 @@ body,html{
 	border-left: 0;
 	cursor: pointer;
 	float: left;
-	margin-top: 20px;
+	margin-top: 10px;
 }
 .questionnaire-search img{
 	width:30px;
@@ -826,7 +830,7 @@ body,html{
 }
 .questionnaire-content{
 	width: 100%;
-	height: calc(100% - 146px);
+	height: calc(100% - 126px);
 	padding-top: 1px;
 	overflow: scroll;
 	padding-bottom: 13px;
@@ -841,17 +845,15 @@ body,html{
 	position: relative;
 	width: 14%;
 	height: 46%;
-	background-color: #a7f793;
+	border:1px #11172C solid;
 	margin-top: 15px;
 	margin-left: 2.2%;
-	border-radius: 30px;
 	float: left;
 	min-height: 240px;
 	min-width: 200px;
 	overflow: hidden;
 }
 .questionnaire-item:hover{
-	box-shadow: 2px 2px 20px 3px #4E5465;
 }
 .questionnaire-page{
 	width: 100%;
@@ -868,8 +870,8 @@ body,html{
 .questionnaire-one ul li{
 	width: 95%;
 	height: 16%;
-	color:#2c3031;
-	font-size: 18px;
+	color:#000;
+	font-size: 14px;
 	line-height: 280%;
 	padding-left:5%;
 	overflow: hidden;
@@ -879,9 +881,9 @@ body,html{
 .questionnaire-one ul li:first-child{
 	text-align: center;
 	font-size: 24px;
-	width: 80%;
-	padding-left:10%;
-	padding-left: 10%;
+	width: 100%;
+	line-height: 220%;
+	border-bottom: 1px #11172C solid;
 }
 .questionnaire-two{
 	display:-webkit-flex;
@@ -949,10 +951,10 @@ body,html{
 	/*新版本语法*/
 	-webkit-justify-content: center;
 	justify-content: center;
-	float: left;
-	width: 50%;
+	width: 30%;
 	height: 50%;
-
+	float: left;
+	margin-left: 3%;
 }
 /*数据分析样式结束*/
 

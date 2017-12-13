@@ -21,13 +21,6 @@
 <body oncontextmenu="return false" onselect="return false">
 <form class="layui-form" id="userForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
     <div class="layui-form-item" style="margin-top: 25px;">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>原密码：</label>
-        <div class="layui-input-block">
-            <input type="password" name="oldPassword" lay-verify="required" placeholder="请输入原密码" autocomplete="off"
-                   class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>新密码：</label>
         <div class="layui-input-block">
             <input type="password" name="newPassword" placeholder="请输入新密码" lay-verify="required" autocomplete="off"

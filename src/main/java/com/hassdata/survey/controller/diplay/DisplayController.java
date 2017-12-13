@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -33,13 +32,15 @@ public class DisplayController {
     private UserService userService;
     @Resource
     private StudentService studentService;
-
     @Resource
     private ScoreService scoreService;
 
     private String questionnaireId;
     private String qeustionId;
     private ArrayList<Score> scores;
+
+
+
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String getDisplayLogin(@RequestParam(required = false) String path, @RequestParam(required = false) String parameter, ModelMap map) {

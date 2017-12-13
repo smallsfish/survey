@@ -20,5 +20,9 @@
 		<typeAlias alias="Pictures" type="com.hassdata.survey.po.Pictures" />
 		<typeAlias alias="Newstype" type="com.hassdata.survey.po.Newstype" />
 		<typeAlias alias="Picturetype" type="com.hassdata.survey.po.Picturetype" />
+		<typeAlias alias="Role" type="com.hassdata.survey.po.Role" />
+		<typeAlias alias="Resource" type="com.hassdata.survey.po.Resource" />
+		<typeAlias alias="Role_Resource" type="com.hassdata.survey.po.Role_Resource" />
+		<typeAlias alias="Admin_Role" type="com.hassdata.survey.po.Admin_Role" />
 	</typeAliases>
 </configuration>

@@ -33,11 +33,11 @@
 
 	<!-- 拦截器 -->
 	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/system/**" />
-			<mvc:exclude-mapping path="/system/login" />
-			<bean class="com.hassdata.survey.interceptor.AdminUserInterceptor"></bean>
-		</mvc:interceptor>
+		<!--<mvc:interceptor>-->
+			<!--<mvc:mapping path="/system/**" />-->
+			<!--<mvc:exclude-mapping path="/system/login" />-->
+			<!--<bean class="com.hassdata.survey.interceptor.AdminUserInterceptor"></bean>-->
+		<!--</mvc:interceptor>-->
 		<mvc:interceptor>
 			<mvc:mapping path="/display/**" />
 			<mvc:exclude-mapping path="/display/login" />
@@ -80,4 +80,6 @@
 			</list>
 		</property>
 	</bean>
+
+	<import resource="spring-mvc-shiro.xml"/>
 </beans>

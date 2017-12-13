@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.Role_ResourceDao">
+    <resultMap id="role_resourceResult" type="Role_Resource">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="role_resourceColumns">
+        <![CDATA[
+        	id,
+            rid,
+            reid
+	    ]]>
+    </sql>
+
+    <sql id="role_resourceDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="rid != null">
+                and rid = #{rid}
+            </if>
+            <if test="rid != null">
+                and rid = #{rid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Role_Resource" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        role_resource (
+	        	id,
+	        	rid,
+	        	rid
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{rid,jdbcType=INTEGER},
+	        	#{rid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Role_Resource">
+        <![CDATA[
+	        UPDATE role_resource SET
+		        rid = #{rid,jdbcType=INTEGER},
+		        rid = #{rid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Role_Resource">
+        UPDATE
+        role_resource
+        <set>
+            <if test="rid != null">
+                rid = #{rid,jdbcType=INTEGER},
+            </if>
+            <if test="rid != null">
+                rid = #{rid,jdbcType=INTEGER},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from role_resource where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from role_resource where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="role_resourceResult">
+        select <include refid="role_resourceColumns" />
+        <![CDATA[
+		    from role_resource
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="role_resourceResult">
+        select <include refid="role_resourceColumns" />
+        <![CDATA[
+		    from role_resource
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Role_Resource">
+        select count(1) from role_resource
+        <include refid="role_resourceDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="role_resourceResult" parameterType="map">
+        select <include refid="role_resourceColumns"/> from role_resource
+        <include refid="role_resourceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="role_resourceResult" parameterType="map">
+        select <include refid="role_resourceColumns"/> from role_resource
+        <include refid="role_resourceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="role_resourceResult" parameterType="map">
+        select <include refid="role_resourceColumns" />
+        from role_resource
+        <include refid="role_resourceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from role_resource
+        <include refid="role_resourceDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="role_resourceLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="rid != null">
+                and rid = #{rid}
+            </if>
+            <if test="rid != null">
+                and rid = #{rid}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="role_resourceResult" parameterType="map">
+        select
+        <include refid="role_resourceColumns"/>
+        from role_resource
+        <include refid="role_resourceLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from role_resource
+        <include refid="role_resourceLikeDynamicWhere"/>
+    </select>
+
+</mapper>

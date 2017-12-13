@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
-<body style="background-color: #def7f0;">
+<body>
 <div class="questionnaire-top">
     <div onclick="window.parent.createTab({title:'新建问卷',isShowClose:true,url:'system/questionnaireAdd'})" title="新建"
-         class="questionnaire-add"><img src="img/icon/icon-more2.png" alt="添加问卷"></div>
+         class="questionnaire-add">添加问卷</div>
     <div class="questionnaire-search">
         <input type="search" name="qname" placeholder="请输入问卷名称">
         <div onclick="questionnaireSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png">
@@ -32,9 +32,9 @@
             <div class="questionnaire-one">
                 <ul>
                     <li>${qm.questionnairename}</li>
-                    <li>C:<fmt:formatDate value="${qm.questionnairecreatetime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
-                    <li>B:<fmt:formatDate value="${qm.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
-                    <li>E:<fmt:formatDate value="${qm.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
+                    <li style="margin-top: 13px;">创建时间:<fmt:formatDate value="${qm.questionnairecreatetime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
+                    <li>开始时间:<fmt:formatDate value="${qm.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
+                    <li>结束时间:<fmt:formatDate value="${qm.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
                     <li>题目数量：${qm.questions}</li>
                     <li>制作者：${qm.author}</li>
                 </ul>

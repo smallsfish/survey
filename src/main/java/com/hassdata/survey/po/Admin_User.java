@@ -13,6 +13,29 @@ public class Admin_User implements Serializable{
     private Date createdatetime;
     private Date lastlogintime;
     private String remarks;
+    private String salt;
+    private Boolean locked;
+
+
+    public String getCredentialsSalt(){
+        return account+salt;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
 
     public String getRemarks() {
         return remarks;

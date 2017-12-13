@@ -1,11 +1,18 @@
 package com.hassdata.survey.controller.admin;
 
 import com.hassdata.survey.dto.AdminUser;
+import com.hassdata.survey.dto.IndexMenu;
+import com.hassdata.survey.dto.MenuUrl;
 import com.hassdata.survey.po.Admin_User;
 import com.hassdata.survey.service.AdminUserService;
+import com.hassdata.survey.service.PasswordHelper;
+import com.hassdata.survey.service.ResourceService;
+import com.hassdata.survey.util.ArrayUtils;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,60 +29,153 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("system")
 @Scope("prototype")
 public class AdminUserController {
 
+    @Resource
+    private PasswordHelper passwordHelper;
 
+    @Resource
+    private ResourceService resourceService;
 
     @Resource
     private AdminUserService adminUserService;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @RequestMapping(value = "login",method = RequestMethod.GET)
-    public String getSystemLogin(){
+    @RequestMapping(value = "login", method = RequestMethod.GET)
+    public String getSystemLogin() {
         return "system/login";
     }
-    @RequestMapping(value = "exit",method = RequestMethod.GET)
+
+    @RequestMapping(value = "exit", method = RequestMethod.GET)
     @ResponseBody
-    public String exitSystem(HttpServletRequest request){
-        HttpSession session=request.getSession(true);
-        if(session.getAttribute("CurrentAdminUser")!=null){
+    public String exitSystem(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        if (session.getAttribute("CurrentAdminUser") != null) {
             session.removeAttribute("CurrentAdminUser");
         }
+        SecurityUtils.getSubject().logout();
         return "success";
     }
-    @RequestMapping(value = "index",method = RequestMethod.GET)
-    public String getSystemIndex(){
+
+    @RequestMapping(value = "index", method = RequestMethod.GET)
+    public String getSystemIndex(ModelMap map) {
+        String account= (String) SecurityUtils.getSubject().getPrincipal();
+        List<com.hassdata.survey.po.Resource> resources=resourceService.getAll(null);
+        Map<String, com.hassdata.survey.po.Resource> resourceMap=new HashMap<>();
+        resources.stream().forEach((r)->resourceMap.put(r.getId()+"",r));
+        List<com.hassdata.survey.po.Resource> resourceList=resourceService.getResourceByAccount(account);
+        List<IndexMenu> indexMenuList=new ArrayList<>();
+        List<MenuUrl> menuUrlList=null;
+        IndexMenu indexMenu=null;
+        MenuUrl menuUrl=null;
+        String[][] strings=new String[resources.size()][3];
+        Integer index=0,i=0;
+        for(com.hassdata.survey.po.Resource r : resourceList){
+            if(r.getType().equals("menu")){
+                if(ArrayUtils.idExists(strings,r.getParentid()+"",false)){
+                    menuUrl=new MenuUrl();
+                    menuUrl.setName(r.getName());
+                    menuUrl.setUrl(r.getUrl());
+                    menuUrl.setIconUrl(r.getIconurl());
+                    Integer j=ArrayUtils.getIndex(strings,r.getParentid()+"");
+                    indexMenuList.get(j).getMenuUrlList().add(menuUrl);
+                    strings[i][0]=j+"";
+                    strings[i][1]=r.getParentid()+"";
+                    strings[i][2]=r.getId()+"";
+                    i++;
+                }else{
+                    menuUrlList=new ArrayList<>();
+                    com.hassdata.survey.po.Resource res = resourceMap.get(r.getParentid()+"");
+                    indexMenu=new IndexMenu();
+                    indexMenu.setName(res.getName());
+                    menuUrl=new MenuUrl();
+                    menuUrl.setName(r.getName());
+                    menuUrl.setUrl(r.getUrl());
+                    menuUrl.setIconUrl(r.getIconurl());
+                    menuUrlList.add(menuUrl);
+                    indexMenu.setMenuUrlList(menuUrlList);
+                    indexMenuList.add(indexMenu);
+                    strings[i][0]=index+"";
+                    strings[i][1]=r.getParentid()+"";
+                    strings[i][2]=r.getId()+"";
+                    i++;
+                    index++;
+                }
+            }else{
+                if(ArrayUtils.idExists(strings,r.getParentid()+"",true)){
+                    continue;
+                }else{
+                    com.hassdata.survey.po.Resource reso=resourceMap.get(r.getParentid()+"");
+                    if(ArrayUtils.idExists(strings,reso.getParentid()+"",false)){
+                        menuUrl=new MenuUrl();
+                        menuUrl.setName(reso.getName());
+                        menuUrl.setUrl(reso.getUrl());
+                        menuUrl.setIconUrl(reso.getIconurl());
+                        Integer j=ArrayUtils.getIndex(strings,reso.getParentid()+"");
+                        strings[i][0]=j+"";
+                        strings[i][1]=reso.getParentid()+"";
+                        strings[i][2]=reso.getId()+"";
+                        indexMenuList.get(j).getMenuUrlList().add(menuUrl);
+                        i++;
+                    }else{
+                        menuUrlList=new ArrayList<>();
+                        com.hassdata.survey.po.Resource resou = resourceMap.get(reso.getParentid()+"");
+                        indexMenu=new IndexMenu();
+                        indexMenu.setName(resou.getName());
+                        strings[i][0]=index+"";
+                        strings[i][1]=reso.getParentid()+"";
+                        strings[i][2]=reso.getId()+"";
+                        menuUrl=new MenuUrl();
+                        menuUrl.setName(reso.getName());
+                        menuUrl.setUrl(reso.getUrl());
+                        menuUrl.setIconUrl(reso.getIconurl());
+                        menuUrlList.add(menuUrl);
+                        indexMenu.setMenuUrlList(menuUrlList);
+                        indexMenuList.add(indexMenu);
+                        i++;
+                        index++;
+                    }
+                }
+            }
+        }
+        map.addAttribute("menu",indexMenuList);
         return "index";
     }
-    @RequestMapping(value = "login",method = RequestMethod.POST)
+
+    @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse systemLogin(HttpServletRequest request, Admin_User adminUser, @RequestParam(required = false) Integer remind){
-        HttpSession session=request.getSession(true);
-        if(adminUser.getAccount().isEmpty()){
+    public ServerResponse systemLogin(HttpServletRequest request, Admin_User adminUser, @RequestParam(required = false) Integer remind) {
+        HttpSession session = request.getSession(true);
+        boolean rememberMe = false;
+        if (adminUser.getAccount().isEmpty()) {
             return ServerResponse.createByErrorMessage("请输入账号！");
-        }else if(adminUser.getPassword().isEmpty()){
+        } else if (adminUser.getPassword().isEmpty()) {
             return ServerResponse.createByErrorMessage("请输入密码！");
         }
-        if(remind!=null){
-            //System.out.println("记住密码");
+        if (remind != null) {
+            rememberMe = true;
         }
-        Admin_User au=null;
-        adminUser.setPassword(MD5TUtils.threeMD5(adminUser.getPassword()));
-        if((au=adminUserService.getOne(adminUser))!=null){
-            session.setAttribute("CurrentAdminUser",au);
-            au.setLastlogintime(new Date());
-            adminUserService.update(au);
-            return ServerResponse.createBySuccessMessage("登陆成功！");
-        }else{
-            return ServerResponse.createByErrorMessage("账号或者密码错误");
+        UsernamePasswordToken token = new UsernamePasswordToken(adminUser.getAccount(), adminUser.getPassword(), rememberMe);
+        adminUser.setPassword(null);
+        try {
+            SecurityUtils.getSubject().login(token);
+        } catch (UnknownAccountException e) {
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("账号或密码错误");
+        } catch (IncorrectCredentialsException e) {
+            return ServerResponse.createByErrorMessage("账号或密码错误");
+        } catch (LockedAccountException e) {
+            return ServerResponse.createByErrorMessage("对不起，账号已锁定");
+        } catch (ExcessiveAttemptsException e) {
+            return ServerResponse.createByErrorMessage("重试次数过多，已锁定");
         }
+        SecurityUtils.getSubject().getSession().setAttribute("CurrentAdminUser", adminUserService.getOne(adminUser));
+        return ServerResponse.createBySuccessMessage("登陆成功");
     }
 
     @RequestMapping(value = "userCenter", method = RequestMethod.GET)
@@ -132,7 +232,6 @@ public class AdminUserController {
         return ServerResponse.createBySuccessForLayuiTable("请求成功", aus, count);
     }
 
-
     @RequestMapping(value = "addAdminUser", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addAdminUser(Admin_User admin_user, MultipartHttpServletRequest request, MultipartFile file) {
@@ -156,7 +255,8 @@ public class AdminUserController {
             return ServerResponse.createByErrorMessage("上传图片失败");
         }
         admin_user.setHeadimage(fileName);
-        admin_user.setPassword(MD5TUtils.threeMD5("000000"));
+        admin_user.setPassword("000000");
+        passwordHelper.encryptPassword(admin_user);
         admin_user.setCreatedatetime(new Date());
         adminUserService.save(admin_user);
         return ServerResponse.createBySuccessMessage("添加管理员成功");
@@ -248,29 +348,24 @@ public class AdminUserController {
         return ServerResponse.createBySuccessMessage("更新成功");
     }
 
-    @RequestMapping(value = "getUpdateAdminPassword",method = RequestMethod.GET)
-    public String getUpdateAdminPassword(){
+    @RequestMapping(value = "getUpdateAdminPassword", method = RequestMethod.GET)
+    public String getUpdateAdminPassword() {
         return "system/user/updateAdminPassword";
     }
 
 
-    @RequestMapping(value = "adminPasswordUpdate",method = RequestMethod.POST)
+    @RequestMapping(value = "adminPasswordUpdate", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse adminPasswordUpdate(String oldPassword,String newPassword,HttpServletRequest request){
-        HttpSession session=request.getSession(true);
-        Admin_User admin_user= (Admin_User) session.getAttribute("CurrentAdminUser");
-        String p=MD5TUtils.threeMD5(oldPassword);
-        Admin_User au=adminUserService.getOne(admin_user);
-        if(au.getPassword().equals(p)){
-            if(!newPassword.equals("") && newPassword!=null) {
-                Admin_User aur = new Admin_User();
-                aur.setPassword(MD5TUtils.threeMD5(newPassword));
-                aur.setId(au.getId());
-                adminUserService.updateParams(aur);
-                return ServerResponse.createBySuccessMessage("密码重置成功，下次登录将失效");
-            }
-        }else{
-            return ServerResponse.createByErrorMessage("原密码错误!");
+    public ServerResponse adminPasswordUpdate(String newPassword, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        Admin_User admin_user = (Admin_User) session.getAttribute("CurrentAdminUser");
+        admin_user.setPassword(null);
+        Admin_User au = adminUserService.getOne(admin_user);
+        if (!newPassword.equals("") && newPassword != null) {
+            au.setPassword(newPassword);
+            passwordHelper.encryptPassword(au);
+            adminUserService.updateParams(au);
+            return ServerResponse.createBySuccessMessage("密码重置成功，下次登录将失效");
         }
         return ServerResponse.createByErrorMessage("密码重置失败");
     }

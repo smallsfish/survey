@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.ResourceDao">
+    <resultMap id="resourceResult" type="Resource">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="resourceColumns">
+        <![CDATA[
+        	id,
+            name,
+            type,
+            url,
+            parentid,
+            permission,
+            iconurl,
+            available
+	    ]]>
+    </sql>
+
+    <sql id="resourceDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+            <if test="url != null">
+                and url = #{url}
+            </if>
+            <if test="parentid != null">
+                and parentid = #{parentid}
+            </if>
+            <if test="permission != null">
+                and permission = #{permission}
+            </if>
+            <if test="iconurl != null">
+                and iconurl = #{iconurl}
+            </if>
+            <if test="available != null">
+                and available = #{available}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Resource" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        resource (
+	        	id,
+	        	name,
+	        	type,
+	        	url,
+	        	parentid,
+	        	permission,
+	        	iconurl,
+	        	available
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{name,jdbcType=VARCHAR},
+	        	#{type,jdbcType=VARCHAR},
+	        	#{url,jdbcType=VARCHAR},
+	        	#{parentid,jdbcType=INTEGER},
+	        	#{permission,jdbcType=VARCHAR},
+	        	#{iconurl,jdbcType=VARCHAR},
+	        	#{available,jdbcType=BIT}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Resource">
+        <![CDATA[
+	        UPDATE resource SET
+		        name = #{name,jdbcType=VARCHAR},
+		        type = #{type,jdbcType=VARCHAR},
+		        url = #{url,jdbcType=VARCHAR},
+		        parentid = #{parentid,jdbcType=INTEGER},
+		        permission = #{permission,jdbcType=VARCHAR},
+		        iconurl = #{iconurl,jdbcType=VARCHAR},
+		        available = #{available,jdbcType=BIT}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Resource">
+        UPDATE
+        resource
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="parentid != null">
+                parentid = #{parentid,jdbcType=INTEGER},
+            </if>
+            <if test="permission != null">
+                permission = #{permission,jdbcType=VARCHAR},
+            </if>
+            <if test="iconurl != null">
+                iconurl = #{iconurl,jdbcType=VARCHAR},
+            </if>
+            <if test="available != null">
+                available = #{available,jdbcType=BIT},
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from resource where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from resource where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="resourceResult">
+        select <include refid="resourceColumns" />
+        <![CDATA[
+		    from resource
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="resourceResult">
+        select <include refid="resourceColumns" />
+        <![CDATA[
+		    from resource
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Resource">
+        select count(1) from resource
+        <include refid="resourceDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="resourceResult" parameterType="map">
+        select <include refid="resourceColumns"/> from resource
+        <include refid="resourceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="resourceResult" parameterType="map">
+        select <include refid="resourceColumns"/> from resource
+        <include refid="resourceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="resourceResult" parameterType="map">
+        select <include refid="resourceColumns" />
+        from resource
+        <include refid="resourceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from resource
+        <include refid="resourceDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="resourceLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null">
+                and name LIKE #{name}
+            </if>
+            <if test="type != null">
+                and type LIKE #{type}
+            </if>
+            <if test="url != null">
+                and url LIKE #{url}
+            </if>
+            <if test="parentid != null">
+                and parentid = #{parentid}
+            </if>
+            <if test="permission != null">
+                and permission LIKE #{permission}
+            </if>
+            <if test="iconurl != null">
+                and iconurl LIKE #{iconurl}
+            </if>
+            <if test="available != null">
+                and available = #{available}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="resourceResult" parameterType="map">
+        select
+        <include refid="resourceColumns"/>
+        from resource
+        <include refid="resourceLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from resource
+        <include refid="resourceLikeDynamicWhere"/>
+    </select>
+
+    <select id="getResourceByAccount" resultMap="resourceResult" parameterType="string">
+      select <include refid="resourceColumns"/> from resource where id in (select reid from role_resource where rid in (select rid from admin_role where aid=(select id from admin_user where account=#{account}) ) ) and permission is not null and available = 1 order by id asc
+    </select>
+
+</mapper>

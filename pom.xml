@@ -26,7 +26,6 @@
     </properties>
     <profiles>
 
-
     </profiles>
     <dependencies>
         <!-- rar文件解压jar -->
@@ -35,6 +34,19 @@
             <artifactId>junrar</artifactId>
             <version>0.7</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 导入java ee jar 包 -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+        </dependency>
+
 
 
         <!--ZXing -->
@@ -307,6 +319,12 @@
             <version>1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
+        </dependency>
+
         <!-- 文件上传 -->
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -438,13 +456,13 @@
         </dependency>
 
         <!-- ueditor视图 -->
-        <dependency>
-            <groupId>com.baidu.ueditor</groupId>
-            <artifactId>ueditor</artifactId>
-            <version>1.4.3</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ueditor-1.1.2.jar</systemPath>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.baidu.ueditor</groupId>-->
+            <!--<artifactId>ueditor</artifactId>-->
+            <!--<version>1.4.3</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ueditor-1.1.2.jar</systemPath>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>ueditor</artifactId>

@@ -97,12 +97,14 @@
 		<!-- 自动扫描mapping.xml文件 -->
 		<property name="mapperLocations" value="classpath:com/hassdata/survey/mapper/*.xml"></property>
     </bean>
-	   <!-- 配置要扫描的xxxMapper.xml -->  
+	   <!-- 配置要扫描的xxxMapper.xml -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"  >
     	<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 		<property name="basePackage" value="com.hassdata.survey.dao"/>
 	</bean>
-	
+
+	<import resource="classpath:spring-config-cache.xml"/>
+	<import resource="classpath:spring-config-shiro.xml"/>
 	
 	<!-- ############################################################ -->
 	
