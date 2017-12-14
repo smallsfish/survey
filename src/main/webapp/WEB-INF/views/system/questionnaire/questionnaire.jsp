@@ -60,7 +60,7 @@
     </c:forEach>
 </div>
 <div class="questionnaire-page">
-    <div id="test1" style="float:right; margin-right: 20px;height:0;"></div>
+    <div id="test1" style="margin-left: 20px;height:0;"></div>
 </div>
 </body>
 <script>
@@ -99,7 +99,7 @@
     layui.use(['laypage', 'layer'], function () {
         layer = layui.layer;
         laypage = layui.laypage;
-        setPageValue();
+        setPageValue('system/questionnairesList',null);
         var loadIndex = null;
         deleteQuestionnaire = function (id) {
             layer.confirm("确定删除当前问卷吗？此操作不可恢复！", function (index) {
@@ -130,13 +130,13 @@
         }
     });
 
-    function setPageValue() {
+    function setPageValue( url ,name) {
         //执行一个laypage实例
         laypage.render({
             elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
             count: count, //数据总数，从服务端得到
-            limit: 8,
-            limits: [8, 16, 32, 64],
+            limit: 12,
+            limits: [12, 24, 36, 48,60],
             layout: ['prev', 'page', 'next', 'limit', 'skip', 'count'],
             jump: function (obj, first) {
                 //首次不执行
@@ -145,8 +145,8 @@
                     $.ajax({
                         type: "GET",
                         dataType: "json",
-                        url: 'system/questionnairesList',
-                        data: {'page': obj.curr, 'limit': 8},
+                        url: url,
+                        data: {'page': obj.curr, 'limit': obj.limit,'name':name},
                         success: function (result) {
                             if (result.status == 0) {
                                 $(".questionnaire-item").remove();
@@ -158,9 +158,9 @@
                                         "            <div class=\"questionnaire-one\">" +
                                         "                <ul>\n" +
                                         "                    <li>" + item.questionnairename + "</li>" +
-                                        "                    <li>C:" + cDate +
-                                        "                    <li>B:" + bDate +
-                                        "                    <li>E:" + eDate + "</li>" +
+                                        "                    <li>创建时间:" + cDate +
+                                        "                    <li>开始时间:" + bDate +
+                                        "                    <li>结束时间:" + eDate + "</li>" +
                                         "                    <li>题目数量：" + item.questions + "</li>" +
                                         "                    <li>制作者：" + item.author + "</li>" +
                                         "                </ul>" +
@@ -198,7 +198,18 @@
     }
 
     function showDisplayURL(s) {
-        layer.alert(s);
+        $("#url").text(s);
+        //layer.alert(s);
+        layer.open({
+            type: 1,
+            content: $('#url'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+            btn: ['确认']
+
+        },
+            function(index){
+                layer.close(index);
+                $("#url").hide();
+            });
     }
 </script>
 <script>
@@ -250,7 +261,7 @@
                                 "        </div>");
                         });
                         count = result.count;
-                        setPageValue();
+                        setPageValue('system/questionnaireSearch',questionnaireName);
                     }
                     layer.msg(result.msg);
                     layer.close(loadIndex);
@@ -265,4 +276,5 @@
         }
     }
 </script>
+<div id="url" contenteditable="true" style="padding: 30px 20px; display: none;"></div>
 </html>

@@ -63,7 +63,7 @@ public class QuestionnaireController {
     public ServerResponse getQuestionnaires(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer limit){
         if(page==null || limit==null){
             page=1;
-            limit=8;
+            limit=12;
         }
         List<Questionnaire> questionnaires=questionnaireService.getScrollData(null,"id DESC",(page-1)*limit,limit);
         return getServerResponse(questionnaires,0);
@@ -74,7 +74,7 @@ public class QuestionnaireController {
     public ServerResponse questionnaireSearch(HttpServletRequest request, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit){
         if(page==null || limit==null){
             page=1;
-            limit=8;
+            limit=12;
         }
         String name= null;
         try {

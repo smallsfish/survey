@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -55,12 +57,12 @@ public class DisplayController {
 
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String displayLogin(User user, ModelMap map, HttpServletRequest request, @RequestParam(required = false) String path, @RequestParam(required = false) String parameter) {
+    public String displayLogin(User user, ModelMap map, HttpServletRequest request, HttpServletResponse response, @RequestParam(required = false) String path, @RequestParam(required = false) String parameter) {
         HttpSession session = request.getSession(true);
-        if (parameter != null) {
+        if (parameter != null && !path.equals("")) {
             map.addAttribute("path", path);
         }
-        if (path != null) {
+        if (path != null && !path.equals("")) {
             map.addAttribute("parameter", parameter);
         }
         if (user.getAccount().equals("") || user.getAccount() == null) {
@@ -74,21 +76,37 @@ public class DisplayController {
         user.setPassword(null);
         User userS = userService.getOne(user);
         if (userS == null) {
-            map.addAttribute("error", "用户名或密码错误");
+            session.setAttribute("error", "用户名或密码错误");
         } else {
             if (!userS.getPassword().equals(password)) {
-                map.addAttribute("error", "用户名或密码错误");
+                session.setAttribute("error", "用户名或密码错误");
             } else {
                 userS.setPassword(null);
                 userS.setLastlogintime(new Date());
                 session.setAttribute("CurrentUser", userS);
                 userService.updateParams(userS);
-                System.out.println(path);
-                System.out.println(parameter);
-                return "redirect:" + path + "?id=" + parameter + "#top";
+                if(path!=null && parameter!=null && !path.equals("") && !parameter.equals("")){
+                    try {
+                        response.sendRedirect(path + "?id=" + parameter + "#top");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    map.addAttribute("id",userS.getId());
+                    return "display/user/updateUserPassword";
+                }
             }
         }
-        return "display/login";
+        return "redirect:/display/login";
+    }
+
+    @RequestMapping(value = "updateUserPassword",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse updateUserPassword(User user,HttpSession session){
+        user.setPassword(MD5TUtils.threeMD5(user.getPassword()));
+        userService.updateParams(user);
+        session.removeAttribute("CurrentUser");
+        return ServerResponse.createBySuccessMessage("修改密码成功,即将退出");
     }
 
     @RequestMapping(value = "submitQuestionnaire", method = RequestMethod.POST)

@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="zh-CN">
-<%@ include file="../../base.jsp"%>
+<%@ include file="../../base.jsp" %>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -16,80 +16,77 @@
 
 <body oncontextmenu="return false" onselect="return false">
 <div class="da-items">
-    <div class="da-item">
-        <div id="da1" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da2" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da3" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da4" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da5" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da6" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da7" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da8" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da9" style="width: 100%;height: 100%;"></div>
-    </div>
-    <div class="da-item">
-        <div id="da10" style="width: 100%;height: 100%;"></div>
-    </div>
+    <c:forEach var="c" items="${ch}" varStatus="st">
+        <div class="da-item">
+            <div id="da${st.index}" style="width: 100%;height: 100%;"></div>
+        </div>
+    </c:forEach>
 </div>
 </body>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
-    var myChart1 = echarts.init(document.getElementById('da1'));
-    var myChart2 = echarts.init(document.getElementById('da2'));
-    var myChart3 = echarts.init(document.getElementById('da3'));
-    var myChart4 = echarts.init(document.getElementById('da4'));
-    var myChart5 = echarts.init(document.getElementById('da5'));
-    var myChart6 = echarts.init(document.getElementById('da6'));
-    var myChart7 = echarts.init(document.getElementById('da7'));
-    var myChart8 = echarts.init(document.getElementById('da8'));
-    var myChart9 = echarts.init(document.getElementById('da9'));
-    var myChart10 = echarts.init(document.getElementById('da10'));
+    var myCharts = new Array();
+    var options = new Array();
+    <c:forEach var="c" items="${ch}" varStatus="st">
+    myCharts[${st.index}] = echarts.init(document.getElementById('da${st.index}'));
+    </c:forEach>
 
     // 指定图表的配置项和数据
-    var option = {
+    <c:forEach var="c" items="${ch}" varStatus="st1">
+    options[${st1.index}] = {
         title: {
-            text: 'ECharts 入门示例'
+            text: '${c.name}',
         },
-        tooltip: {},
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
         legend: {
-            data:['销量']
+            data: ['选择数量']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
         },
         xAxis: {
-            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            type: 'value',
+            boundaryGap: [0, 1]
         },
-        yAxis: {},
-        series: [{
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-        }]
+        yAxis: {
+            type: 'category',
+            data: [<c:forEach var="o" items="${c.optionInfos}" varStatus="st2">
+                <c:if test="${st2.index!=c.optionInfos.size()-1}">
+                '${o.name}',
+                </c:if>
+                <c:if test="${st2.index==c.optionInfos.size()-1}">
+                '${o.name}'
+                </c:if>
+                </c:forEach>]
+        },
+        series: [
+            {
+                name: '选择数量',
+                type: 'bar',
+                data: [<c:forEach var="o" items="${c.optionInfos}" varStatus="st3">
+                    <c:if test="${st3.index!=c.optionInfos.size()-1}">
+                    '${o.count}',
+                    </c:if>
+                    <c:if test="${st3.index==c.optionInfos.size()-1}">
+                    '${o.count}'
+                    </c:if>
+                    </c:forEach>]
+            }
+        ]
     };
+    </c:forEach>
     // 使用刚指定的配置项和数据显示图表。
-    myChart1.setOption(option);
-    myChart2.setOption(option);
-    myChart3.setOption(option);
-    myChart4.setOption(option);
-    myChart5.setOption(option);
-    myChart6.setOption(option);
-    myChart7.setOption(option);
-    myChart8.setOption(option);
-    myChart9.setOption(option);
-    myChart10.setOption(option);
+    <c:forEach var="c" items="${ch}" varStatus="st">
+        myCharts[${st.index}].setOption(options[${st.index}]);
+    </c:forEach>
+
 </script>
 </html>

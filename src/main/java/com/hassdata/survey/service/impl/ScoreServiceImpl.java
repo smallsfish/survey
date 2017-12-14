@@ -8,7 +8,9 @@ import com.hassdata.survey.service.ScoreService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("scoreService")
 public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreService {
@@ -28,4 +30,23 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
     public List<Score> getStudentWithQuestionnaireNumber(String sid) {
         return scoreDao.getStudentWithQuestionnaireNumber(sid);
     }
+
+    @Override
+    public List<Score> getQuestionnaireWithUserId(String id) {
+        return scoreDao.getQuestionnaireWithUserId(id);
+    }
+    @Override
+    public List<Score> getQuestionnaireWithStudentId(String id) {
+        return scoreDao.getQuestionnaireWithUserId(id);
+    }
+
+    @Override
+    public List<Score> getOptionCountWidthQuesitonnaire(String questionnaireid, String questionid, String optionid) {
+        Map<String,String> params=new HashMap<>();
+        params.put("questionnaireid",questionnaireid);
+        params.put("questionid",questionid);
+        params.put("optionid",optionid);
+        return scoreDao.getOptionCountWidthQuesitonnaire(params);
+    }
+
 }

@@ -175,4 +175,21 @@
         from score where sid=#{sid} group by questionnaireid
     </select>
     <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+    <select id="getQuestionnaireWithUserId" resultMap="scoreResult" parameterType="string">
+        SELECT <include refid="scoreColumns" /> FROM survey.score WHERE questionnaireid=#{id} group by uid
+    </select>
+
+    <select id="getQuestionnaireWithStudentId" resultMap="scoreResult" parameterType="string">
+        SELECT <include refid="scoreColumns" /> FROM survey.score WHERE questionnaireid=#{id} group by sid
+    </select>
+
+
+    <select id="getOptionCountWidthQuesitonnaire" resultMap="scoreResult" parameterType="map">
+        SELECT <include refid="scoreColumns" /> FROM survey.score WHERE questionnaireid=#{questionnaireid} and questionid=#{questionid} and options like #{optionid}
+    </select>
+
+
+
 </mapper>

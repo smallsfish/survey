@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!doctype html>
 <html lang="zh-CN">
-<%@ include file="../../base.jsp"%>
+<%@ include file="../../base.jsp" %>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -17,47 +17,139 @@
 <div class="questionnaire-top">
     <div class="questionnaire-search">
         <input type="search" name="qname" placeholder="请输入问卷名称">
-        <div class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
+        <div onclick="questionDataSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
     </div>
 </div>
 <div class="questionnaire-content">
+    <c:forEach var="q" items="${qs}">
     <div class="questionnaire-item">
         <div class="questionnaire-one">
             <ul>
-                <li>留守儿童问卷调查sssssssssss</li>
-                <li>B:2017-09-15 15:46:58</li>
-                <li>E:2017-09-18 15:46:58</li>
-                <li>参与学校：56所</li>
-                <li>参与城市：15座</li>
-                <li>参与人数：5486人</li>
+                <li>${q.name}</li>
+                <li>开始时间:${q.b}</li>
+                <li>结束时间:${q.e}</li>
+                <li>参与学校：${q.schoolNumber}</li>
+                <li>参与城市：${q.cityNumber}</li>
+                <li>参与人数：${q.studentNumber}</li>
             </ul>
         </div>
         <div class="questionnaire-two">
-            <button onclick="window.parent.createTab({title:'留守儿童问卷调查sssssssssss数据分析',isShowClose:true,url:'system/da'})" class="layui-btn  layui-btn-radius">数据分析</button>
+            <button onclick="window.parent.createTab({title:'${q.name}数据分析',isShowClose:true,url:'${q.url}'})"
+                    class="layui-btn  layui-btn-radius">${q.button}
+            </button>
         </div>
     </div>
+    </c:forEach>
 </div>
 <div class="questionnaire-page">
-    <div id="test1" style="float:right; margin-right: 20px;height:0;"></div>
+    <div id="test1" style="margin-left: 20px; height:0;"></div>
 </div>
 </body>
 <script>
-    layui.use('laypage', function(){
-        var laypage = layui.laypage;
+    var count=${count};
+    var loadIndex = null;
+    var laypage=null,layer=null;
+    layui.use(['laypage','layer'], function () {
+        laypage = layui.laypage;
+        layer = layui.layer;
+        setDataPageValue('system/dataList',null);
+    });
+    function clearItem(){
+        $(".questionnaire-item").remove();
+    }
+    function setDataPageValue(url,name){
         //执行一个laypage实例
         laypage.render({
             elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
-            count: 500, //数据总数，从服务端得到
-            limit:8,
-            limits:[8,16,32,64],
-            layout:['prev','page','next','limit','skip','count'],
-            jump:function(obj,first){
+            count: count, //数据总数，从服务端得到
+            limit: 12,
+            limits: [12, 24, 36, 48, 60],
+            layout: ['prev', 'page', 'next', 'limit', 'skip', 'count'],
+            jump: function (obj, first) {
                 //首次不执行
-                if(!first){
-                    alert("跳转到第"+obj.curr);
+                if (!first) {
+                    loadIndex = layer.load();
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: url,
+                        data: {'page': obj.curr, 'limit': obj.limit,'name':name},
+                        success: function (result) {
+                            layer.msg(result.msg);
+                            clearItem();
+                            $(result.data).each(function (index, q) {
+                                $(".questionnaire-content").append("<div class=\"questionnaire-item\">\n" +
+                                    "        <div class=\"questionnaire-one\">\n" +
+                                    "            <ul>\n" +
+                                    "                <li>"+q.name+"</li>\n" +
+                                    "                <li>开始时间:"+q.b+"</li>\n" +
+                                    "                <li>结束时间:"+q.e+"</li>\n" +
+                                    "                <li>参与学校："+q.schoolNumber+"</li>\n" +
+                                    "                <li>参与城市："+q.cityNumber+"</li>\n" +
+                                    "                <li>参与人数："+q.studentNumber+"</li>\n" +
+                                    "            </ul>\n" +
+                                    "        </div>\n" +
+                                    "        <div class=\"questionnaire-two\">\n" +
+                                    "            <button onclick=\"window.parent.createTab({title:'"+q.name+"数据分析',isShowClose:true,url:'"+q.url+"'})\"\n" +
+                                    "                    class=\"layui-btn  layui-btn-radius\">"+q.button+"\n" +
+                                    "            </button>\n" +
+                                    "        </div>\n" +
+                                    "    </div>\n");
+                            });
+                            layer.close(loadIndex);
+                        },
+                        error: function () {
+                            layer.close(loadIndex);
+                            layer.msg("搜索失败",{icon:2});
+                        }
+                    });
                 }
             }
         });
-    });
+    }
+    function questionDataSearch(){
+        var dataName = $(":input[name='qname']").val();
+        if(dataName!==""){
+            loadIndex = layer.load();
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: 'system/dataSearch',
+                data: {'name': dataName},
+                success: function (result) {
+                    layer.close(loadIndex);
+                    layer.msg(result.msg);
+                    clearItem();
+                    $(result.data).each(function (index, q) {
+                        $(".questionnaire-content").append("<div class=\"questionnaire-item\">\n" +
+                            "        <div class=\"questionnaire-one\">\n" +
+                            "            <ul>\n" +
+                            "                <li>"+q.name+"</li>\n" +
+                            "                <li>开始时间:"+q.b+"</li>\n" +
+                            "                <li>结束时间:"+q.e+"</li>\n" +
+                            "                <li>参与学校："+q.schoolNumber+"</li>\n" +
+                            "                <li>参与城市："+q.cityNumber+"</li>\n" +
+                            "                <li>参与人数："+q.studentNumber+"</li>\n" +
+                            "            </ul>\n" +
+                            "        </div>\n" +
+                            "        <div class=\"questionnaire-two\">\n" +
+                            "            <button onclick=\"window.parent.createTab({title:'"+q.name+"数据分析',isShowClose:true,url:'"+q.url+"'})\"\n" +
+                            "                    class=\"layui-btn  layui-btn-radius\">"+q.button+"\n" +
+                            "            </button>\n" +
+                            "        </div>\n" +
+                            "    </div>\n");
+                    });
+                    count = result.count;
+                    setDataPageValue('system/dataSearch',dataName);
+                },
+                error: function () {
+                    layer.close(loadIndex);
+                    layer.msg("搜索失败",{icon:2});
+                }
+            });
+        }else{
+            layer.msg("请输入问卷名称",{icon:2});
+        }
+    }
 </script>
 </html>

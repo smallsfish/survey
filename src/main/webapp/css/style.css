@@ -830,7 +830,7 @@ body,html{
 }
 .questionnaire-content{
 	width: 100%;
-	height: calc(100% - 126px);
+	height: calc(100% - 130px);
 	padding-top: 1px;
 	overflow: scroll;
 	padding-bottom: 13px;
@@ -951,10 +951,9 @@ body,html{
 	/*新版本语法*/
 	-webkit-justify-content: center;
 	justify-content: center;
-	width: 30%;
+	width: 50%;
 	height: 50%;
 	float: left;
-	margin-left: 3%;
 }
 /*数据分析样式结束*/
 

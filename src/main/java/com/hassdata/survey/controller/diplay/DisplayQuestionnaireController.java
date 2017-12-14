@@ -1,10 +1,7 @@
 package com.hassdata.survey.controller.diplay;
 
-import com.hassdata.survey.dto.DisplayQuestionModel;
 import com.hassdata.survey.dto.DisplayQuestionTypeModel;
 import com.hassdata.survey.dto.DisplayQuestionnaireModel;
-import com.hassdata.survey.po.Options;
-import com.hassdata.survey.po.Question;
 import com.hassdata.survey.po.QuestionType;
 import com.hassdata.survey.po.Questionnaire;
 import com.hassdata.survey.service.OptionsService;
@@ -20,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
