@@ -37,7 +37,7 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
     }
     @Override
     public List<Score> getQuestionnaireWithStudentId(String id) {
-        return scoreDao.getQuestionnaireWithUserId(id);
+        return scoreDao.getQuestionnaireWithStudentId(id);
     }
 
     @Override

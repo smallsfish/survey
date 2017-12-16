@@ -9,4 +9,5 @@ public interface ResourceService extends BaseService<Resource> {
     List<Resource> getScrollDataByLike(Resource params, String orderBy, Integer fromIndex, Integer pageSize);
     long getScrollByLikeCount(Resource params);
     List<Resource> getResourceByAccount(String account);
+    List<String> getResourceNameByRoleId(Integer rid);
 }

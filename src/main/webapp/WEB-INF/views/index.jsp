@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -35,7 +36,7 @@
                     <%--<li class="system-layout-item"><a href="javascript:;"><span class="item-hint-point"></span>皮肤</a>
                     </li>--%>
                     <li class="system-layout-item">
-                        <a href="javascript:;"><img src="uploadimage/${sessionScope.CurrentAdminUser.headimage=="" || sessionScope.CurrentAdminUser.headimage==null ? 'nohead.jpg' : sessionScope.CurrentAdminUser.headimage}" alt="" class="system-layout-item-nav-headimg"> ${sessionScope.CurrentAdminUser.account}<span class="square-icon"></span></a>
+                        <a href="javascript:;"><img src="uploadimage/${sessionScope.CurrentAdminUser.headimage=="" || sessionScope.CurrentAdminUser.headimage==null ? 'nohead.jpg' : sessionScope.CurrentAdminUser.headimage}" alt="" class="system-layout-item-nav-headimg"> <shiro:principal/> <span class="square-icon"></span></a>
                         <!-- 导航子菜单，可以在每一个菜单项的a标签后面添加-->
                         <ul class="system-layout-item-child">
                             <li class="system-layout-item-child-li"><a onclick="updateAdminUserPassword()" href="javascript:;">修改密码</a></li>

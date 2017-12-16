@@ -298,7 +298,7 @@
 
 
     <select id="findRoleByAccount" resultType="string" parameterType="string">
-        select rolename from role where id in (select rid from admin_role where aid = (select id from admin_user where account=#{account}))
+        select rolename from role where id in (select rid from admin_role where aid = (select id from admin_user where account=#{account})) and available = 1
     </select>
 
     <select id="findPermissionByAccount" resultType="string" parameterType="string">

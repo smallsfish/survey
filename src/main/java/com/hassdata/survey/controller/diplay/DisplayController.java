@@ -3,12 +3,11 @@ package com.hassdata.survey.controller.diplay;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hassdata.survey.po.Admin_User;
 import com.hassdata.survey.po.Score;
 import com.hassdata.survey.po.Student;
 import com.hassdata.survey.po.User;
-import com.hassdata.survey.service.ScoreService;
-import com.hassdata.survey.service.StudentService;
-import com.hassdata.survey.service.UserService;
+import com.hassdata.survey.service.*;
 import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
 import org.springframework.context.annotation.Scope;
@@ -86,11 +85,8 @@ public class DisplayController {
                 session.setAttribute("CurrentUser", userS);
                 userService.updateParams(userS);
                 if(path!=null && parameter!=null && !path.equals("") && !parameter.equals("")){
-                    try {
-                        response.sendRedirect(path + "?id=" + parameter + "#top");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    session.setAttribute("parameter",parameter);
+                    return "redirect:"+path+"?id="+parameter;
                 }else{
                     map.addAttribute("id",userS.getId());
                     return "display/user/updateUserPassword";

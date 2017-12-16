@@ -1,12 +1,9 @@
 package com.hassdata.survey.controller.index;
 
-import com.hassdata.survey.po.Admin_User;
 import com.hassdata.survey.po.Loop;
 import com.hassdata.survey.po.MessageBoard;
-import com.hassdata.survey.service.AdminUserService;
 import com.hassdata.survey.service.LoopService;
 import com.hassdata.survey.service.MessageBoardService;
-import com.hassdata.survey.service.PasswordHelper;
 import com.hassdata.survey.util.ServerResponse;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -24,6 +21,7 @@ import java.util.List;
 @RequestMapping("index")
 @Scope("prototype")
 public class HomeController {
+
     private SimpleDateFormat simpleDateFormat1=new SimpleDateFormat("yyyy-MM-dd");
 
     @Resource

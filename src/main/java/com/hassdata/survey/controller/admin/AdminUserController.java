@@ -9,7 +9,6 @@ import com.hassdata.survey.service.PasswordHelper;
 import com.hassdata.survey.service.ResourceService;
 import com.hassdata.survey.util.ArrayUtils;
 import com.hassdata.survey.util.FileUploadUtils;
-import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -53,10 +52,9 @@ public class AdminUserController {
 
     @RequestMapping(value = "exit", method = RequestMethod.GET)
     @ResponseBody
-    public String exitSystem(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        if (session.getAttribute("CurrentAdminUser") != null) {
-            session.removeAttribute("CurrentAdminUser");
+    public String exitSystem() {
+        if (SecurityUtils.getSubject().getSession(true).getAttribute("CurrentAdminUser") != null) {
+            SecurityUtils.getSubject().getSession(true).removeAttribute("CurrentAdminUser");
         }
         SecurityUtils.getSubject().logout();
         return "success";
@@ -149,8 +147,7 @@ public class AdminUserController {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse systemLogin(HttpServletRequest request, Admin_User adminUser, @RequestParam(required = false) Integer remind) {
-        HttpSession session = request.getSession(true);
+    public ServerResponse systemLogin(Admin_User adminUser, @RequestParam(required = false) Integer remind) {
         boolean rememberMe = false;
         if (adminUser.getAccount().isEmpty()) {
             return ServerResponse.createByErrorMessage("请输入账号！");
@@ -174,7 +171,13 @@ public class AdminUserController {
         } catch (ExcessiveAttemptsException e) {
             return ServerResponse.createByErrorMessage("重试次数过多，已锁定");
         }
-        SecurityUtils.getSubject().getSession().setAttribute("CurrentAdminUser", adminUserService.getOne(adminUser));
+        Admin_User admin_user=adminUserService.getOne(adminUser);
+        SecurityUtils.getSubject().getSession().setAttribute("CurrentAdminUser", admin_user);
+        Integer id=admin_user.getId();
+        admin_user=new Admin_User();
+        admin_user.setId(id);
+        admin_user.setLastlogintime(new Date());
+        adminUserService.updateParams(admin_user);
         return ServerResponse.createBySuccessMessage("登陆成功");
     }
 
@@ -356,15 +359,16 @@ public class AdminUserController {
 
     @RequestMapping(value = "adminPasswordUpdate", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse adminPasswordUpdate(String newPassword, HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        Admin_User admin_user = (Admin_User) session.getAttribute("CurrentAdminUser");
-        admin_user.setPassword(null);
-        Admin_User au = adminUserService.getOne(admin_user);
+    public ServerResponse adminPasswordUpdate(String newPassword) {
+
+        Admin_User admin_user = (Admin_User) SecurityUtils.getSubject().getSession(true).getAttribute("CurrentAdminUser");
+        Admin_User adu=new Admin_User();
+        adu.setId(admin_user.getId());
         if (!newPassword.equals("") && newPassword != null) {
-            au.setPassword(newPassword);
-            passwordHelper.encryptPassword(au);
-            adminUserService.updateParams(au);
+            adu.setAccount(admin_user.getAccount());
+            adu.setPassword(newPassword);
+            passwordHelper.encryptPassword(adu);
+            adminUserService.updateParams(adu);
             return ServerResponse.createBySuccessMessage("密码重置成功，下次登录将失效");
         }
         return ServerResponse.createByErrorMessage("密码重置失败");

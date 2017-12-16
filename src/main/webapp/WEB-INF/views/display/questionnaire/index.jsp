@@ -200,8 +200,8 @@
 			$(question_label[j-1]).attr("for",$(question_input[j]).attr("name")+j);
 		}
 	}
+    var isGo=false;
 	function volidateSubmit(){
-		var isGo=false;
 		for (var z = 0; z < question.length; z++) {
 			$(question[z]).css("background-color","rgba(204,204,204,0.8)");
 		}
@@ -235,12 +235,15 @@
 					$(question[j]).css("background-color","rgba(250,0,0,0.3)");
 				}
 			}
-			
-			alert("请补充当前未做题目(红色背景)!");
+
+            layer.msg("请补充当前未做题目(红色背景)!",{icon:2,time:3000});
 		}
 		return isGo;
 	}
 	$("#formQ").submit(function () {
+		if(!isGo){
+			return false;
+		}
 		var loadIndex=layer.load();
         $.ajax({
             type: "POST",
@@ -265,7 +268,11 @@
             }
         });
     });
+	var id='${sessionScope.parameter}';
 	$("#md").css({"right":10,"top":(windowHeight-$("#md").height())/2});
-
+	var url=window.location.href;
+	if(url.indexOf("path")>0){
+	    window.location.href="display/displayQuestionnaire?id="+id;
+	}
 </script>
 </html>

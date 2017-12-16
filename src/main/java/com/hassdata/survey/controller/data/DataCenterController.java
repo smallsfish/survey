@@ -1,5 +1,6 @@
 package com.hassdata.survey.controller.data;
 
+import com.alibaba.druid.sql.visitor.functions.Char;
 import com.hassdata.survey.dto.DataCenterDTO;
 import com.hassdata.survey.dto.OptionInfo;
 import com.hassdata.survey.dto.QuestionCharts;
@@ -73,13 +74,13 @@ public class DataCenterController {
             dataCenterDTO.setName(q.getQuestionnairename());
             boolean b=false,e=false;
             if(q.getQuestionnairebegintime()==null || q.getQuestionnairebegintime().equals("")){
-                dataCenterDTO.setB("随时");
+                dataCenterDTO.setB("未设");
             }else{
                 dataCenterDTO.setB(format.format(q.getQuestionnairebegintime()));
                 b=true;
             }
             if(q.getQuestionnaireendtime()==null || q.getQuestionnaireendtime().equals("")){
-                dataCenterDTO.setE("随时");
+                dataCenterDTO.setE("未设");
             }else{
                 dataCenterDTO.setE(format.format(q.getQuestionnaireendtime()));
                 e=true;
@@ -173,13 +174,13 @@ public class DataCenterController {
         for(Question q : questionList){
             optionInfos=new ArrayList<>();
             qc=new QuestionCharts();
-            qc.setName(q.getQuestionname());
+            qc.setName(splitName(true,q.getQuestionname()));
             Options op=new Options();
             op.setQuestionid(q.getId());
             List<Options> optionsList=optionsService.getAll(op);
             for(Options o : optionsList){
                 oi=new OptionInfo();
-                oi.setName(o.getOptionsname());
+                oi.setName(splitName(false,o.getOptionsname()));
                 oi.setCount((long)scoreService.getOptionCountWidthQuesitonnaire(id,q.getId(),"%"+o.getId()+"%").size());
                 optionInfos.add(oi);
             }
@@ -188,5 +189,35 @@ public class DataCenterController {
         }
         map.addAttribute("ch",questionCharts);
         return "system/data/da";
+    }
+
+    /**
+     * 分割字符串,如果是问题18个一行，否则12个一行
+     * @param isQuestion
+     * @param str
+     * @return
+     */
+    private String splitName(boolean isQuestion,String str){
+        String s="";
+        String[] sc=str.split("");
+        if(isQuestion){
+            for(int i=0; i<sc.length;i++){
+                if(i!=0 && i%18==0){
+                    s+="\\n"+sc[i];
+                }else{
+                    s+=sc[i];
+                }
+            }
+        }else{
+            for(int i=0; i<sc.length;i++){
+                if(i!=0 && i%12==0){
+                    s+="\\n"+sc[i];
+                }else{
+                    s+=sc[i];
+                }
+            }
+        }
+        System.out.println(s);
+        return s;
     }
 }

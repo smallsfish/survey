@@ -36,4 +36,9 @@ public class ResourceServiceImpl extends BaseServiceImpl<com.hassdata.survey.po.
     public List<com.hassdata.survey.po.Resource> getResourceByAccount(String account) {
         return resourceDao.getResourceByAccount(account);
     }
+
+    @Override
+    public List<String> getResourceNameByRoleId(Integer rid) {
+        return resourceDao.getResourceNameByRoleId(rid);
+    }
 }

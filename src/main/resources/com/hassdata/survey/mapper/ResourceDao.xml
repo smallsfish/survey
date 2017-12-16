@@ -240,7 +240,14 @@
     </select>
 
     <select id="getResourceByAccount" resultMap="resourceResult" parameterType="string">
-      select <include refid="resourceColumns"/> from resource where id in (select reid from role_resource where rid in (select rid from admin_role where aid=(select id from admin_user where account=#{account}) ) ) and permission is not null and available = 1 order by id asc
+      select <include refid="resourceColumns"/> from resource where id in (select reid from role_resource where rid in (select id from role where id in(select rid from admin_role where aid=(select id from admin_user where account=#{account}) and available = 1 )) ) and permission is not null and available = 1 order by id asc
     </select>
+
+
+    <select id="getResourceNameByRoleId" resultType="string" parameterType="int">
+       select name from resource where id in (select reid from role_resource where rid= #{rid} ) and available=1
+    </select>
+
+
 
 </mapper>

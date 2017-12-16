@@ -11,49 +11,56 @@
     <title>test</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="layui/css/layui.css">
+    <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+    </style>
 </head>
 
 <body oncontextmenu="return false" onselect="return false">
 <div class="questionnaire-top">
     <div class="questionnaire-search" style="float:left; margin-left: 25px;">
-        <input type="search" name="qname" placeholder="请输入学生名称">
-        <div class="questionnaire-search-button"><img onclick="searchSuccessStudent()" src="img/icon/icon-search.png"></div>
+        <input type="search" name="rname" placeholder="请输入角色名称">
+        <div onclick="searchSuccessRole()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
     </div>
     <div class="information-toolbar">
-        <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中管理员" title="删除">
-        <img onclick="reflashStudentTable()" src="img/icon/icon-reflash.png" alt="刷新当前页面" title="刷新">
+        <img onclick="addRole()" src="img/icon/icon-more2.png" alt="添加角色" title="添加">
+        <img onclick="reflashRoleOnSuccessTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
+        <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中角色" title="删除">
     </div>
 </div>
 <div class="information-content">
-    <table id="dynamic-table-questionnaire-info" lay-filter="infoTable"></table>
+    <table id="dynamic-table-info" lay-filter="infoTable"></table>
 </div>
 </body>
 <script>
     var layui_tab_item_width = $('.information-content').width();
-    var studentTable;
+    var successRoleTable;
+    var loadIndex;
     layui.use(['element', 'table'], function () {
         var element = layui.element;
         var table = layui.table;
         //一些事件监听
         element.on('tab(demo)', function (data) {
-            console.log(data);
         });
 //        动态表格
-        studentTable=table.render({
-            elem: '#dynamic-table-questionnaire-info', //指定原始表格元素选择器（推荐id选择器）
+        successRoleTable=table.render({
+            elem: '#dynamic-table-info', //指定原始表格元素选择器（推荐id选择器）
             page: true,
-            url:'system/getStudentList?uid=${uid}',
             id: 'infoTable',
-            height: 'full-110', //容器高度
+            url:'system/roleList',
+            height: 'full-115', //容器高度
             cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
-                {width: layui_tab_item_width * 0.08, field: 'aid', title: '序号', sort: true},
-                {width: layui_tab_item_width * 0.18, field: 'studentname', title: '姓名'},
-                {width: layui_tab_item_width * 0.16, field: 'grade', title: '年级'},
-                {width: layui_tab_item_width * 0.15, field: 'classes', title: '班级'},
-                {width: layui_tab_item_width * 0.1, field: 'questionnairenumber', title: '参与问卷数量'},
-                {width: layui_tab_item_width * 0.3, align:'center',toolbar:'#infoToolBar',title:'操作'}
+                {width: layui_tab_item_width * 0.04, field: 'aid', title: '序号', sort: true},
+                {width: layui_tab_item_width * 0.08, field: 'rolename', title: '角色名称'},
+                {width: layui_tab_item_width * 0.4, field: 'resources', title: '资源'},
+                {width: layui_tab_item_width * 0.165, field: 'description', title: '描述'},
+                {width: layui_tab_item_width * 0.1, field: 'available', title: '是否可用'},
+                {width: layui_tab_item_width * 0.18,fixed: 'right', align:'center',toolbar:'#infoToolBar',title:'操作'}
             ]],
-            size: 'sm',
+            size: 'lg',
             limits: [30, 60, 90, 150, 300],
             limit: 30 //默认采用30
         });
@@ -70,13 +77,13 @@
                             $.ajax({
                                 type: "GET",
                                 dataType: "json",
-                                url: 'system/studentDel',
+                                url: 'system/userInfoDel',
                                 data: {'id':obj.id},
                                 success: function (result) {
                                     if(index==data.length-1){
                                         layer.close(loadIndex);
                                         layer.msg(result.msg);
-                                        reflashStudentTable();
+                                        reflashRoleOnSuccessTable();
                                     }
                                 },
                                 error: function(data) {
@@ -85,7 +92,7 @@
                                 }
                             });
                         });
-                    });
+                    })
                 }
             }
         };
@@ -97,10 +104,8 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值
             var tr = obj.tr; //获得当前行 tr 的DOM对象
-            if(layEvent === 'detail'){ //查看
-                layer.msg("查看学校具体信息");
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除该用户吗？该操作无法恢复', function(index){
                     obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                     layer.close(index);
                     //向服务端发送删除指令
@@ -108,8 +113,8 @@
                     $.ajax({
                         type: "GET",
                         dataType: "json",
-                        url: 'system/studentDel',
-                        data: {'id':data.id},
+                        url: 'system/userInfoDel',
+                        data: {'uid':data.id},
                         success: function (result) {
                             layer.close(loadIndex);
                             if(result.status==0){
@@ -122,29 +127,57 @@
                             layer.alert("出现异常！");
                         }
                     });
-
                 });
+            } else if(layEvent === 'edit'){ //编辑
+                editorRole(data);
             }
         });
     });
-    function reflashStudentTable (){
-        studentTable.reload({
-            url:'system/getStudentList?uid=${uid}'
+    function reflashRoleOnSuccessTable (){
+        successRoleTable.reload({
+            url:'system/roleList'
         });
     }
-    function searchSuccessStudent(){
-        var studentName=$(":input[name='qname']").val();
-        if(studentName===""){
-            layer.msg("请输入学生名称！",{icon:2,time:3000});
+    function searchSuccessRole(){
+        var schoolName=$(":input[name='rname']").val();
+        if(schoolName===""){
+            layer.msg("请输入角色名称！",{icon:2,time:3000});
             return;
         }
-        studentTable.reload({
-            url:'system/studentSearch?studentName='+studentName+'&uid=${uid}'
+        successRoleTable.reload({
+            url:'system/searchInfoList?schoolname='+schoolName
+        });
+    }
+
+
+
+    function addRole() {
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.open({
+                title:'添加普通用户',
+                type:2,
+                area: ['50%', '70%'],
+                content:'system/getRoleAdd',
+                skin:'layui-layer-molv'
+            });
+        });
+    }
+    function editorRole(data) {
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            layer.open({
+                title: data.schoolname+' 用户编辑',
+                type:2,
+                area: ['50%', '70%'],
+                content:'system/getEditorAdd?id='+data.id,
+                skin:'layui-layer-molv'
+            });
         });
     }
 </script>
 <script id="infoToolBar" type="text/html">
-    <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 </html>

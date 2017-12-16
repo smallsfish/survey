@@ -11,7 +11,7 @@
         <![CDATA[
         	id,
             rolename,
-            descirption,
+            description,
             available
 	    ]]>
     </sql>
@@ -25,8 +25,8 @@
             <if test="rolename != null">
                 and rolename = #{rolename}
             </if>
-            <if test="descirption != null">
-                and descirption = #{descirption}
+            <if test="description != null">
+                and description = #{description}
             </if>
             <if test="available != null">
                 and available = #{available}
@@ -40,12 +40,12 @@
 	        role (
 	        	id,
 	        	rolename,
-	        	descirption,
+	        	description,
 	        	available
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
 	        	#{rolename,jdbcType=VARCHAR},
-	        	#{descirption,jdbcType=VARCHAR},
+	        	#{description,jdbcType=VARCHAR},
 	        	#{available,jdbcType=BIT}
 	        )
 	    ]]>
@@ -55,7 +55,7 @@
         <![CDATA[
 	        UPDATE role SET
 		        rolename = #{rolename,jdbcType=VARCHAR},
-		        descirption = #{descirption,jdbcType=VARCHAR},
+		        description = #{description,jdbcType=VARCHAR},
 		        available = #{available,jdbcType=BIT}
 			WHERE
 				id = #{id}
@@ -69,8 +69,8 @@
             <if test="rolename != null">
                 rolename = #{rolename,jdbcType=VARCHAR},
             </if>
-            <if test="descirption != null">
-                descirption = #{descirption,jdbcType=VARCHAR},
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
             </if>
             <if test="available != null">
                 available = #{available,jdbcType=BIT}
@@ -161,8 +161,8 @@
             <if test="rolename != null">
                 and rolename LIKE #{rolename}
             </if>
-            <if test="descirption != null">
-                and descirption LIKE #{descirption}
+            <if test="description != null">
+                and description LIKE #{description}
             </if>
             <if test="available != null">
                 and available = #{available}

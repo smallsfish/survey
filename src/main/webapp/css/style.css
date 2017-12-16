@@ -951,8 +951,8 @@ body,html{
 	/*新版本语法*/
 	-webkit-justify-content: center;
 	justify-content: center;
-	width: 50%;
-	height: 50%;
+	width: 100%;
+	height: 70%;
 	float: left;
 }
 /*数据分析样式结束*/
