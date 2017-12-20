@@ -14,7 +14,7 @@
 
             <div class="newstypetools">
                 <div class="questionnaire-search" style="float:left; margin-top: -23px;">
-                    <input type="search" style="border-right:1px gray solid;border-radius:5px;" name="qname"
+                    <input type="search" style="border-right:1px gray solid;border-radius:5px;margin-top: 10px;" name="qname"
                            placeholder="请输入新闻标题">
 
                     <label for="newstype" style="margin-left: 40px;">资讯类型：</label>

@@ -187,4 +187,8 @@
         <include refid="roleLikeDynamicWhere"/>
     </select>
 
+    <select id="getIdMax" resultType="int">
+        select max(id) from role
+    </select>
+
 </mapper>

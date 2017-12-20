@@ -30,4 +30,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements RoleServic
         Map<String, Object> map = buildParams(params ,null, null, null);
         return roleDao.getScrollByLikeCount(map);
     }
+
+    @Override
+    public Integer getIdMax() {
+        return roleDao.getIdMax();
+    }
+
 }

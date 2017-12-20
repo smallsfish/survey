@@ -8,4 +8,5 @@ import java.util.List;
 public interface RoleService extends BaseService<Role> {
     List<Role> getScrollDataByLike(Role params, String orderBy, Integer fromIndex, Integer pageSize);
     long getScrollByLikeCount(Role params);
+    Integer getIdMax();
 }

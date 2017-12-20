@@ -83,12 +83,13 @@
         $(".pictures-content li").on("click",'div',function () {
             var showImg=$(".showImg");
             var imgIndex=$(".p-picture-list").index($(this));
-            var imgSrc=$(".p-picture-list:eq("+imgIndex+") img").attr("src");
+            var imgSrc=$(".pictures-content img:eq(\""+imgIndex+"\")").attr("src");
             if(showImg.length==0){
                 $("body").append("<div class=\"showImg\">" +
                     "    <img src="+imgSrc+" />" +
                     "</div>");
             }
+            $(".showImg img").attr("src",imgSrc);
             $(".showImg").css({"width":windowWidth+"px","height":windowHeight+"px"});
             $(".showImg").show();
             $(".showImg").on("click",function () {

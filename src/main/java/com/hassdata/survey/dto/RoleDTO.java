@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class RoleDTO implements Serializable{
     private Integer aid;
+    private Integer id;
     private String rolename;
     private String resources;
     private String description;
@@ -15,6 +16,14 @@ public class RoleDTO implements Serializable{
 
     public void setAid(Integer aid) {
         this.aid = aid;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getRolename() {

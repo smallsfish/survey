@@ -11,4 +11,5 @@ import java.util.Map;
 public interface RoleDao extends BaseDao<Role> {
     List<Role> getScrollDataByLike(Map<String, Object> params);
     long getScrollByLikeCount(Map<String, Object> params);
+    Integer getIdMax();
 }

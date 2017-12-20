@@ -44,34 +44,30 @@
         <div class="layui-carousel" id="pictureLoop">
             <div carousel-item>
                 <c:forEach items="${loops}" var="loop">
-                    <div class="loop-pic"><a href="${(loop.url==null || loop.url.equals("")) ? 'javascript:;': loop.url}"><img src="${loop.imageurl}"></a></div>
+                    <div class="loop-pic"><a
+                            href="${(loop.url==null || loop.url.equals("")) ? 'javascript:;': loop.url}"><img
+                            src="${loop.imageurl}"></a></div>
                 </c:forEach>
             </div>
         </div>
     </div>
 </header>
 <section>
-    <div class="pictures">
-        <div class="pictures-tab">
-            <ul>
-                <li>分类：</li>
-                <c:forEach var="pt" items="${pts}">
-                    <li>${pt.pictureTypeName}</li>
-                </c:forEach>
-            </ul>
-        </div>
-
-    </div>
-    <div class="pictures-content">
+    <div class="questionnaire-content">
         <ul>
-            <c:forEach var="pt" items="${pts}">
+            <c:forEach var="q" items="${questionnaires}">
                 <li>
-                    <c:forEach var="p" items="${pt.picturesList}">
-                        <div class="p-picture-list">
-                            <img src="uploadimage/${p.pictureurl}"/>
-                            <span>${p.picturetitle}</span>
-                        </div>
-                    </c:forEach>
+                    <span>${q.name}</span>
+                    <label>${q.time}</label>
+                    <c:if test="${q.status==0}">
+                        <a href="index/da?id=${q.id}" target="_blank">分析</a>
+                    </c:if>
+                    <c:if test="${q.status==1}">
+                        <a href="javascript:;">进行中</a>
+                    </c:if>
+                    <c:if test="${q.status==2}">
+                        <a href="javascript:;">未开始</a>
+                    </c:if>
                 </li>
             </c:forEach>
         </ul>

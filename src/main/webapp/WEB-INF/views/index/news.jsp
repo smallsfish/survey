@@ -13,11 +13,12 @@
     <link rel="stylesheet" href="layui/css/layui.css">
     <script src="js/index.js"></script>
     <style>
-        .loop-pic{
+        .loop-pic {
             width: 100%;
             height: 100%;
         }
-        .loop-pic img{
+
+        .loop-pic img {
             width: 100%;
             height: 100%;
         }
@@ -28,11 +29,13 @@
     <nav>
         <div class="header-nav">
             <ul>
-                <li>logo</li>
-                <li><a href="/index/home">儿童之家<i></i></a></li>
-                <li><a href="/index/news">儿童资讯<i></i></a></li>
-                <li><a href="/index/picture">儿童图片<i></i></a></li>
-                <li><a href="/index/video">儿童视频<i></i></a></li>
+                <li><img src="img/logo.png" alt="logo"><span>基础教育改革与发展协同创新中心</span></li>
+                <li><a href="/index/home">留守儿童之家<i></i></a></li>
+                <li><a href="/index/news">留守儿童资讯<i></i></a></li>
+                <li><a href="/index/picture">留守儿童图片<i></i></a></li>
+                <li><a href="/index/video">留守儿童视频<i></i></a></li>
+                <li><a href="/index/questionnaire">留守儿童问卷<i></i></a></li>
+                <li><a href="/index/data">问卷分析<i></i></a></li>
                 <li><a href="/index/msg">留言板</a></li>
             </ul>
         </div>
@@ -41,7 +44,7 @@
         <div class="layui-carousel" id="pictureLoop">
             <div carousel-item>
                 <c:forEach items="${loops}" var="loop">
-                    <div class="loop-pic"><a href="${loop.url}"><img src="${loop.imageurl}"></a></div>
+                    <div class="loop-pic"><a href="${(loop.url==null || loop.url.equals("")) ? 'javascript:;': loop.url}"><img src="${loop.imageurl}"></a></div>
                 </c:forEach>
             </div>
         </div>
@@ -51,100 +54,26 @@
     <div class="news">
         <div class="news-tab">
             <ul>
-                <li class="news-tab-focus">asdf</li>
-                <li>asdf</li>
-                <li>asdf</li>
-                <li>asDF</li>
-                <li>asdf</li>
+                <c:forEach var="type" items="${nids}" varStatus="st">
+                    <li <c:if test="${st.index==0}">class="news-tab-focus"</c:if> >${type.typeName}</li>
+                </c:forEach>
             </ul>
         </div>
         <div class="news-content">
             <ul>
-                <li>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                </li>
-                <li>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                </li>
-                <li>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                </li>
-                <li>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                </li>
-                <li>
-                    <div class="n-news-list">
-                        <span>奥斯卡劳动纠纷看拉升阶段分开了就阿斯利康的积分拉萨空间的发卢卡斯记得不刻录机阿斯达克浪费就阿斯科利大家分开拉上的纠纷快乐；啊睡觉的疯狂拉升地方</span>
-                        <label>2017-10-27</label>
-                        <img src="img/icon/EPS.png"/>
-                    </div>
-                </li>
+                <c:forEach var="newst" items="${nids}">
+                    <li>
+                        <c:forEach var="news" items="${newst.newsDTOList}">
+                            <a href="javascript:;">
+                                <div class="n-news-list">
+                                    <span>${news.newstitle}</span>
+                                    <label>${news.createtime}</label>
+                                    <img src="uploadimage/${news.imageurl}"/>
+                                </div>
+                            </a>
+                        </c:forEach>
+                    </li>
+                </c:forEach>
             </ul>
         </div>
     </div>
@@ -161,7 +90,7 @@
             elem: '#pictureLoop'
             , width: '100%' //设置容器宽度
             , arrow: 'hover' //始终显示箭头
-            , height: '380px'
+            , height: '600px'
             , anim: 'fade' //切换动画方式
         });
     });

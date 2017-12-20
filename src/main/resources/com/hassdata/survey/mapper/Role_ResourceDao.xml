@@ -24,8 +24,8 @@
             <if test="rid != null">
                 and rid = #{rid}
             </if>
-            <if test="rid != null">
-                and rid = #{rid}
+            <if test="reid != null">
+                and reid = #{rid}
             </if>
         </where>
     </sql>
@@ -36,11 +36,11 @@
 	        role_resource (
 	        	id,
 	        	rid,
-	        	rid
+	        	reid
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
 	        	#{rid,jdbcType=INTEGER},
-	        	#{rid,jdbcType=INTEGER}
+	        	#{reid,jdbcType=INTEGER}
 	        )
 	    ]]>
     </insert>
@@ -49,7 +49,7 @@
         <![CDATA[
 	        UPDATE role_resource SET
 		        rid = #{rid,jdbcType=INTEGER},
-		        rid = #{rid,jdbcType=INTEGER}
+		        reid = #{rid,jdbcType=INTEGER}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -62,8 +62,8 @@
             <if test="rid != null">
                 rid = #{rid,jdbcType=INTEGER},
             </if>
-            <if test="rid != null">
-                rid = #{rid,jdbcType=INTEGER},
+            <if test="reid != null">
+                reid = #{rid,jdbcType=INTEGER},
             </if>
         </set>
         WHERE
@@ -151,8 +151,8 @@
             <if test="rid != null">
                 and rid = #{rid}
             </if>
-            <if test="rid != null">
-                and rid = #{rid}
+            <if test="reid != null">
+                and reid = #{rid}
             </if>
         </where>
     </sql>

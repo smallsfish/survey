@@ -65,7 +65,7 @@
                 },
                 error: function(data) {
                     layer.close(loadIndex);
-                    alert("error:"+data);
+                    alert("提交失败");
                 }
             });
         }
@@ -230,11 +230,16 @@
         $(".questionnaireadd-main-type-content ul li:eq(" + cur + ")").remove();
         lis = $(".questionnaireadd-main-type-content:eq(" + curtypes + ") ul li").length;
         var tempt="";
-        for(var x=0;x<lis;x++){
-            tempt=$(".questionnaireadd-main-type-content:eq(" + curtypes + ") ul li:eq("+x+") label").text();
-            $(".questionnaireadd-main-type-content:eq(" + curtypes + ") ul li:eq("+x+") label").html("<span>*</span>Q"+(x+1)+tempt.substring(3,tempt.length));
-            questionnaire.types[curtypes].questions[x].main="Q"+(x+1)+tempt.substring(3,tempt.length);
-            questionnaire.types[curtypes].questions[x].sort=x;
+        for(var x=1;x<=lis;x++){
+            // var j=1,z=x;
+            // while(Math.floor(z/10)!=0){
+            //     j++;
+            //     z=Math.floor(z/10);
+            // }
+            tempt=$(".questionnaireadd-main-type-content:eq(" + curtypes + ") ul li:eq("+(x-1)+") label").text();
+            $(".questionnaireadd-main-type-content:eq(" + curtypes + ") ul li:eq("+(x-1)+") label").html("<span>*</span>Q"+(x)+":"+tempt.split(":")[1]);
+            questionnaire.types[curtypes].questions[x-1].main="Q"+(x)+":"+tempt.split(":")[1];
+            questionnaire.types[curtypes].questions[x-1].sort=x-1;
         }
     }
     questionnaireAddMainTypeLife = function (ele,ev) {

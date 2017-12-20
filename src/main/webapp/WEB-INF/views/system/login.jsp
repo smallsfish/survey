@@ -18,7 +18,7 @@
         </div>
         <div class="system-login-center">
             <div class="system-login-center-left">
-
+                <img id="sysBg" src="img/bg.jpg">
             </div>
             <div class="system-login-center-right">
                 <div class="system-login-box">
@@ -70,18 +70,67 @@
                         layer.msg(result.msg);
                         setTimeout(function () {
                             window.location.href="system/index";
-                        },1000);
+                        },500);
                     }else{
                         layer.msg(result.msg,{icon:2,time:3000});
                     }
                 },
                 error: function(data) {
                     layer.close(loadIndex);
-                    alert("error:"+data);
+                    layer.alert("登录失败");
                 }
             });
 
         });
     });
+
+    loadimg();
+    //加载背景图的函数，该函数使图片适配所有屏幕的尺寸大小，尽可能的让图片显示正常
+    function loadimg(){
+        var imgheight=$("#sysBg").height();
+        var imgwidth=$("#sysBg").width();
+        var imgbl=imgheight/imgwidth;//图片高于宽的比例
+        windowHeight=$('.system-login-center-left').height();
+        windowWidth=$('.system-login-center-left').width();
+        var width=0,height=0,top=0,left=0;
+        //如果图片的高度和宽度都大于屏幕的宽高
+        if(imgheight>windowHeight && imgwidth>windowWidth){
+            if(imgwidth<imgheight){
+                //图片宽小于高
+                width=windowWidth;
+                height=width*imgbl;
+            }else{
+                //图片宽大于高
+                height=windowHeight;
+                width=height*(1/imgbl);
+            }
+        }else if(imgheight>windowHeight && imgwidth<windowWidth){
+            //如果图片的高大于屏幕的高但是图片的宽小于屏幕的宽
+
+        }else if(imgheight<windowHeight && imgwidth>windowWidth){
+            //如果图片的高小于屏幕的高但是图片的宽大于屏幕的宽
+
+        }else{
+            //如果图片的宽高都小于屏幕的宽高
+        }
+        //如果按比例缩放后还出现图片的高度或宽度小于屏幕的宽高，就再次进行等比例缩放
+        if(width<windowWidth){
+            width=windowWidth;
+            height=width*imgbl;
+        }
+        if(height<windowHeight){
+            height=windowHeight;
+            width=height*(1/imgbl);
+        }
+        if(width>windowWidth){
+            left=-(width-windowWidth)/2;
+        }else if(height>windowHeight){
+            top=-(height-windowHeight)/2;
+        }
+        $('#sysBg').css({"width":width,"height":height,"top":top,"left":left});
+    }
+    window.onresize=function(){
+        loadimg();
+    }
 </script>
 </html>

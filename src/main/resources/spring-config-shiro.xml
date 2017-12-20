@@ -115,7 +115,7 @@
             <value>
                 /system/login = anon
                 /system/logout = logout
-                /authenticated = authc
+                /system/questionnaireAdd = authc
                 /css/** = anon
                 /img/** = anon
                 /js/** = anon

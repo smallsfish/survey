@@ -68,7 +68,11 @@ body,html{
 	width: 60%;
 	height: 80%;
 	float: left;
-	background-color: #FFB800;
+	position: relative;
+	overflow: hidden;
+}
+.system-login-center-left img{
+	position: absolute;
 }
 .top-en:last-child{
 	bottom:0;
@@ -1165,4 +1169,3 @@ body,html{
 	margin-top: 7px;
 	margin-right: 15px;
 }
-
