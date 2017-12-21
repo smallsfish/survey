@@ -49,7 +49,7 @@
         <![CDATA[
 	        UPDATE role_resource SET
 		        rid = #{rid,jdbcType=INTEGER},
-		        reid = #{rid,jdbcType=INTEGER}
+		        reid = #{reid,jdbcType=INTEGER}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -63,11 +63,15 @@
                 rid = #{rid,jdbcType=INTEGER},
             </if>
             <if test="reid != null">
-                reid = #{rid,jdbcType=INTEGER},
+                reid = #{reid,jdbcType=INTEGER},
             </if>
         </set>
         WHERE
         id = #{id}
+    </update>
+
+    <update id="updateByRoleId" parameterType="Role_Resource">
+       <![CDATA[ UPDATE role_resource set reid = #{reid,jdbcType=INTEGER} where rid=#{rid} ]]>
     </update>
 
     <delete id="delete" parameterType="java.lang.Integer">
@@ -76,6 +80,11 @@
 	        id = #{id}
 	    ]]>
     </delete>
+
+    <delete id="deleteByRoleId" parameterType="java.lang.Integer">
+        <![CDATA[ DELETE FROM role_resource where rid=#{rid}]]>
+    </delete>
+
     <delete id="deleteByStringId" parameterType="java.lang.String">
         <![CDATA[
 	        delete from role_resource where

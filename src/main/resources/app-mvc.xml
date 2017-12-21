@@ -80,6 +80,6 @@
 			</list>
 		</property>
 	</bean>
-
+	<bean class="com.hassdata.survey.exception.DefaultExceptionHandler"/>
 	<import resource="spring-mvc-shiro.xml"/>
 </beans>

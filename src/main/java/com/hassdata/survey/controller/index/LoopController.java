@@ -4,6 +4,7 @@ import com.hassdata.survey.po.Loop;
 import com.hassdata.survey.service.LoopService;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,41 +30,43 @@ public class LoopController {
     @Resource
     private LoopService loopService;
 
-    @RequestMapping(value = "loop",method = RequestMethod.GET)
-    public String getSystemLoop(){
+    @RequestMapping(value = "loop", method = RequestMethod.GET)
+    public String getSystemLoop() {
         return "system/web/loop/loopcenter";
     }
 
-    @RequestMapping(value = "getLoopAdd",method = RequestMethod.GET)
-    public String getLoopAdd(){
+    @RequiresPermissions("loop:add")
+    @RequestMapping(value = "getLoopAdd", method = RequestMethod.GET)
+    public String getLoopAdd() {
         return "system/web/loop/addPictureLoop";
     }
 
-    @RequestMapping(value = "getLoopEditor",method = RequestMethod.GET)
-    public String getLoopEditor(ModelMap map,Integer id){
-        Loop loop=loopService.find(id);
-        map.addAttribute("loop",loop);
+    @RequiresPermissions("loop:update")
+    @RequestMapping(value = "getLoopEditor", method = RequestMethod.GET)
+    public String getLoopEditor(ModelMap map, Integer id) {
+        Loop loop = loopService.find(id);
+        map.addAttribute("loop", loop);
         return "system/web/loop/editorPictureLoop";
     }
 
 
-
-    @RequestMapping(value = "getLoopList",method = RequestMethod.GET)
+    @RequestMapping(value = "getLoopList", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse getLoopList(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer limit){
-        System.out.println(page+"_"+limit);
-        if(page==null || limit==null){
-            page=1;
-            limit=30;
+    public ServerResponse getLoopList(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
+        System.out.println(page + "_" + limit);
+        if (page == null || limit == null) {
+            page = 1;
+            limit = 30;
         }
-        long count=loopService.getScrollCount(null);
-        List<Loop> loopList = loopService.getScrollData(null, "id DESC", (page-1) * limit, limit);
-        return ServerResponse.createBySuccessForLayuiTable("请求成功",loopList,count);
+        long count = loopService.getScrollCount(null);
+        List<Loop> loopList = loopService.getScrollData(null, "id DESC", (page - 1) * limit, limit);
+        return ServerResponse.createBySuccessForLayuiTable("请求成功", loopList, count);
     }
 
-    @RequestMapping(value = "loopAdd",method = RequestMethod.POST)
+    @RequiresPermissions("loop:add")
+    @RequestMapping(value = "loopAdd", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse loopAdd(Loop loop, MultipartHttpServletRequest request, MultipartFile file){
+    public ServerResponse loopAdd(Loop loop, MultipartHttpServletRequest request, MultipartFile file) {
         if (file.isEmpty()) {
             return ServerResponse.createByErrorMessage("请上传头像！");
         }
@@ -84,12 +87,12 @@ public class LoopController {
             e.printStackTrace();
             return ServerResponse.createByErrorMessage("上传图片失败");
         }
-        loop.setImageurl("uploadLoop/"+fileName);
+        loop.setImageurl("uploadLoop/" + fileName);
         loopService.save(loop);
         return ServerResponse.createBySuccessMessage("轮播图添加成功");
     }
 
-
+    @RequiresPermissions("loop:update")
     @RequestMapping(value = "updateLoopImage", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updateLoopImage(Integer id, MultipartFile file, HttpServletRequest request, String image) {
@@ -114,50 +117,51 @@ public class LoopController {
             e.printStackTrace();
             return ServerResponse.createByErrorMessage("上传图片失败");
         }
-        File file1 = new File(path + "/" + image.substring(image.indexOf("/")+1,image.length()));
+        File file1 = new File(path + "/" + image.substring(image.indexOf("/") + 1, image.length()));
         if (file1.exists()) {
             file1.delete();
         }
 
-        loop.setImageurl("uploadLoop/"+fileName);
+        loop.setImageurl("uploadLoop/" + fileName);
         loopService.updateParams(loop);
         return ServerResponse.createBySuccess("图片上传成功", "uploadLoop/" + fileName);
     }
 
-    @RequestMapping(value = "loopEditor",method = RequestMethod.POST)
+    @RequiresPermissions("loop:update")
+    @RequestMapping(value = "loopEditor", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse loopEditor(Loop loop){
+    public ServerResponse loopEditor(Loop loop) {
         loopService.updateParams(loop);
         return ServerResponse.createBySuccessMessage("轮播图信息修改成功");
     }
 
-    @RequestMapping(value = "loopDel",method = RequestMethod.GET)
+    @RequiresPermissions("loop:delete")
+    @RequestMapping(value = "loopDel", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse loopDel(Integer id){
-        if(loopService.delete(id)>0){
+    public ServerResponse loopDel(Integer id) {
+        if (loopService.delete(id) > 0) {
             return ServerResponse.createBySuccessMessage("轮播图删除成功");
-        }else {
+        } else {
             return ServerResponse.createByErrorMessage("轮播图删除失败");
         }
     }
 
-    @RequestMapping(value = "alterLoopSortOrIsShow",method = RequestMethod.GET)
+    @RequiresPermissions("loop:update")
+    @RequestMapping(value = "alterLoopSortOrIsShow", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse alterLoopSort(Loop loop){
-        if(loopService.updateParams(loop)>0){
-            if(loop.getIsshow()==null)
-            return ServerResponse.createBySuccessMessage("排序重置成功");
-            else{
+    public ServerResponse alterLoopSort(Loop loop) {
+        if (loopService.updateParams(loop) > 0) {
+            if (loop.getIsshow() == null)
+                return ServerResponse.createBySuccessMessage("排序重置成功");
+            else {
                 return ServerResponse.createBySuccessMessage("显示重置成功");
             }
-        }else {
-            if(loop.getIsshow()==null)
+        } else {
+            if (loop.getIsshow() == null)
                 return ServerResponse.createBySuccessMessage("排序重置失败");
-            else{
+            else {
                 return ServerResponse.createBySuccessMessage("显示重置失败");
             }
         }
     }
-
-
 }

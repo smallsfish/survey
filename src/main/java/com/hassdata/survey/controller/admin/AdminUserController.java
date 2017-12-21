@@ -3,15 +3,17 @@ package com.hassdata.survey.controller.admin;
 import com.hassdata.survey.dto.AdminUser;
 import com.hassdata.survey.dto.IndexMenu;
 import com.hassdata.survey.dto.MenuUrl;
+import com.hassdata.survey.dto.RoleDTO;
+import com.hassdata.survey.po.Admin_Role;
 import com.hassdata.survey.po.Admin_User;
-import com.hassdata.survey.service.AdminUserService;
-import com.hassdata.survey.service.PasswordHelper;
-import com.hassdata.survey.service.ResourceService;
+import com.hassdata.survey.po.Role;
+import com.hassdata.survey.service.*;
 import com.hassdata.survey.util.ArrayUtils;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -42,6 +44,12 @@ public class AdminUserController {
     private ResourceService resourceService;
 
     @Resource
+    private Admin_RoleService admin_roleService;
+
+    @Resource
+    private RoleService roleService;
+
+    @Resource
     private AdminUserService adminUserService;
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -62,73 +70,73 @@ public class AdminUserController {
 
     @RequestMapping(value = "index", method = RequestMethod.GET)
     public String getSystemIndex(ModelMap map) {
-        String account= (String) SecurityUtils.getSubject().getPrincipal();
-        List<com.hassdata.survey.po.Resource> resources=resourceService.getAll(null);
-        Map<String, com.hassdata.survey.po.Resource> resourceMap=new HashMap<>();
-        resources.stream().forEach((r)->resourceMap.put(r.getId()+"",r));
-        List<com.hassdata.survey.po.Resource> resourceList=resourceService.getResourceByAccount(account);
-        List<IndexMenu> indexMenuList=new ArrayList<>();
-        List<MenuUrl> menuUrlList=null;
-        IndexMenu indexMenu=null;
-        MenuUrl menuUrl=null;
-        String[][] strings=new String[resources.size()][3];
-        Integer index=0,i=0;
-        for(com.hassdata.survey.po.Resource r : resourceList){
-            if(r.getType().equals("menu")){
-                if(ArrayUtils.idExists(strings,r.getParentid()+"",false)){
-                    menuUrl=new MenuUrl();
+        String account = (String) SecurityUtils.getSubject().getPrincipal();
+        List<com.hassdata.survey.po.Resource> resources = resourceService.getAll(null);
+        Map<String, com.hassdata.survey.po.Resource> resourceMap = new HashMap<>();
+        resources.stream().forEach((r) -> resourceMap.put(r.getId() + "", r));
+        List<com.hassdata.survey.po.Resource> resourceList = resourceService.getResourceByAccount(account);
+        List<IndexMenu> indexMenuList = new ArrayList<>();
+        List<MenuUrl> menuUrlList = null;
+        IndexMenu indexMenu = null;
+        MenuUrl menuUrl = null;
+        String[][] strings = new String[resources.size()][3];
+        Integer index = 0, i = 0;
+        for (com.hassdata.survey.po.Resource r : resourceList) {
+            if (r.getType().equals("menu")) {
+                if (ArrayUtils.idExists(strings, r.getParentid() + "", false)) {
+                    menuUrl = new MenuUrl();
                     menuUrl.setName(r.getName());
                     menuUrl.setUrl(r.getUrl());
                     menuUrl.setIconUrl(r.getIconurl());
-                    Integer j=ArrayUtils.getIndex(strings,r.getParentid()+"");
+                    Integer j = ArrayUtils.getIndex(strings, r.getParentid() + "");
                     indexMenuList.get(j).getMenuUrlList().add(menuUrl);
-                    strings[i][0]=j+"";
-                    strings[i][1]=r.getParentid()+"";
-                    strings[i][2]=r.getId()+"";
+                    strings[i][0] = j + "";
+                    strings[i][1] = r.getParentid() + "";
+                    strings[i][2] = r.getId() + "";
                     i++;
-                }else{
-                    menuUrlList=new ArrayList<>();
-                    com.hassdata.survey.po.Resource res = resourceMap.get(r.getParentid()+"");
-                    indexMenu=new IndexMenu();
+                } else {
+                    menuUrlList = new ArrayList<>();
+                    com.hassdata.survey.po.Resource res = resourceMap.get(r.getParentid() + "");
+                    indexMenu = new IndexMenu();
                     indexMenu.setName(res.getName());
-                    menuUrl=new MenuUrl();
+                    menuUrl = new MenuUrl();
                     menuUrl.setName(r.getName());
                     menuUrl.setUrl(r.getUrl());
                     menuUrl.setIconUrl(r.getIconurl());
                     menuUrlList.add(menuUrl);
                     indexMenu.setMenuUrlList(menuUrlList);
                     indexMenuList.add(indexMenu);
-                    strings[i][0]=index+"";
-                    strings[i][1]=r.getParentid()+"";
-                    strings[i][2]=r.getId()+"";
+                    strings[i][0] = index + "";
+                    strings[i][1] = r.getParentid() + "";
+                    strings[i][2] = r.getId() + "";
                     i++;
                     index++;
                 }
-            }else{
-                if(ArrayUtils.idExists(strings,r.getParentid()+"",true)){
+            } else {
+                if (ArrayUtils.idExists(strings, r.getParentid() + "", true)) {
                     continue;
-                }else{
-                    com.hassdata.survey.po.Resource reso=resourceMap.get(r.getParentid()+"");
-                    if(ArrayUtils.idExists(strings,reso.getParentid()+"",false)){
-                        menuUrl=new MenuUrl();
+                } else {
+                    com.hassdata.survey.po.Resource reso = resourceMap.get(r.getParentid() + "");
+                    if (ArrayUtils.idExists(strings, reso.getParentid() + "", false)) {
+                        menuUrl = new MenuUrl();
                         menuUrl.setName(reso.getName());
                         menuUrl.setUrl(reso.getUrl());
                         menuUrl.setIconUrl(reso.getIconurl());
-                        Integer j=ArrayUtils.getIndex(strings,reso.getParentid()+"");
-                        strings[i][0]=j+"";
-                        strings[i][1]=reso.getParentid()+"";
-                        strings[i][2]=reso.getId()+"";
+                        Integer j = ArrayUtils.getIndex(strings, reso.getParentid() + "");
+                        strings[i][0] = j + "";
+                        strings[i][1] = reso.getParentid() + "";
+                        strings[i][2] = reso.getId() + "";
                         indexMenuList.get(j).getMenuUrlList().add(menuUrl);
                         i++;
-                    }else{
-                        menuUrlList=new ArrayList<>();
-                        com.hassdata.survey.po.Resource resou = resourceMap.get(reso.getParentid()+"");
-                        indexMenu=new IndexMenu();
+                    } else {
+                        menuUrlList = new ArrayList<>();
+                        com.hassdata.survey.po.Resource resou = resourceMap.get(reso.getParentid() + "");
+                        indexMenu = new IndexMenu();
                         indexMenu.setName(resou.getName());
-                        strings[i][0]=index+"";
-                        strings[i][1]=reso.getParentid()+"";
-                        strings[i][2]=reso.getId()+"";
-                        menuUrl=new MenuUrl();
+                        strings[i][0] = index + "";
+                        strings[i][1] = reso.getParentid() + "";
+                        strings[i][2] = reso.getId() + "";
+                        menuUrl = new MenuUrl();
                         menuUrl.setName(reso.getName());
                         menuUrl.setUrl(reso.getUrl());
                         menuUrl.setIconUrl(reso.getIconurl());
@@ -141,7 +149,7 @@ public class AdminUserController {
                 }
             }
         }
-        map.addAttribute("menu",indexMenuList);
+        map.addAttribute("menu", indexMenuList);
         return "index";
     }
 
@@ -171,26 +179,29 @@ public class AdminUserController {
         } catch (ExcessiveAttemptsException e) {
             return ServerResponse.createByErrorMessage("重试次数过多，已锁定");
         }
-        Admin_User admin_user=adminUserService.getOne(adminUser);
+        Admin_User admin_user = adminUserService.getOne(adminUser);
         SecurityUtils.getSubject().getSession().setAttribute("CurrentAdminUser", admin_user);
-        Integer id=admin_user.getId();
-        admin_user=new Admin_User();
+        Integer id = admin_user.getId();
+        admin_user = new Admin_User();
         admin_user.setId(id);
         admin_user.setLastlogintime(new Date());
         adminUserService.updateParams(admin_user);
         return ServerResponse.createBySuccessMessage("登陆成功");
     }
-
     @RequestMapping(value = "userCenter", method = RequestMethod.GET)
     public String getUserCenter() {
         return "system/user/usercenter";
     }
 
+    @RequiresPermissions("admin:add")
     @RequestMapping(value = "getAddAdminUser", method = RequestMethod.GET)
-    public String getAddAdminUser() {
+    public String getAddAdminUser(ModelMap map) {
+        List<Role> roles=roleService.getAll(null);
+        map.addAttribute("roles",roles);
         return "system/user/addAdminUser";
     }
 
+    @RequiresPermissions("admin:update")
     @RequestMapping(value = "getEditorAdminUser", method = RequestMethod.GET)
     public String getEditorAdminUser(Integer id, ModelMap map) {
         Admin_User admin_user = adminUserService.find(id);
@@ -208,6 +219,26 @@ public class AdminUserController {
         } else {
             adminUser.setLastlogintime(format.format(admin_user.getLastlogintime()));
         }
+        List<Role> roles=roleService.getAll(null);
+        Admin_Role admin_role=new Admin_Role();
+        admin_role.setAid(id);
+        List<Admin_Role> admin_roleList=admin_roleService.getAll(admin_role);
+        List<RoleDTO> roleDTOList=new ArrayList<>();
+        RoleDTO roleDTO=null;
+        for(Role r : roles){
+            roleDTO=new RoleDTO();
+            roleDTO.setId(r.getId());
+            roleDTO.setAvailable(r.getAvailable());
+            roleDTO.setDescription(r.getDescription());
+            roleDTO.setChecked(false);
+            for(Admin_Role ar : admin_roleList){
+                if(ar.getRid()==r.getId()){
+                    roleDTO.setChecked(true);
+                }
+            }
+            roleDTOList.add(roleDTO);
+        }
+        map.addAttribute("roles",roleDTOList);
         map.addAttribute("adminUser", adminUser);
         return "system/user/adminEditor";
     }
@@ -235,9 +266,10 @@ public class AdminUserController {
         return ServerResponse.createBySuccessForLayuiTable("请求成功", aus, count);
     }
 
+    @RequiresPermissions("admin:add")
     @RequestMapping(value = "addAdminUser", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse addAdminUser(Admin_User admin_user, MultipartHttpServletRequest request, MultipartFile file) {
+    public ServerResponse addAdminUser(Admin_User admin_user, MultipartHttpServletRequest request, MultipartFile file,String[] roles) {
         if (file.isEmpty()) {
             return ServerResponse.createByErrorMessage("请上传头像！");
         }
@@ -262,6 +294,16 @@ public class AdminUserController {
         passwordHelper.encryptPassword(admin_user);
         admin_user.setCreatedatetime(new Date());
         adminUserService.save(admin_user);
+        int maxId=adminUserService.getIdMax();
+        List<Admin_Role> admin_roleList=new ArrayList<>();
+        Admin_Role admin_role=null;
+        for(String rid : roles){
+            admin_role=new Admin_Role();
+            admin_role.setAid(maxId);
+            admin_role.setRid(Integer.parseInt(rid));
+            admin_roleList.add(admin_role);
+        }
+        admin_roleService.saveBatch(admin_roleList);
         return ServerResponse.createBySuccessMessage("添加管理员成功");
     }
 
@@ -282,7 +324,6 @@ public class AdminUserController {
         count = setAdminUserDTO(adminUser, a_us, aus, aid, count);
         return ServerResponse.createBySuccessForLayuiTable("搜索成功", aus, count);
     }
-
 
     private long setAdminUserDTO(AdminUser adminUser, List<Admin_User> a_us, List<AdminUser> aus, int aid, long count) {
         for (Admin_User au : a_us) {
@@ -344,10 +385,17 @@ public class AdminUserController {
         return ServerResponse.createBySuccess("图片上传成功", "uploadimage/" + fileName);
     }
 
+    @RequiresPermissions("admin:update")
     @RequestMapping(value = "updateAdminUser", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse updateAdminUser(Admin_User admin_user) {
+    public ServerResponse updateAdminUser(Admin_User admin_user,String[] roles) {
         adminUserService.updateParams(admin_user);
+        for(String r : roles){
+            Admin_Role admin_role=new Admin_Role();
+            admin_role.setRid(Integer.parseInt(r));
+            admin_role.setAid(admin_user.getId());
+            admin_roleService.updateAdminRoleByAid(admin_role);
+        }
         return ServerResponse.createBySuccessMessage("更新成功");
     }
 
@@ -356,13 +404,12 @@ public class AdminUserController {
         return "system/user/updateAdminPassword";
     }
 
-
     @RequestMapping(value = "adminPasswordUpdate", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse adminPasswordUpdate(String newPassword) {
 
         Admin_User admin_user = (Admin_User) SecurityUtils.getSubject().getSession(true).getAttribute("CurrentAdminUser");
-        Admin_User adu=new Admin_User();
+        Admin_User adu = new Admin_User();
         adu.setId(admin_user.getId());
         if (!newPassword.equals("") && newPassword != null) {
             adu.setAccount(admin_user.getAccount());

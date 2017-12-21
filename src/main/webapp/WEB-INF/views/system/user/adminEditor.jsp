@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -14,6 +14,15 @@
     <style>
         form {
             width: 97%;
+        }
+
+        select {
+            width: 85%;
+        }
+
+        option {
+            font-size: 16px;
+            padding: 3px 5px;
         }
     </style>
 </head>
@@ -44,14 +53,20 @@
     <div class="layui-form-item">
         <label class="layui-form-label">编号：</label>
         <div class="layui-input-block">
-            <input type="text" name="identifier" placeholder="请输入编号" autocomplete="off" class="layui-input" value="${adminUser.identifier}">
+            <input type="text" name="identifier" placeholder="请输入编号" autocomplete="off" class="layui-input"
+                   value="${adminUser.identifier}">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">角色：</label>
+        <label class="layui-form-label"><span style="color: #f00;">*</span>角色：</label>
         <div class="layui-input-block">
-            <input type="text" disabled placeholder="分配角色" class="layui-input" value="${adminUser.role}">
+            <select name="roles" multiple lay-ignore>
+                <c:forEach var="r" items="${roles}">
+                    <option value="${r.id}" ${!r.available ? 'disabled':''} ${r.checked ? 'selected':''}>${r.description}</option>
+                </c:forEach>
+            </select>
         </div>
+        <span style=" display:block;float:right;">按住Shift多选</span>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">创建时间：</label>
@@ -87,15 +102,15 @@
         //执行实例
         upload.render({
             elem: '#uploadheadimg', //绑定元素
-            auto:true,
-            url:'system/updateAdminHeadImage',
-            size:500,
-            method:'post',
-            data:{id:${adminUser.id},image:'${adminUser.headimage}'},
-            done:function (res,index,upload) {
-                if(res.status==0){
+            auto: true,
+            url: 'system/updateAdminHeadImage',
+            size: 500,
+            method: 'post',
+            data: {id:${adminUser.id}, image: '${adminUser.headimage}'},
+            done: function (res, index, upload) {
+                if (res.status == 0) {
                     window.parent.reflashAdminTable();
-                    $("#headimg img").attr("src",res.data);
+                    $("#headimg img").attr("src", res.data);
                 }
                 layer.msg(res.msg);
 

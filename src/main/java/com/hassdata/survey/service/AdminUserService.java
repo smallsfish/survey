@@ -13,4 +13,5 @@ public interface AdminUserService extends BaseService<Admin_User> {
     long getScrollByLikeCount(Admin_User params);
     Set<String> findRoleByAccount(String account);
     Set<String> findPermissionByAccount(String account);
+    int getIdMax();
 }

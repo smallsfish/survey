@@ -4,6 +4,7 @@ import com.hassdata.survey.dto.MessageBoardDTO;
 import com.hassdata.survey.po.MessageBoard;
 import com.hassdata.survey.service.MessageBoardService;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -66,6 +67,7 @@ public class MessageBoardController {
         }
     }
 
+    @RequiresPermissions("msg:update")
     @RequestMapping(value = "getEditorMsg", method = RequestMethod.GET)
     public String getEditorMsg(Long id, ModelMap map, boolean isRead) {
         MessageBoard msg = messageBoardService.find(id);
@@ -79,6 +81,7 @@ public class MessageBoardController {
         return "system/web/messageboard/editorMsg";
     }
 
+    @RequiresPermissions("msg:update")
     @RequestMapping(value = "updateMsg", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updateMsg(MessageBoard messageBoard) {
@@ -97,19 +100,20 @@ public class MessageBoardController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(name!=null && !name.equals("")){
-            messageBoard.setName("%"+name+"%");
+        if (name != null && !name.equals("")) {
+            messageBoard.setName("%" + name + "%");
         }
-        long count=messageBoardService.getScrollByLikeCount(messageBoard);
-        List<MessageBoard> messageBoards=messageBoardService.getScrollDataByLike(messageBoard,"id desc",(page-1)*limit,limit);
+        long count = messageBoardService.getScrollByLikeCount(messageBoard);
+        List<MessageBoard> messageBoards = messageBoardService.getScrollDataByLike(messageBoard, "id desc", (page - 1) * limit, limit);
         List<MessageBoardDTO> messageBoardDTOS = new ArrayList<>();
         setMessageBoardDTO(messageBoards, messageBoardDTOS);
         return ServerResponse.createBySuccessForLayuiTable("查询成功", messageBoardDTOS, count);
     }
 
-    @RequestMapping(value = "msgDel",method = RequestMethod.GET)
+    @RequiresPermissions("msg:delete")
+    @RequestMapping(value = "msgDel", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse msgDel(Long id){
+    public ServerResponse msgDel(Long id) {
         messageBoardService.delete(id);
         return ServerResponse.createBySuccessMessage("留言删除成功");
     }

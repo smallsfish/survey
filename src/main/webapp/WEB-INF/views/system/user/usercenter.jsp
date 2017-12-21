@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -311,7 +313,9 @@
     <img src="uploadimage/{{d.headimage}}" style="width: 40px;height: 40px;">
 </script>
 <script id="adminToolBar" type="text/html">
-    <a id="a" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <shiro:hasPermission name="admin:update">
+        <a id="a" class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    </shiro:hasPermission>
     <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
 <script id="userToolBar" type="text/html">
@@ -320,7 +324,6 @@
 </script>
 
 <head>
-    <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">

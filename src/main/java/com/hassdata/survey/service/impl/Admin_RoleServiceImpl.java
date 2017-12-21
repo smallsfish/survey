@@ -30,4 +30,9 @@ public class Admin_RoleServiceImpl extends BaseServiceImpl<Admin_Role> implement
         Map<String, Object> map = buildParams(params ,null, null, null);
         return admin_RoleDao.getScrollByLikeCount(map);
     }
+
+    @Override
+    public int updateAdminRoleByAid(Admin_Role admin_role) {
+        return admin_RoleDao.updateAdminRoleByAid(admin_role);
+    }
 }

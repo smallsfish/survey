@@ -30,4 +30,14 @@ public class Role_ResourceServiceImpl extends BaseServiceImpl<Role_Resource> imp
         Map<String, Object> map = buildParams(params ,null, null, null);
         return role_ResourceDao.getScrollByLikeCount(map);
     }
+
+    @Override
+    public int updateByRoleId(Role_Resource role_resource) {
+        return role_ResourceDao.updateByRoleId(role_resource);
+    }
+
+    @Override
+    public int deleteByRoleId(Integer rid) {
+        return role_ResourceDao.deleteByRoleId(rid);
+    }
 }

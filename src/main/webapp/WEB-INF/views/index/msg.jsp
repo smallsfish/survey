@@ -21,6 +21,10 @@
             width: 100%;
             height: 100%;
         }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 5px;
+        }
         .loop-pic img{
             width: 100%;
             height: 100%;

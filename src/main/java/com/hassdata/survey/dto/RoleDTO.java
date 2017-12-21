@@ -9,6 +9,15 @@ public class RoleDTO implements Serializable{
     private String resources;
     private String description;
     private Boolean available;
+    private Boolean checked;
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
 
     public Integer getAid() {
         return aid;

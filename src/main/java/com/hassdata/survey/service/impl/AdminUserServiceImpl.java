@@ -56,4 +56,9 @@ public class AdminUserServiceImpl extends BaseServiceImpl<Admin_User> implements
     public Set<String> findPermissionByAccount(String account) {
         return adminUserDao.findPermissionByAccount(account);
     }
+
+    @Override
+    public int getIdMax() {
+        return adminUserDao.getIdMax();
+    }
 }

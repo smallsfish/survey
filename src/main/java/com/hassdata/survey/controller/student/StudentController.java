@@ -6,6 +6,7 @@ import com.hassdata.survey.po.Student;
 import com.hassdata.survey.service.ScoreService;
 import com.hassdata.survey.service.StudentService;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,7 +31,6 @@ public class StudentController {
 
     @Resource
     private ScoreService scoreService;
-
     @RequestMapping(value = "getStudent",method = RequestMethod.GET)
     public String getStudentByUid(int uid, ModelMap map){
         map.addAttribute("uid",uid);

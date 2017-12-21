@@ -6,6 +6,7 @@ import com.hassdata.survey.po.User;
 import com.hassdata.survey.service.AdminUserService;
 import com.hassdata.survey.service.UserService;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,8 @@ public class UserController {
     private AdminUserService adminUserService;
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static final String[] STATUS=new String[] {"未审核","审核通过","审核失败","账号锁定"};
+    private static final String[] STATUS = new String[]{"未审核", "审核通过", "审核失败", "账号锁定"};
+
     @RequestMapping(value = "getUser", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getUser(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
@@ -47,7 +49,7 @@ public class UserController {
         UserDTO userDTO = null;
         int i = 0;
         for (User u : userList) {
-            if(u.getStatus()==1) continue;
+            if (u.getStatus() == 1) continue;
             userDTO = new UserDTO();
             userDTO.setAccount(u.getAccount());
             userDTO.setAddress(u.getAddress());
@@ -61,7 +63,7 @@ public class UserController {
             }
             userDTO.setStatus(STATUS[u.getStatus()]);
             userDTO.setExplain(u.getExplains());
-            if(u.getOperationuser()!=null){
+            if (u.getOperationuser() != null) {
                 userDTO.setOperationuser(adminUserService.find(u.getOperationuser()).getAccount());
             }
             userDTO.setPlayhousename(u.getPlayhousename());
@@ -70,12 +72,10 @@ public class UserController {
 
             userDTOList.add(userDTO);
         }
-        return ServerResponse.createBySuccessForLayuiTable("请求成功",userDTOList,count);
+        return ServerResponse.createBySuccessForLayuiTable("请求成功", userDTOList, count);
     }
 
-
-
-
+    @RequiresPermissions("user:delete")
     @RequestMapping(value = "userDel", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse userDel(Integer id) {
@@ -83,18 +83,17 @@ public class UserController {
         return ServerResponse.createBySuccessMessage("用户删除成功！");
     }
 
-
+    @RequiresPermissions("user:verify")
     @RequestMapping(value = "userAuditing", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse userAuditing(Integer id,HttpServletRequest request) {
-        HttpSession session= request.getSession(true);
-        User user=userService.find(id);
+    public ServerResponse userAuditing(Integer id, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        User user = userService.find(id);
         user.setStatus(1);
-        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
+        user.setOperationuser(((Admin_User) session.getAttribute("CurrentAdminUser")).getId());
         userService.update(user);
         return ServerResponse.createBySuccessMessage("用户审核成功！");
     }
-
 
 
     @RequestMapping(value = "userSearch", method = RequestMethod.GET)
@@ -104,21 +103,21 @@ public class UserController {
             page = 1;
             limit = 30;
         }
-        User user=new User();
-        String account= null;
+        User user = new User();
+        String account = null;
         try {
             account = new String(request.getParameter("account").getBytes("iso-8859-1"), "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        user.setAccount("%"+account+"%");
+        user.setAccount("%" + account + "%");
         long count = userService.getScrollByLikeCount(user);
         List<User> userList = userService.getScrollDataByLike(user, "id DESC", (page - 1) * limit, limit);
         List<UserDTO> userDTOList = new ArrayList<>();
         UserDTO userDTO = null;
         int i = 0;
         for (User u : userList) {
-            if(u.getStatus()==1) continue;
+            if (u.getStatus() == 1) continue;
             userDTO = new UserDTO();
             userDTO.setAccount(u.getAccount());
             userDTO.setAddress(u.getAddress());
@@ -135,7 +134,7 @@ public class UserController {
             userDTO.setRemarks(u.getRemarks());
             userDTO.setStatus(STATUS[u.getStatus()]);
             userDTO.setExplain(u.getExplains());
-            if(u.getOperationuser()!=null){
+            if (u.getOperationuser() != null) {
                 userDTO.setOperationuser(adminUserService.find(u.getOperationuser()).getAccount());
             }
             userDTOList.add(userDTO);

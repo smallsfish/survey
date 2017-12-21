@@ -305,4 +305,8 @@
         select permission from resource where id in (select reid from role_resource where rid in (select rid from admin_role where aid=(select id from admin_user where account=#{account}) ) ) and available = 1 and permission is not null
     </select>
 
+    <select id="getIdMax" resultType="int">
+        select max(id) from role
+    </select>
+
 </mapper>

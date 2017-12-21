@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -14,6 +14,14 @@
     <style>
         form {
             width: 97%;
+        }
+        select{
+            width: 85%;
+
+        }
+        option{
+            font-size: 16px;
+            padding: 3px 5px;
         }
     </style>
 </head>
@@ -45,6 +53,17 @@
             <input type="email" name="email" placeholder="请输入Email" lay-verify="required|email" autocomplete="off"
                    class="layui-input">
         </div>
+    </div>
+    <div class="layui-form-item" >
+        <label class="layui-form-label"><span style="color: #f00;">*</span>角色：</label>
+        <div class="layui-input-block">
+            <select name="roles" multiple lay-ignore>
+                <c:forEach var="r" items="${roles}">
+                    <option value="${r.id}" ${!r.available ? 'disabled':''}>${r.description}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <span style=" display:block;float:right;">按住Shift多选</span>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">编号：</label>

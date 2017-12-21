@@ -9,6 +9,7 @@ import com.hassdata.survey.service.StudentService;
 import com.hassdata.survey.service.UserService;
 import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -39,58 +40,58 @@ public class InformationCenterController {
     @Resource
     private ScoreService scoreService;
 
-    @RequestMapping(value = "info" , method = RequestMethod.GET)
-    public String getInformationCenter(){
+    @RequestMapping(value = "info", method = RequestMethod.GET)
+    public String getInformationCenter() {
         return "system/information/informationcenter";
     }
 
 
-    @RequestMapping(value = "getInfoList",method = RequestMethod.GET)
+    @RequestMapping(value = "getInfoList", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse getInfoList(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer limit){
+    public ServerResponse getInfoList(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
         if (page == null || limit == null) {
             page = 1;
             limit = 30;
         }
-        long count=userService.getScrollCount(null);
-        List<User> userList=userService.getScrollData(null,"id DESC",(page-1)*limit,limit);
-        List<UserDTO> userDTOList=new ArrayList<>();
-        UserDTO userDTO=null;
-        int aid=0;
+        long count = userService.getScrollCount(null);
+        List<User> userList = userService.getScrollData(null, "id DESC", (page - 1) * limit, limit);
+        List<UserDTO> userDTOList = new ArrayList<>();
+        UserDTO userDTO = null;
+        int aid = 0;
         setUserDTO(userList, userDTOList, aid);
-        return ServerResponse.createBySuccessForLayuiTable("请求成功",userDTOList,count);
+        return ServerResponse.createBySuccessForLayuiTable("请求成功", userDTOList, count);
     }
 
 
-    @RequestMapping(value = "searchInfoList",method = RequestMethod.GET)
+    @RequestMapping(value = "searchInfoList", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse searchInfoList(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit, HttpServletRequest request){
+    public ServerResponse searchInfoList(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit, HttpServletRequest request) {
         if (page == null || limit == null) {
             page = 1;
             limit = 30;
         }
-        String name=null;
+        String name = null;
         try {
-            name=new String(request.getParameter("schoolname").getBytes("iso-8859-1"), "utf-8");
+            name = new String(request.getParameter("schoolname").getBytes("iso-8859-1"), "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        User user=new User();
-        user.setAccount("%"+name+"%");
-        long count=userService.getScrollByLikeCount(user);
-        List<User> userList=userService.getScrollDataByLike(user,"id DESC",(page-1)*limit,limit);
-        List<UserDTO> userDTOList=new ArrayList<>();
-        UserDTO userDTO=null;
-        int aid=0;
+        User user = new User();
+        user.setAccount("%" + name + "%");
+        long count = userService.getScrollByLikeCount(user);
+        List<User> userList = userService.getScrollDataByLike(user, "id DESC", (page - 1) * limit, limit);
+        List<UserDTO> userDTOList = new ArrayList<>();
+        UserDTO userDTO = null;
+        int aid = 0;
         setUserDTO(userList, userDTOList, aid);
-        return ServerResponse.createBySuccessForLayuiTable("请求成功",userDTOList,count);
+        return ServerResponse.createBySuccessForLayuiTable("请求成功", userDTOList, count);
     }
 
     private void setUserDTO(List<User> userList, List<UserDTO> userDTOList, int aid) {
         UserDTO userDTO;
-        for (User u : userList){
-            if(u.getStatus()!=1) continue;
-            userDTO=new UserDTO();
+        for (User u : userList) {
+            if (u.getStatus() != 1) continue;
+            userDTO = new UserDTO();
             aid++;
             userDTO.setId(u.getId());
             userDTO.setAid(aid);
@@ -99,13 +100,13 @@ public class InformationCenterController {
             userDTO.setAddress(u.getAddress());
             userDTO.setPlayhousename(u.getPlayhousename());
             userDTO.setBooknumber(u.getBooknumber());
-            Student student=new Student();
+            Student student = new Student();
             student.setUid(u.getId());
             userDTO.setChildrennumber(studentService.getScrollCount(student));
             userDTO.setWithquestionnairenumber(scoreService.getUserWithQuestionnaireNumber(u.getId()).size());
-            if(u.getLastlogintime()==null){
+            if (u.getLastlogintime() == null) {
                 userDTO.setLastlogintime("该用户暂未登录");
-            }else{
+            } else {
                 userDTO.setLastlogintime(format.format(u.getLastlogintime()));
             }
             userDTO.setRemarks(u.getRemarks());
@@ -113,28 +114,29 @@ public class InformationCenterController {
         }
     }
 
-    @RequestMapping(value = "userInfoDel" , method = RequestMethod.GET)
+    @RequiresPermissions("info:delete")
+    @RequestMapping(value = "userInfoDel", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse userInfoDel(Integer uid){
-        if(uid==null){
+    public ServerResponse userInfoDel(Integer uid) {
+        if (uid == null) {
             return ServerResponse.createByErrorMessage("操作失败!");
         }
-        if(userService.delete(uid)>0){
+        if (userService.delete(uid) > 0) {
             return ServerResponse.createBySuccessMessage("删除成功！");
-        }else{
+        } else {
             return ServerResponse.createByErrorMessage("操作失败!");
         }
     }
 
-
-    @RequestMapping(value = "addUser" , method = RequestMethod.POST)
+    @RequiresPermissions("info:add")
+    @RequestMapping(value = "addUser", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse addUser(User user,HttpServletRequest request){
-        HttpSession session=request.getSession(true);
+    public ServerResponse addUser(User user, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
         ServerResponse x = userValidate(user);
         if (x != null) return x;
         user.setSchoolname(user.getAccount());
-        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
+        user.setOperationuser(((Admin_User) session.getAttribute("CurrentAdminUser")).getId());
         user.setStatus(1);
         user.setPassword(MD5TUtils.threeMD5("123456"));
         userService.save(user);
@@ -142,47 +144,50 @@ public class InformationCenterController {
     }
 
     private ServerResponse userValidate(User user) {
-        if(user.getAccount().isEmpty()){
+        if (user.getAccount().isEmpty()) {
             return ServerResponse.createByErrorMessage("用户名不能为空!");
         }
-        if(user.getHeadmaster().isEmpty()){
+        if (user.getHeadmaster().isEmpty()) {
             return ServerResponse.createByErrorMessage("校长名称不能为空!");
         }
-        if(user.getAddress().isEmpty()){
+        if (user.getAddress().isEmpty()) {
             return ServerResponse.createByErrorMessage("学校地址不能为空!");
         }
-        if(user.getPlayhousename().isEmpty()){
+        if (user.getPlayhousename().isEmpty()) {
             return ServerResponse.createByErrorMessage("留守儿童之家名称不能为空!");
         }
-        if(user.getBooknumber()==null){
+        if (user.getBooknumber() == null) {
             return ServerResponse.createByErrorMessage("图书数量不能为空!");
         }
         return null;
     }
 
-    @RequestMapping(value = "getUserAdd" , method = RequestMethod.GET)
-    public String getAddUser(){
+    @RequiresPermissions("info:add")
+    @RequestMapping(value = "getUserAdd", method = RequestMethod.GET)
+    public String getAddUser() {
         return "system/information/addUser";
     }
 
-    @RequestMapping(value = "getEditorAdd" , method = RequestMethod.GET)
-    public String getEditorUser(Integer id, ModelMap map){
-        User user=userService.find(id);
-        map.addAttribute("user",user);
+    @RequiresPermissions("info:update")
+    @RequestMapping(value = "getEditorAdd", method = RequestMethod.GET)
+    public String getEditorUser(Integer id, ModelMap map) {
+        User user = userService.find(id);
+        map.addAttribute("user", user);
         return "system/information/editorUser";
     }
 
-    @RequestMapping(value = "editorUser" , method = RequestMethod.POST)
+    @RequiresPermissions("info:update")
+    @RequestMapping(value = "editorUser", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse editorUser(User user,HttpServletRequest request){
-        HttpSession session=request.getSession(true);
+    public ServerResponse editorUser(User user, HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
         ServerResponse x = userValidate(user);
         if (x != null) return x;
         user.setSchoolname(user.getAccount());
-        user.setOperationuser(((Admin_User)session.getAttribute("CurrentAdminUser")).getId());
-        if(user.getPassword()!=null && !user.getPassword().equals("")) {
+        user.setOperationuser(((Admin_User) session.getAttribute("CurrentAdminUser")).getId());
+        if (user.getPassword() != null && !user.getPassword().equals("")) {
             user.setPassword(MD5TUtils.threeMD5(user.getPassword()));
-        }else{
+        } else {
             user.setPassword(null);
         }
         userService.updateParams(user);

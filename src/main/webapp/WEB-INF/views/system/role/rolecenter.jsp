@@ -106,7 +106,7 @@
                             $.ajax({
                                 type: "GET",
                                 dataType: "json",
-                                url: 'system/roleInfoDel',
+                                url: 'system/roleDel',
                                 data: {'id': obj.id},
                                 success: function (result) {
                                     if (index == data.length - 1) {
@@ -201,7 +201,7 @@
                 title: data.rolename + ' 角色编辑',
                 type: 2,
                 area: ['50%', '70%'],
-                content: 'system/getEditorAdd?id=' + data.id,
+                content: 'system/getRoleEditor?id=' + data.id,
                 skin: 'layui-layer-molv'
             });
         });

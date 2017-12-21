@@ -11,6 +11,7 @@ import com.hassdata.survey.service.NewsService;
 import com.hassdata.survey.service.NewsTypeService;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -47,50 +48,55 @@ public class NewsController {
     @Resource
     private NewsService newsService;
 
+    @RequiresPermissions("news:add")
     @RequestMapping(value = "getNewsCenter", method = RequestMethod.GET)
     public String getNewsCenter(ModelMap map) {
-        List<Newstype> newstypeList=newsTypeService.getAll(null);
-        map.addAttribute("newsType",newstypeList);
+        List<Newstype> newstypeList = newsTypeService.getAll(null);
+        map.addAttribute("newsType", newstypeList);
         return "system/web/news/newscenter";
     }
 
+    @RequiresPermissions("news:add")
     @RequestMapping(value = "getAddNews", method = RequestMethod.GET)
     public String getAddNews(ModelMap map) {
-        List<Newstype> newstypeList=newsTypeService.getAll(null);
-        map.addAttribute("newsType",newstypeList);
+        List<Newstype> newstypeList = newsTypeService.getAll(null);
+        map.addAttribute("newsType", newstypeList);
         return "system/web/news/addNews";
     }
 
+    @RequiresPermissions("news:add")
     @RequestMapping(value = "getAddNewsType", method = RequestMethod.GET)
     public String getAddNewsType() {
         return "system/web/news/addNewType";
     }
+
     @RequestMapping(value = "newsSearch", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse newsSearch(HttpServletRequest request,Integer status,Integer newstype,@RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
-        News news=new News();
-        String newstitle= null;
+    public ServerResponse newsSearch(HttpServletRequest request, Integer status, Integer newstype, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
+        News news = new News();
+        String newstitle = null;
         try {
             newstitle = new String(request.getParameter("newstitle").getBytes("iso-8859-1"), "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(!newstitle.equals("")){
-            news.setNewstitle("%"+newstitle+"%");
+        if (!newstitle.equals("")) {
+            news.setNewstitle("%" + newstitle + "%");
         }
-        if(status!=2){
-            news.setStatus(status==1?true:false);
+        if (status != 2) {
+            news.setStatus(status == 1 ? true : false);
         }
-        if(newstype!=0){
+        if (newstype != 0) {
             news.setNewstype(newstype);
         }
-        long count=newsService.getScrollByLikeCount(news);
-        List<News> newsList=newsService.getScrollDataByLike(news,"id desc",(page-1)*limit,limit);
-        List<NewsDTO> newsDTOList=new ArrayList<>();
-        setNewsDTO(newsList,newsDTOList);
-        return ServerResponse.createBySuccessForLayuiTable("搜索成功",newsDTOList,count);
+        long count = newsService.getScrollByLikeCount(news);
+        List<News> newsList = newsService.getScrollDataByLike(news, "id desc", (page - 1) * limit, limit);
+        List<NewsDTO> newsDTOList = new ArrayList<>();
+        setNewsDTO(newsList, newsDTOList);
+        return ServerResponse.createBySuccessForLayuiTable("搜索成功", newsDTOList, count);
     }
 
+    @RequiresPermissions("news:add")
     @RequestMapping(value = "addNewsType", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addNewsType(Newstype newstype) {
@@ -121,7 +127,7 @@ public class NewsController {
         return ServerResponse.createBySuccessForLayuiTable("类型添加成功", newsTypeDTOs, count);
     }
 
-
+    @RequiresPermissions("news:delete")
     @RequestMapping(value = "newstypeDel", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse newstypeDel(Integer id) {
@@ -136,21 +142,22 @@ public class NewsController {
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
+    @RequiresPermissions("news:add")
     @RequestMapping(value = "addNews", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addNews(News news, MultipartFile file, HttpServletRequest request) {
-        HttpSession session=request.getSession(true);
-        Admin_User adminUser= (Admin_User) session.getAttribute("CurrentAdminUser");
+        HttpSession session = request.getSession(true);
+        Admin_User adminUser = (Admin_User) session.getAttribute("CurrentAdminUser");
         if (file.isEmpty()) {
             return ServerResponse.createByErrorMessage("请上传缩略图！");
         }
-        if(news.getCreatetime()==null){
+        if (news.getCreatetime() == null) {
             news.setCreatetime(new Date());
         }
         String fn = file.getOriginalFilename();
         String suffix = fn.substring(fn.lastIndexOf('.') + 1, fn.length());
         long fileSize = file.getSize();
-        if (fileSize > 2*1024*1024) {
+        if (fileSize > 2 * 1024 * 1024) {
             return ServerResponse.createByErrorMessage("请上传小于2M的图片");
         }
         if (suffix.equals("jpg") || suffix.equals("JPG") || suffix.equals("jpeg") || suffix.equals("JPEG") || suffix.equals("PNG") || suffix.equals("png") || suffix.equals("GIF") || suffix.equals("gif")) {
@@ -168,14 +175,15 @@ public class NewsController {
         newsService.save(news);
         return ServerResponse.createBySuccessMessage("创建资讯成功");
     }
+
     @RequestMapping(value = "getNewsList", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getNewsList(@RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
         long count = newsService.getScrollCount(null);
         List<News> newsList = newsService.getScrollData(null, "id desc", (page - 1) * limit, limit);
-        List<NewsDTO> newsDTOList=new ArrayList<>();
+        List<NewsDTO> newsDTOList = new ArrayList<>();
         setNewsDTO(newsList, newsDTOList);
-        return ServerResponse.createBySuccessForLayuiTable("查询成功",newsDTOList,count);
+        return ServerResponse.createBySuccessForLayuiTable("查询成功", newsDTOList, count);
     }
 
     private void setNewsDTO(List<News> newsList, List<NewsDTO> newsDTOList) {
@@ -198,24 +206,26 @@ public class NewsController {
         }
     }
 
-
-    @RequestMapping(value = "newsDel",method = RequestMethod.GET)
+    @RequiresPermissions("news:delete")
+    @RequestMapping(value = "newsDel", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse newsDel(Long id){
+    public ServerResponse newsDel(Long id) {
         newsService.delete(id);
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
-    @RequestMapping(value = "getEditorNews",method = RequestMethod.GET)
-    public String getEditorNews(Long id,ModelMap map){
-        News news=newsService.find(id);
-        map.addAttribute("news",news);
-        List<Newstype> newstypeList=newsTypeService.getAll(null);
-        map.addAttribute("newsType",newstypeList);
+    @RequiresPermissions("news:update")
+    @RequestMapping(value = "getEditorNews", method = RequestMethod.GET)
+    public String getEditorNews(Long id, ModelMap map) {
+        News news = newsService.find(id);
+        map.addAttribute("news", news);
+        List<Newstype> newstypeList = newsTypeService.getAll(null);
+        map.addAttribute("newsType", newstypeList);
         return "system/web/news/editorNews";
     }
 
-    @RequestMapping(value = "updateNewsImage",method = RequestMethod.POST)
+    @RequiresPermissions("news:update")
+    @RequestMapping(value = "updateNewsImage", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updateAdminUserHeadImage(Long id, MultipartFile file, HttpServletRequest request, String image) {
         News news = new News();
@@ -226,7 +236,7 @@ public class NewsController {
         String fn = file.getOriginalFilename();
         String suffix = fn.substring(fn.lastIndexOf('.') + 1, fn.length());
         long fileSize = file.getSize();
-        if (fileSize > 2*1024*1024) {
+        if (fileSize > 2 * 1024 * 1024) {
             return ServerResponse.createByErrorMessage("请上传小于2M的图片");
         }
         if (suffix.equals("jpg") || suffix.equals("JPG") || suffix.equals("jpeg") || suffix.equals("JPEG") || suffix.equals("PNG") || suffix.equals("png") || suffix.equals("GIF") || suffix.equals("gif")) {
@@ -248,24 +258,26 @@ public class NewsController {
         return ServerResponse.createBySuccess("缩略图修改成功", "uploadimage/" + fileName);
     }
 
-
-    @RequestMapping(value = "updateNews",method = RequestMethod.POST)
+    @RequiresPermissions("news:update")
+    @RequestMapping(value = "updateNews", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse updateNews(News news){
+    public ServerResponse updateNews(News news) {
         newsService.updateParams(news);
         return ServerResponse.createBySuccessMessage("修改成功");
     }
 
-
-    @RequestMapping(value = "getEditorNewType",method = RequestMethod.GET)
-    public String getEditorNewType(Integer id,ModelMap map){
+    @RequiresPermissions("news:update")
+    @RequestMapping(value = "getEditorNewType", method = RequestMethod.GET)
+    public String getEditorNewType(Integer id, ModelMap map) {
         Newstype newstype = newsTypeService.find(id);
-        map.addAttribute("newType",newstype);
+        map.addAttribute("newType", newstype);
         return "system/web/news/editorNewType";
     }
-    @RequestMapping(value = "editorNewsType",method = RequestMethod.POST)
+
+    @RequiresPermissions("news:update")
+    @RequestMapping(value = "editorNewsType", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse editorNewsType(Newstype newstype){
+    public ServerResponse editorNewsType(Newstype newstype) {
         newsTypeService.updateParams(newstype);
         return ServerResponse.createBySuccessMessage("类型修改成功");
     }

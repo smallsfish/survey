@@ -7,6 +7,7 @@ import com.hassdata.survey.service.AdminUserService;
 import com.hassdata.survey.service.VideoService;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -39,7 +40,6 @@ public class VideoController {
 
     @Resource
     private VideoService videoService;
-
 
     @RequestMapping(value = "getVideoCenter", method = RequestMethod.GET)
     public String getVideoCenter() {
@@ -75,12 +75,13 @@ public class VideoController {
     }
 
 
+    @RequiresPermissions("video:add")
     @RequestMapping(value = "getVideoAdd", method = RequestMethod.GET)
     public String getVideoAdd() {
         return "system/web/video/addVideo";
     }
 
-
+    @RequiresPermissions("video:add")
     @RequestMapping(value = "addVideo", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addVideo(Video video, MultipartFile file, MultipartFile vfile, HttpServletRequest request) {
@@ -128,6 +129,7 @@ public class VideoController {
         return ServerResponse.createBySuccessMessage("视频保存成功");
     }
 
+    @RequiresPermissions("video:delete")
     @RequestMapping(value = "videoDel", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse videoDel(Long id) {
@@ -135,6 +137,7 @@ public class VideoController {
         return ServerResponse.createBySuccessMessage("视频删除成功");
     }
 
+    @RequiresPermissions("video:update")
     @RequestMapping(value = "getEditorVideo", method = RequestMethod.GET)
     public String getEditorVideo(Long id, ModelMap map) {
         Video video = videoService.find(id);
@@ -153,20 +156,20 @@ public class VideoController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(videoTitle!=null && !videoTitle.equals("")){
-            video.setVideotitle("%"+videoTitle+"%");
+        if (videoTitle != null && !videoTitle.equals("")) {
+            video.setVideotitle("%" + videoTitle + "%");
         }
-        long count=videoService.getScrollByLikeCount(video);
+        long count = videoService.getScrollByLikeCount(video);
         List<Video> videoList = videoService.getScrollDataByLike(video, "id desc", (page - 1) * limit, limit);
         List<VideoDTO> videoDTOS = new ArrayList<>();
         setVideoDTO(videoList, videoDTOS);
-        return ServerResponse.createBySuccessForLayuiTable("查询成功",videoDTOS,count);
+        return ServerResponse.createBySuccessForLayuiTable("查询成功", videoDTOS, count);
     }
 
-
-    @RequestMapping(value = "updateVideoPicture",method = RequestMethod.POST)
+    @RequiresPermissions("video:update")
+    @RequestMapping(value = "updateVideoPicture", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse updateVideoPicture(Long id, MultipartFile file, HttpServletRequest request, String image){
+    public ServerResponse updateVideoPicture(Long id, MultipartFile file, HttpServletRequest request, String image) {
         Video video = new Video();
         video.setId(id);
         if (file.isEmpty()) {
@@ -175,7 +178,7 @@ public class VideoController {
         String fn = file.getOriginalFilename();
         String suffix = fn.substring(fn.lastIndexOf('.') + 1, fn.length());
         long fileSize = file.getSize();
-        if (fileSize > 2*1024*1024) {
+        if (fileSize > 2 * 1024 * 1024) {
             return ServerResponse.createByErrorMessage("请上传小于2M的图片");
         }
         if (suffix.equals("jpg") || suffix.equals("JPG") || suffix.equals("jpeg") || suffix.equals("JPEG") || suffix.equals("PNG") || suffix.equals("png") || suffix.equals("GIF") || suffix.equals("gif")) {
@@ -197,9 +200,10 @@ public class VideoController {
         return ServerResponse.createBySuccess("缩略图修改成功", "uploadimage/" + fileName);
     }
 
-    @RequestMapping(value = "updateVideoFile",method = RequestMethod.POST)
+    @RequiresPermissions("video:update")
+    @RequestMapping(value = "updateVideoFile", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse updateVideoFile(Long id, MultipartFile file, HttpServletRequest request, String videoUrl){
+    public ServerResponse updateVideoFile(Long id, MultipartFile file, HttpServletRequest request, String videoUrl) {
         Video video = new Video();
         video.setId(id);
         if (file.isEmpty()) {
@@ -226,9 +230,10 @@ public class VideoController {
         return ServerResponse.createBySuccess("视频修改成功", "uploadvideo/" + fileName);
     }
 
-    @RequestMapping(value = "updateVideo",method = RequestMethod.POST)
+    @RequiresPermissions("video:update")
+    @RequestMapping(value = "updateVideo", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse updateVideo(Video video){
+    public ServerResponse updateVideo(Video video) {
         videoService.updateParams(video);
         return ServerResponse.createBySuccessMessage("修改成功");
     }

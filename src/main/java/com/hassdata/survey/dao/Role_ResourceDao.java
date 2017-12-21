@@ -11,4 +11,6 @@ import java.util.Map;
 public interface Role_ResourceDao extends BaseDao<Role_Resource> {
     List<Role_Resource> getScrollDataByLike(Map<String, Object> params);
     long getScrollByLikeCount(Map<String, Object> params);
+    int updateByRoleId(Role_Resource role_resource);
+    int deleteByRoleId(Integer rid);
 }

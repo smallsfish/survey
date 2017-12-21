@@ -22,25 +22,26 @@
 
 <body oncontextmenu="return false" onselect="return false">
 <form class="layui-form" id="roleForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input type="hidden" value="${role.id}" name="id">
     <div class="layui-form-item" style="margin-top: 25px;">
         <label class="layui-form-label"><span style="color: #f00;">*</span>角色名称：</label>
         <div class="layui-input-block">
             <input type="text" name="rolename" lay-verify="required" placeholder="请输入角色名称" autocomplete="off"
-                   class="layui-input">
+                   class="layui-input" value="${role.rolename}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>描述：</label>
         <div class="layui-input-block">
             <input type="text" name="description" placeholder="请输入描述信息" lay-verify="required" autocomplete="off"
-                   class="layui-input">
+                   class="layui-input" value="${role.description}" }>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>是否可用</label>
         <div class="layui-input-block">
-            <input type="radio" lay-verify="required" name="available" value="1" title="是" checked>
-            <input type="radio" lay-verify="required" name="available" value="0" title="否">
+            <input type="radio" lay-verify="required" name="available" value="1" title="是" ${role.available ? 'checked':''}>
+            <input type="radio" lay-verify="required" name="available" value="0" title="否" ${role.available ? '':'checked'}>
         </div>
     </div>
     <div class="layui-form-item">
@@ -51,7 +52,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addRole" id="roleSubmit">立即提交</button>
+            <button class="layui-btn" lay-submit lay-filter="editorRole" id="roleSubmit">立即修改</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -77,12 +78,12 @@
     };
     // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
     var zNodes = [
-        <c:forEach var="r" items="${res}" varStatus="st">
+        <c:forEach var="r" items="${resources}" varStatus="st">
             <c:if test="${st.index==res.size()-1}">
-                {id:${r.id}, pId:${r.parentid}, name: '${r.name}',chkDisabled:${!r.available},open:${!r.available}}
+                {id:${r.id}, pId:${r.pId}, name: '${r.name}',checked:${r.checked},chkDisabled:${!r.available},open:${!r.available}}
             </c:if>
             <c:if test="${st.index!=res.size()-1}">
-                {id:${r.id}, pId:${r.parentid}, name: '${r.name}',chkDisabled:${!r.available},open:${!r.available}},
+                {id:${r.id}, pId:${r.pId}, name: '${r.name}',checked:${r.checked},chkDisabled:${!r.available},open:${!r.available}},
             </c:if>
         </c:forEach>
     ];
@@ -93,10 +94,10 @@
     layui.use(['form', 'layer'], function () {
         var form = layui.form;
         layer = layui.layer;
-        form.on('submit(addRole)', function (data) {
+        form.on('submit(editorRole)', function (data) {
             var loadIndex = layer.load();
             var fromData = new FormData($("#roleForm")[0]);
-            var nodes = zTreeObj.getChangeCheckedNodes();
+            var nodes = zTreeObj.getCheckedNodes(true);
             var ids="";
             for(var i=0;i<nodes.length;i++){
                 if(i!=nodes.length-1){
@@ -109,7 +110,7 @@
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/addRole',
+                url: 'system/editorRole',
                 data: fromData,
                 async: false,
                 cache: false,
@@ -118,7 +119,6 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        $("#roleForm")[0].reset();
                         window.parent.reflashRoleOnSuccessTable();
                     }
                     layer.msg(result.msg);

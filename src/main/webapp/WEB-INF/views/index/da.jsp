@@ -12,6 +12,13 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="layui/css/layui.css">
     <script src="js/echarts.js"></script>
+    <style>
+        /* 设置滚动条的样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 5px;
+        }
+    </style>
 </head>
 
 <body oncontextmenu="return false" onselect="return false">

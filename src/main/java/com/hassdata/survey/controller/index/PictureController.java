@@ -10,6 +10,7 @@ import com.hassdata.survey.service.PictureService;
 import com.hassdata.survey.service.PictureTypeService;
 import com.hassdata.survey.util.FileUploadUtils;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -50,7 +51,7 @@ public class PictureController {
         return "system/web/picture/picturecenter";
     }
 
-
+    @RequiresPermissions("picture:add")
     @RequestMapping(value = "getAddPictures", method = RequestMethod.GET)
     public String getAddPictures(ModelMap map) {
         List<Picturetype> picturetypeList = pictureTypeService.getAll(null);
@@ -58,6 +59,7 @@ public class PictureController {
         return "system/web/picture/addPicture";
     }
 
+    @RequiresPermissions("picture:add")
     @RequestMapping(value = "addPicture", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addPicture(Pictures pictures, MultipartFile file, HttpServletRequest request) {
@@ -121,12 +123,13 @@ public class PictureController {
         return ServerResponse.createBySuccessForLayuiTable("查询成功", pictureDTOS, count);
     }
 
-
+    @RequiresPermissions("picture:add")
     @RequestMapping(value = "getAddPicturesType", method = RequestMethod.GET)
     public String getAddPicturesType() {
         return "system/web/picture/addPictureType";
     }
 
+    @RequiresPermissions("picture:add")
     @RequestMapping(value = "addPictureType", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addPictureType(Picturetype picturetype) {
@@ -134,7 +137,7 @@ public class PictureController {
         return ServerResponse.createBySuccessMessage("类型添加成功");
     }
 
-
+    @RequiresPermissions("picture:update")
     @RequestMapping(value = "getEditorPictures", method = RequestMethod.GET)
     public String getEditorPictures(Long id, ModelMap map) {
         Pictures pictures = pictureService.find(id);
@@ -144,7 +147,7 @@ public class PictureController {
         return "system/web/picture/editorPicture";
     }
 
-
+    @RequiresPermissions("picture:update")
     @RequestMapping(value = "updatePictureImage", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse updatePictureImage(Long id, MultipartFile file, HttpServletRequest request, String image) {
@@ -178,7 +181,7 @@ public class PictureController {
         return ServerResponse.createBySuccess("图片图修改成功", "uploadimage/" + fileName);
     }
 
-
+    @RequiresPermissions("picture:delete")
     @RequestMapping(value = "picturestypeDel", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse picturestypeDel(Integer id, HttpServletRequest request) {
@@ -196,6 +199,7 @@ public class PictureController {
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
+    @RequiresPermissions("picture:delete")
     @RequestMapping(value = "picturesDel", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse picturesDel(Long id, HttpServletRequest request) {
@@ -208,6 +212,7 @@ public class PictureController {
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
+    @RequiresPermissions("picture:update")
     @RequestMapping(value = "editorPicture", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse editorPicture(Pictures pictures) {

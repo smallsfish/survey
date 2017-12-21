@@ -14,4 +14,5 @@ public interface AdminUserDao extends BaseDao<Admin_User>{
     long getScrollByLikeCount(Map<String, Object> params);
     Set<String> findRoleByAccount(String account);
     Set<String> findPermissionByAccount(String account);
+    int getIdMax();
 }

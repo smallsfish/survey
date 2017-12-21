@@ -70,6 +70,11 @@
         id = #{id}
     </update>
 
+
+    <update id="updateAdminRoleByAid" parameterType="Role_Resource">
+        UPDATE admin_role set rid=#{rid} where aid=#{aid};
+    </update>
+
     <delete id="delete" parameterType="java.lang.Integer">
         <![CDATA[
 	        delete from admin_role where

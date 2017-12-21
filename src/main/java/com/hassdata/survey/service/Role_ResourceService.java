@@ -9,4 +9,6 @@ import java.util.List;
 public interface Role_ResourceService extends BaseService<Role_Resource> {
     List<Role_Resource> getScrollDataByLike(Role_Resource params, String orderBy, Integer fromIndex, Integer pageSize);
     long getScrollByLikeCount(Role_Resource params);
+    int updateByRoleId(Role_Resource role_resource);
+    int deleteByRoleId(Integer rid);
 }
