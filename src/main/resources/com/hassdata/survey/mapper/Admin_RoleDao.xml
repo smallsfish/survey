@@ -81,6 +81,12 @@
 	        id = #{id}
 	    ]]>
     </delete>
+    <delete id="deleteAdminRoleByAid" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from admin_role where
+	        aid = #{aid}
+	    ]]>
+    </delete>
     <delete id="deleteByStringId" parameterType="java.lang.String">
         <![CDATA[
 	        delete from admin_role where

@@ -242,7 +242,7 @@ public class AdminUserController {
         map.addAttribute("adminUser", adminUser);
         return "system/user/adminEditor";
     }
-
+    @RequiresPermissions("admin:delete")
     @RequestMapping(value = "adminUserDel", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse adminUserDel(Integer id) {
@@ -294,7 +294,7 @@ public class AdminUserController {
         passwordHelper.encryptPassword(admin_user);
         admin_user.setCreatedatetime(new Date());
         adminUserService.save(admin_user);
-        int maxId=adminUserService.getIdMax();
+        int maxId=adminUserService.getIdMax()-1;
         List<Admin_Role> admin_roleList=new ArrayList<>();
         Admin_Role admin_role=null;
         for(String rid : roles){
@@ -343,6 +343,13 @@ public class AdminUserController {
                     adminUser.setLastlogintime(format.format(au.getLastlogintime()));
                 }
                 adminUser.setRemarks(au.getRemarks());
+                Admin_Role admin_role=new Admin_Role();
+                admin_role.setAid(au.getId());
+                String roles="";
+                for(Admin_Role ar : admin_roleService.getAll(admin_role)){
+                   roles+= roleService.find(ar.getRid()).getDescription()+"    ";
+                }
+                adminUser.setRole(roles);
                 aus.add(adminUser);
                 aid++;
             } else {
@@ -390,12 +397,16 @@ public class AdminUserController {
     @ResponseBody
     public ServerResponse updateAdminUser(Admin_User admin_user,String[] roles) {
         adminUserService.updateParams(admin_user);
+        admin_roleService.deleteAdminRoleByAid(admin_user.getId());
+        List<Admin_Role> admin_roleList=new ArrayList<>();
         for(String r : roles){
             Admin_Role admin_role=new Admin_Role();
             admin_role.setRid(Integer.parseInt(r));
             admin_role.setAid(admin_user.getId());
-            admin_roleService.updateAdminRoleByAid(admin_role);
+            admin_roleList.add(admin_role);
+            //admin_roleService.updateAdminRoleByAid(admin_role);
         }
+        admin_roleService.saveBatch(admin_roleList);
         return ServerResponse.createBySuccessMessage("更新成功");
     }
 

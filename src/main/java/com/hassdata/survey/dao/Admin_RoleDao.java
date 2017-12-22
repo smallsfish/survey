@@ -12,4 +12,5 @@ public interface Admin_RoleDao extends BaseDao<Admin_Role> {
     List<Admin_Role> getScrollDataByLike(Map<String, Object> params);
     long getScrollByLikeCount(Map<String, Object> params);
     int updateAdminRoleByAid(Admin_Role admin_role);
+    int deleteAdminRoleByAid(Integer aid);
 }

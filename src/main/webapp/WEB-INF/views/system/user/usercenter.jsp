@@ -66,7 +66,7 @@
                 {width: layui_tab_item_width * 0.04, field: 'headimage', templet:'#headimg', title: '头像'},
                 {width: layui_tab_item_width * 0.07, field: 'account', title: '账号'},
                 {width: layui_tab_item_width * 0.12, field: 'email', title: 'Email'},
-                {width: layui_tab_item_width * 0.11, field: 'role', title: '角色&权限'},
+                {width: layui_tab_item_width * 0.11, field: 'role', title: '角色'},
                 {width: layui_tab_item_width * 0.07, field: 'identifier', title: '编号'},
                 {width: layui_tab_item_width * 0.13, field: 'remarks', title: '备注'},
                 {width: layui_tab_item_width * 0.1, field: 'createdatetime', title: '创建时间'},
@@ -183,9 +183,6 @@
                 });
             }
         });
-
-
-
         //        普通用户动态表格
         userTable=table.render({
             elem: '#dynamic-table-user', //指定原始表格元素选择器（推荐id选择器）
@@ -349,7 +346,6 @@
             margin-right: 15px;
             cursor: pointer;
         }
-
         /*用户管理样式结束*/
     </style>
 </head>

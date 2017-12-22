@@ -306,7 +306,7 @@
     </select>
 
     <select id="getIdMax" resultType="int">
-        select max(id) from role
+        SELECT Auto_increment FROM information_schema.tables  WHERE table_name='admin_user'
     </select>
 
 </mapper>

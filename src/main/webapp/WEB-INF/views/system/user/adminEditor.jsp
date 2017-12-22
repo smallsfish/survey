@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -86,11 +87,13 @@
             <textarea name="remarks" placeholder="请输入内容" class="layui-textarea">${adminUser.remarks}</textarea>
         </div>
     </div>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即修改</button>
+    <shiro:hasPermission name="admin:update">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即修改</button>
+            </div>
         </div>
-    </div>
+    </shiro:hasPermission>
 </form>
 </body>
 <script>
@@ -132,7 +135,7 @@
                     layer.close(loadIndex);
                     if (result.status == 0) {
                         window.parent.reflashAdminTable();
-                        window.parent.layer.closeAll();
+                        // window.parent.layer.closeAll();
                         window.parent.layer.msg(result.msg);
                     }
                     layer.msg(result.msg);

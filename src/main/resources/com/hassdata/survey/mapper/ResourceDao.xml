@@ -248,6 +248,8 @@
        select name from resource where id in (select reid from role_resource where rid= #{rid} ) and available=1
     </select>
 
-
+    <select id="getIdMax" resultType="int">
+        SELECT Auto_increment FROM information_schema.tables  WHERE table_name='resource'
+    </select>
 
 </mapper>

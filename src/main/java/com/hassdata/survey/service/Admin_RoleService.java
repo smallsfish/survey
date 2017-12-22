@@ -9,4 +9,5 @@ public interface Admin_RoleService extends BaseService<Admin_Role> {
     List<Admin_Role> getScrollDataByLike(Admin_Role params, String orderBy, Integer fromIndex, Integer pageSize);
     long getScrollByLikeCount(Admin_Role params);
     int updateAdminRoleByAid(Admin_Role admin_role);
+    int deleteAdminRoleByAid(Integer aid);
 }

@@ -13,5 +13,5 @@ public interface ResourceDao extends BaseDao<Resource> {
     long getScrollByLikeCount(Map<String, Object> params);
     List<Resource> getResourceByAccount(String account);
     List<String> getResourceNameByRoleId(Integer rid);
-    Integer getIdMax();
+    int getIdMax();
 }

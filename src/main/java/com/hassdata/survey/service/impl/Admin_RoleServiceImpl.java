@@ -35,4 +35,9 @@ public class Admin_RoleServiceImpl extends BaseServiceImpl<Admin_Role> implement
     public int updateAdminRoleByAid(Admin_Role admin_role) {
         return admin_RoleDao.updateAdminRoleByAid(admin_role);
     }
+
+    @Override
+    public int deleteAdminRoleByAid(Integer aid) {
+        return admin_RoleDao.deleteAdminRoleByAid(aid);
+    }
 }
