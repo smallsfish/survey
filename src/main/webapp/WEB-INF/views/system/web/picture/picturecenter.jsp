@@ -305,10 +305,11 @@
 
     function picturesSearch() {
         var picturestitle = $(":input[name='qname']").val();
+        picturestitle=encodeURI(encodeURI(picturestitle));
         var status = $("#status").val();
         var picturestype = $("#picturestype").val();
         picturesTable.reload({
-            url: 'system/pictureSearch?picturestitle=' + picturestitle + '&status=' + status + '&picturestype=' + picturestype
+            url: 'system/pictureSearch?picturetitle=' + picturestitle + '&status=' + status + '&picturestype=' + picturestype
         });
     }
 </script>

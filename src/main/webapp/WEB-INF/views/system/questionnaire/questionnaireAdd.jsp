@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -53,9 +54,11 @@
             <div class="questionnaireadd-main-from"></div>
         </div>
         <div class="questionnaireadd-show-bottom">
-            <button onclick="questionnaireSubmit()" class="layui-btn">提交</button>
-            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查</button>
-
+            <shiro:hasPermission name="questionnaire:add">
+                <button onclick="questionnaireSubmit()" class="layui-btn">提交</button>
+            </shiro:hasPermission>
+            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查
+            </button>
         </div>
     </div>
 </div>

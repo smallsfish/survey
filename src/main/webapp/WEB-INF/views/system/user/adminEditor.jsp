@@ -90,7 +90,9 @@
     <shiro:hasPermission name="admin:update">
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即修改</button>
+                <shiro:hasPermission name="admin:update">
+                    <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即修改</button>
+                </shiro:hasPermission>
             </div>
         </div>
     </shiro:hasPermission>

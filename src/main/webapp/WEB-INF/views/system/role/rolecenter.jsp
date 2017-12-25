@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -27,9 +28,13 @@
         </div>
     </div>
     <div class="information-toolbar">
-        <img onclick="addRole()" src="img/icon/icon-more2.png" alt="添加角色" title="添加">
+        <shiro:hasPermission name="role:add">
+            <img onclick="addRole()" src="img/icon/icon-more2.png" alt="添加角色" title="添加">
+        </shiro:hasPermission>
         <img onclick="reflashRoleOnSuccessTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
-        <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中角色" title="删除">
+        <shiro:hasPermission name="role:delete">
+            <img src="img/icon/icon-delete.png" data-type="getCheckData" class="demoTable" alt="删除选中角色" title="删除">
+        </shiro:hasPermission>
     </div>
 </div>
 <div class="information-content">
@@ -208,8 +213,12 @@
     }
 </script>
 <script id="infoToolBar" type="text/html">
-    <a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+    <shiro:hasPermission name="role:update">
+        <a class="layui-btn layui-btn-normal layui-btn-mini" lay-event="edit">编辑</a>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="role:delete">
+        <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+    </shiro:hasPermission>
 </script>
 <script id="available" type="text/html">
     <form class="layui-form">

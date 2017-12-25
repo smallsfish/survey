@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,9 @@ public class InformationCenterController {
             page = 1;
             limit = 30;
         }
-        String name = null;
+        String name = request.getParameter("name");
         try {
-            name = new String(request.getParameter("schoolname").getBytes("iso-8859-1"), "utf-8");
+            name= URLDecoder.decode(URLDecoder.decode(name,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

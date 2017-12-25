@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -77,14 +78,13 @@ public class QuestionnaireController {
             page = 1;
             limit = 12;
         }
-        String name = null;
+        String name = request.getParameter("name");
         try {
-            name = new String(request.getParameter("name").getBytes("iso-8859-1"), "utf-8");
+            name=URLDecoder.decode(URLDecoder.decode(name,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         Questionnaire questionnaire = new Questionnaire();
-        System.out.println(name);
         questionnaire.setQuestionnairename("%" + name + "%");
         List<Questionnaire> questionnaires = questionnaireService.getScrollDataByLike(questionnaire, "id DESC", (page - 1) * limit, limit);
         long count = questionnaireService.getScrollByLikeCount(questionnaire);

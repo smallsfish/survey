@@ -260,6 +260,7 @@ section {
     position: absolute;
     margin-top: 10px;
     box-shadow:5px 5px 10px 2px #9F9F9F;
+    cursor: pointer;
 }
 .video-list li img{
     width: 100%;
@@ -372,6 +373,36 @@ footer {
     width: 86px;
     height: 86px;
     border: 2px #def7f0 solid;
+}
+
+.newsDetail{
+    width: 100%;
+    min-height: 500px;
+}
+.newsDetail h3{
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.newsDetail-info{
+    width: 100%;
+}
+.newsDetail-info span{
+    display: block;
+    width: 30%;
+    float: left;
+    margin-left: 3.3%;
+    text-align: center;
+}
+.newsDetail-content{
+    clear: left;
+    padding: 5px;
+    margin-top: 35px;
+    width: calc(100% - 10px);
 }
 
 

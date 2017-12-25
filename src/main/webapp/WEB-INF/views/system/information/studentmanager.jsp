@@ -134,6 +134,8 @@
     }
     function searchSuccessStudent(){
         var studentName=$(":input[name='qname']").val();
+
+        studentName=encodeURI(encodeURI(studentName));
         if(studentName===""){
             layer.msg("请输入学生名称！",{icon:2,time:3000});
             return;

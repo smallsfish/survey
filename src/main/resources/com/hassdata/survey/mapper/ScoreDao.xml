@@ -9,13 +9,15 @@
     <!-- 用于select查询公用抽取的列 -->
     <sql id="scoreColumns">
         <![CDATA[
+
         	id,
             questionnaireid,
             questionid,
             options,
             sid,
             uid
-	    ]]>
+
+        ]]>
     </sql>
     <sql id="scoreDynamicWhere">
         <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
@@ -42,6 +44,7 @@
     </sql>
     <insert id="save" parameterType="Score" useGeneratedKeys="true" keyProperty="id">
         <![CDATA[
+
 	        INSERT INTO
 	        score (
 	        	id,
@@ -58,11 +61,14 @@
 	        	#{sid,jdbcType=VARCHAR},
 	        	#{uid,jdbcType=INTEGER}
 	        )
-	    ]]>
+
+        ]]>
     </insert>
 
     <update id="update" parameterType="Score">
         <![CDATA[
+
+
 	        UPDATE score SET
 		        questionnaireid = #{questionnaireid,jdbcType=INTEGER},
 		        questionid = #{questionid,jdbcType=BIGINT},
@@ -71,7 +77,9 @@
 		        uid = #{uid,jdbcType=INTEGER}
 			WHERE
 				id = #{id}
-	    ]]>
+
+
+        ]]>
     </update>
 
     <update id="updateParams" parameterType="Score">
@@ -100,19 +108,28 @@
 
     <delete id="delete" parameterType="java.lang.Long">
         <![CDATA[
+
+
 	        delete from score where
 	        id = #{id}
-	    ]]>
+
+
+        ]]>
     </delete>
     <delete id="deleteByStringId" parameterType="java.lang.String">
         <![CDATA[
+
+
 	        delete from score where
 	        id = #{id}
-	    ]]>
+
+
+        ]]>
     </delete>
 
     <select id="find" parameterType="java.lang.Long" resultMap="scoreResult">
-        select <include refid="scoreColumns" />
+        select
+        <include refid="scoreColumns"/>
         <![CDATA[
 		    from score
 	        where
@@ -120,7 +137,8 @@
 	    ]]>
     </select>
     <select id="findByStringId" parameterType="java.lang.String" resultMap="scoreResult">
-        select <include refid="scoreColumns" />
+        select
+        <include refid="scoreColumns"/>
         <![CDATA[
 		    from score
 	        where
@@ -134,7 +152,9 @@
     </select>
 
     <select id="getOne" resultMap="scoreResult" parameterType="map">
-        select <include refid="scoreColumns"/> from score
+        select
+        <include refid="scoreColumns"/>
+        from score
         <include refid="scoreDynamicWhere"/>
         <if test="orderBy != null">
             order by ${orderBy}
@@ -143,7 +163,9 @@
     </select>
 
     <select id="getAll" resultMap="scoreResult" parameterType="map">
-        select <include refid="scoreColumns"/> from score
+        select
+        <include refid="scoreColumns"/>
+        from score
         <include refid="scoreDynamicWhere"/>
         <if test="orderBy != null">
             order by ${orderBy}
@@ -151,7 +173,8 @@
     </select>
 
     <select id="getScrollData" resultMap="scoreResult" parameterType="map">
-        select <include refid="scoreColumns" />
+        select
+        <include refid="scoreColumns"/>
         from score
         <include refid="scoreDynamicWhere"/>
         <if test="orderBy != null">
@@ -178,18 +201,22 @@
 
 
     <select id="getQuestionnaireWithUserId" resultMap="scoreResult" parameterType="string">
-        SELECT <include refid="scoreColumns" /> FROM survey.score WHERE questionnaireid=#{id} group by uid
+        SELECT DISTINCT uid FROM survey.score WHERE questionnaireid=#{id} group by uid
     </select>
 
     <select id="getQuestionnaireWithStudentId" resultMap="scoreResult" parameterType="string">
-        SELECT <include refid="scoreColumns" /> FROM survey.score WHERE questionnaireid=#{id} group by sid
+        SELECT
+        DISTINCT sid
+        FROM survey.score WHERE questionnaireid=#{id} group by sid
     </select>
 
 
     <select id="getOptionCountWidthQuesitonnaire" resultMap="scoreResult" parameterType="map">
-        SELECT <include refid="scoreColumns" /> FROM survey.score WHERE questionnaireid=#{questionnaireid} and questionid=#{questionid} and options like #{optionid}
+        SELECT
+        <include refid="scoreColumns"/>
+        FROM survey.score WHERE questionnaireid=#{questionnaireid} and questionid=#{questionid} and options like
+        #{optionid}
     </select>
-
 
 
 </mapper>

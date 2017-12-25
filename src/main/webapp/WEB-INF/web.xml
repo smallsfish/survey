@@ -11,6 +11,10 @@
         <param-value>classpath:log4j.xml</param-value>
     </context-param>
     <context-param>
+        <param-name>loggingLevel</param-name>
+        <param-value>error</param-value>
+    </context-param>
+    <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:app-*.xml</param-value>
     </context-param>

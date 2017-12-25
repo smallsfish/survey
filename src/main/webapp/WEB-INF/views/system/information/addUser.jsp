@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -61,7 +62,9 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addUser" id="userSubmit">立即提交</button>
+            <shiro:hasPermission name="user:add">
+                <button class="layui-btn" lay-submit lay-filter="addUser" id="userSubmit">立即提交</button>
+            </shiro:hasPermission>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>

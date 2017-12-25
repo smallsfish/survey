@@ -33,13 +33,13 @@
         <div class="header-nav">
             <ul>
                 <li><img src="img/logo.png" alt="logo"><span>基础教育改革与发展协同创新中心</span></li>
-                <li><a href="/index/home">留守儿童之家<i></i></a></li>
-                <li><a href="/index/news">留守儿童资讯<i></i></a></li>
-                <li><a href="/index/picture">留守儿童图片<i></i></a></li>
-                <li><a href="/index/video">留守儿童视频<i></i></a></li>
-                <li><a href="/index/questionnaire">留守儿童问卷<i></i></a></li>
-                <li><a href="/index/video">问卷分析<i></i></a></li>
-                <li><a href="/index/msg">留言板</a></li>
+                <li><a href="index/home">留守儿童之家<i></i></a></li>
+                <li><a href="index/news">留守儿童资讯<i></i></a></li>
+                <li><a href="index/picture">留守儿童图片<i></i></a></li>
+                <li><a href="index/video">留守儿童视频<i></i></a></li>
+                <li><a href="index/questionnaire">留守儿童问卷<i></i></a></li>
+                <li><a href="index/video">问卷分析<i></i></a></li>
+                <li><a href="index/msg">留言板</a></li>
             </ul>
         </div>
     </nav>
@@ -58,7 +58,7 @@
         <ul>
             <li><span>热点资讯</span><a href="javascript:;">更多...</a></li>
             <c:forEach var="n" items="${news}">
-                <li><a href="http://www.mxrb.cn/lyxws/content/2017-11/13/content_1657701.htm">${n.newstitle}</a></li>
+                <li><a href="index/newsDetail?id=${n.id}">${n.newstitle}</a></li>
             </c:forEach>
         </ul>
     </aside>
@@ -77,8 +77,8 @@
         <div class="video-list">
             <ol>
                 <c:forEach var="v" items="${videos}">
-                    <li><a href="http://www.iqiyi.com/w_19rtilr855.html?share_sTime=0-share_eTime=55" target="_blank">
-                        <img src="uploadimage/${v.imageurl}" alt="${v.videotitle}"></a></li>
+                    <li onclick="playVideo('uploadvideo/${v.videourl}','${v.videotitle}')">
+                        <img src="uploadimage/${v.imageurl}" alt="${v.videotitle}"></li>
                 </c:forEach>
             </ol>
         </div>
@@ -89,7 +89,9 @@
 </footer>
 </body>
 <script>
-    layui.use('carousel', function () {
+    var layer;
+    layui.use(['carousel','layer'], function () {
+        layer=layui.layer;
         var carousel = layui.carousel;
         //建造实例
         carousel.render({
@@ -207,5 +209,19 @@
         $(id).css({"width": width, "height": height, "top": top, "left": left});
     }
 
+
+    function playVideo(videoUrl, title) {
+        layer.open({
+            title: "正在播放   <<" + title + ">>",
+            type: 1,
+            anim: 1,
+            area: ['800px', '530px'],
+            content: $('.playVideo') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+        });
+        $(".playVideo video").attr("src", videoUrl);
+    }
 </script>
+<div class="playVideo" style="width: 100%;height: 100%; display: none;">
+    <video style="width: 100%;height: 100%;" autoplay controls></video>
+</div>
 </html>

@@ -151,12 +151,13 @@
 
     function searchSuccessVideo() {
         var videoTitle = $(":input[name='vname']").val();
+        videoTitle=encodeURI(encodeURI(videoTitle));
         if (videoTitle === "") {
             layer.msg("请输入视频标题！", {icon: 2, time: 3000});
             return;
         }
         successVideoTable.reload({
-            url: 'system/searchVideoList?videoTitle=' + videoTitle
+            url: 'system/videoSearch?videoTitle=' + videoTitle
         });
     }
 

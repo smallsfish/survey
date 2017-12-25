@@ -11,7 +11,6 @@
     <%@ include file="../base.jsp" %>
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="layui/css/layui.css">
-    <link rel="stylesheet" href="img/iconfont/iconfont.css">
     <script src="js/index.js"></script>
     <style>
         .loop-pic {
@@ -48,55 +47,36 @@
         <div class="layui-carousel" id="pictureLoop">
             <div carousel-item>
                 <c:forEach items="${loops}" var="loop">
-                    <div class="loop-pic"><a
-                            href="${(loop.url==null || loop.url.equals("")) ? 'javascript:;': loop.url}"><img
-                            src="${loop.imageurl}"></a></div>
+                    <div class="loop-pic"><a href="${(loop.url==null || loop.url.equals("")) ? 'javascript:;': loop.url}"><img src="${loop.imageurl}"></a></div>
                 </c:forEach>
             </div>
         </div>
     </div>
 </header>
 <section>
-    <div class="v-video-list">
-        <ul>
-            <c:forEach var="v" items="${vl}">
-                <li onclick="playVideo('uploadvideo/${v.videourl}','${v.videotitle}')"><img
-                        src="uploadimage/${v.imageurl}"/><i class="iconfont icon-play"></i><span>${v.videotitle}</span>
-                </li>
-            </c:forEach>
-        </ul>
+    <div class="newsDetail">
+        <h3>${news.newstitle}</h3>
+        <div class="newsDetail-info"><span>来源：${news.comeform}</span><span>时间：${news.createtime}</span><span>发布人：${news.operator}</span></div>
+        <div class="newsDetail-content">
+            ${news.newscontent}
+        </div>
     </div>
 </section>
 <footer>
+
 </footer>
 </body>
 <script>
-    var layer = null;
-    layui.use(['carousel', 'layer'], function () {
+    layui.use('carousel', function () {
         var carousel = layui.carousel;
-        layer = layui.layer;
         //建造实例
         carousel.render({
             elem: '#pictureLoop'
             , width: '100%' //设置容器宽度
-            , arrow: 'always' //始终显示箭头
+            , arrow: 'hover' //始终显示箭头
             , height: '600px'
             , anim: 'fade' //切换动画方式
         });
     });
-
-    function playVideo(videoUrl, title) {
-        layer.open({
-            title: "正在播放   <<" + title + ">>",
-            type: 1,
-            anim: 1,
-            area: ['800px', '530px'],
-            content: $('.playVideo') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-        });
-        $(".playVideo video").attr("src", videoUrl);
-    }
 </script>
-<div class="playVideo" style="width: 100%;height: 100%; display: none;">
-    <video style="width: 100%;height: 100%;" autoplay controls></video>
-</div>
 </html>

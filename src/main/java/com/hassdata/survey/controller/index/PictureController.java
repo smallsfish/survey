@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -224,9 +225,9 @@ public class PictureController {
     @ResponseBody
     public ServerResponse pictureSearch(HttpServletRequest request, Integer status, Integer picturestype, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
         Pictures pictures = new Pictures();
-        String picturetitle = null;
+        String picturetitle = request.getParameter("picturetitle");
         try {
-            picturetitle = new String(request.getParameter("picturestitle").getBytes("iso-8859-1"), "utf-8");
+            picturetitle= URLDecoder.decode(URLDecoder.decode(picturetitle,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

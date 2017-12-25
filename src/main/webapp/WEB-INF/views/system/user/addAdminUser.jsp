@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -15,11 +16,13 @@
         form {
             width: 97%;
         }
-        select{
+
+        select {
             width: 85%;
 
         }
-        option{
+
+        option {
             font-size: 16px;
             padding: 3px 5px;
         }
@@ -54,7 +57,7 @@
                    class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item" >
+    <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>角色：</label>
         <div class="layui-input-block">
             <select name="roles" multiple lay-ignore>
@@ -79,7 +82,9 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即提交</button>
+            <shiro:hasPermission name="admin:add">
+                <button class="layui-btn" lay-submit lay-filter="addAdmin" id="adminUserSubmit">立即提交</button>
+            </shiro:hasPermission>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>

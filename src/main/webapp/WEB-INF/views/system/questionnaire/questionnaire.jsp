@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -9,14 +10,17 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>test</title>
+    <title>问卷中心</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="layui/css/layui.css">
 </head>
 <body>
 <div class="questionnaire-top">
-    <div onclick="window.parent.createTab({title:'新建问卷',isShowClose:true,url:'system/questionnaireAdd'})" title="新建"
-         class="questionnaire-add">添加问卷</div>
+    <shiro:hasPermission name="questionnaire:add">
+        <div onclick="window.parent.createTab({title:'新建问卷',isShowClose:true,url:'system/questionnaireAdd'})" title="新建"
+             class="questionnaire-add">添加问卷
+        </div>
+    </shiro:hasPermission>
     <div class="questionnaire-search">
         <input type="search" name="qname" placeholder="请输入问卷名称">
         <div onclick="questionnaireSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png">
@@ -32,28 +36,38 @@
             <div class="questionnaire-one">
                 <ul>
                     <li>${qm.questionnairename}</li>
-                    <li style="margin-top: 13px;">创建时间:<fmt:formatDate value="${qm.questionnairecreatetime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
-                    <li>开始时间:<fmt:formatDate value="${qm.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
-                    <li>结束时间:<fmt:formatDate value="${qm.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/></li>
+                    <li style="margin-top: 13px;">创建时间:<fmt:formatDate value="${qm.questionnairecreatetime}"
+                                                                       pattern="yyyy-MM-dd  HH:mm:ss"/></li>
+                    <li>开始时间:<fmt:formatDate value="${qm.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/><c:if test="${qm.questionnairebegintime==null || qm.questionnairebegintime.equals(\"\")}">未设</c:if></li>
+                    <li>结束时间:<fmt:formatDate value="${qm.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/><c:if test="${qm.questionnaireendtime==null || qm.questionnaireendtime.equals(\"\")}">未设</c:if></li>
                     <li>题目数量：${qm.questions}</li>
                     <li>制作者：${qm.author}</li>
                 </ul>
             </div>
             <div class="questionnaire-two">
                 <div style="display: block;">
-                    <button onclick="window.parent.createTab({title:'${qm.questionnairename}',isShowClose:true,url:'system/displayQuestionnaire?id=${qm.id}'})"
-                            class="layui-btn  layui-btn-radius">预览
-                    </button>
-                    <br><br>
-                    <button onclick="showDisplayURL('<%=baseUrl%>display/displayQuestionnaire?id=${qm.id}');"
-                            class="layui-btn  layui-btn-radius">链接
-                    </button>
-                    <br><br>
-                    <button onclick="window.parent.createTab({title:'${qm.questionnairename}编辑',isShowClose:true,url:'system/questionnaireEditor?id=${qm.id}'})"
-                            class="layui-btn  layui-btn-radius">编辑
-                    </button>
-                    <br><br>
-                    <button onclick="deleteQuestionnaire('${qm.id}')" class="layui-btn  layui-btn-radius">删除</button>
+                    <shiro:hasPermission name="questionnaire:view">
+                        <button onclick="window.parent.createTab({title:'${qm.questionnairename}',isShowClose:true,url:'system/displayQuestionnaire?id=${qm.id}'})"
+                                class="layui-btn  layui-btn-radius">预览
+                        </button>
+                        <br><br>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="questionnaire:share">
+                        <button onclick="showDisplayURL('<%=baseUrl%>display/displayQuestionnaire?id=${qm.id}');"
+                                class="layui-btn  layui-btn-radius">链接
+                        </button>
+                        <br><br>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="questionnaire:update">
+                        <button onclick="window.parent.createTab({title:'${qm.questionnairename}编辑',isShowClose:true,url:'system/questionnaireEditor?id=${qm.id}'})"
+                                class="layui-btn  layui-btn-radius">编辑
+                        </button>
+                        <br><br>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="questionnaire:delete">
+                        <button onclick="deleteQuestionnaire('${qm.id}')" class="layui-btn  layui-btn-radius">删除
+                        </button>
+                    </shiro:hasPermission>
                 </div>
             </div>
         </div>
@@ -99,7 +113,7 @@
     layui.use(['laypage', 'layer'], function () {
         layer = layui.layer;
         laypage = layui.laypage;
-        setPageValue('system/questionnairesList',null);
+        setPageValue('system/questionnairesList', null);
         var loadIndex = null;
         deleteQuestionnaire = function (id) {
             layer.confirm("确定删除当前问卷吗？此操作不可恢复！", function (index) {
@@ -130,13 +144,13 @@
         }
     });
 
-    function setPageValue( url ,name) {
+    function setPageValue(url, name) {
         //执行一个laypage实例
         laypage.render({
             elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
             count: count, //数据总数，从服务端得到
             limit: 12,
-            limits: [12, 24, 36, 48,60],
+            limits: [12, 24, 36, 48, 60],
             layout: ['prev', 'page', 'next', 'limit', 'skip', 'count'],
             jump: function (obj, first) {
                 //首次不执行
@@ -146,7 +160,7 @@
                         type: "GET",
                         dataType: "json",
                         url: url,
-                        data: {'page': obj.curr, 'limit': obj.limit,'name':name},
+                        data: {'page': obj.curr, 'limit': obj.limit, 'name': name},
                         success: function (result) {
                             if (result.status == 0) {
                                 $(".questionnaire-item").remove();
@@ -154,6 +168,12 @@
                                     var cDate = new Date(item.questionnairecreatetime).format("yyyy-MM-dd hh:mm:ss");
                                     var bDate = new Date(item.questionnairebegintime).format("yyyy-MM-dd hh:mm:ss");
                                     var eDate = new Date(item.questionnaireendtime).format("yyyy-MM-dd hh:mm:ss");
+                                    if(item.questionnairebegintime==null || item.questionnairebegintime===""){
+                                        bDate="未设";
+                                    }
+                                    if(item.questionnaireendtime==null || item.questionnaireendtime===""){
+                                        eDate="未设";
+                                    }
                                     $(".questionnaire-content").append("<div id=\"" + item.id + "\" class=\"questionnaire-item\">" +
                                         "            <div class=\"questionnaire-one\">" +
                                         "                <ul>\n" +
@@ -166,20 +186,20 @@
                                         "                </ul>" +
                                         "            </div>" +
                                         "            <div class=\"questionnaire-two\">" +
-                                        "                <div style=\"display: block;\">" +
+                                        "                <div style=\"display: block;\">"<shiro:hasPermission name="questionnaire:view"> +
                                         "                    <button onclick=\"window.parent.createTab({title:'" + item.questionnairename + "',isShowClose:true,url:'display/displayQuestionnaire?id=" + item.id + "'})\"" +
                                         "                            class=\"layui-btn  layui-btn-radius\">预览" +
                                         "                    </button>" +
-                                        "                    <br><br>" +
+                                        "                    <br><br>"</shiro:hasPermission><shiro:hasPermission name="questionnaire:share"> +
                                         "                    <button onclick=\"showDisplayURL('<%=baseUrl%>display/displayQuestionnaire?id=" + item.id + "');\"" +
                                         "                            class=\"layui-btn  layui-btn-radius\">链接" +
                                         "                    </button>" +
-                                        "                    <br><br>" +
+                                        "                    <br><br>"</shiro:hasPermission> <shiro:hasPermission name="questionnaire:update"> +
                                         "                    <button onclick=\"window.parent.createTab({title:'" + item.questionnairename + "编辑',isShowClose:true,url:'system/questionnaireEditor?id=" + item.id + "'})\"" +
                                         "                            class=\"layui-btn  layui-btn-radius\">编辑" +
                                         "                    </button>" +
-                                        "                    <br><br>" +
-                                        "                    <button onclick=\"deleteQuestionnaire('" + item.id + "')\" class=\"layui-btn  layui-btn-radius\">删除</button>" +
+                                        "                    <br><br>"</shiro:hasPermission><shiro:hasPermission name="questionnaire:delete"> +
+                                        "                    <button onclick=\"deleteQuestionnaire('" + item.id + "')\" class=\"layui-btn  layui-btn-radius\">删除</button>" </shiro:hasPermission> +
                                         "                </div>" +
                                         "            </div>" +
                                         "        </div>");
@@ -201,12 +221,12 @@
         $("#url").text(s);
         //layer.alert(s);
         layer.open({
-            type: 1,
-            content: $('#url'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-            btn: ['确认']
+                type: 1,
+                content: $('#url'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                btn: ['确认']
 
-        },
-            function(index){
+            },
+            function (index) {
                 layer.close(index);
                 $("#url").hide();
             });
@@ -215,6 +235,7 @@
 <script>
     function questionnaireSearch() {
         var questionnaireName = $(":input[name='qname']").val();
+        questionnaireName=encodeURI(encodeURI(questionnaireName));
         if (questionnaireName !== "") {
             loadIndex = layer.load();
             $.ajax({
@@ -230,38 +251,44 @@
                             var cDate = new Date(item.questionnairecreatetime).format("yyyy-MM-dd hh:mm:ss");
                             var bDate = new Date(item.questionnairebegintime).format("yyyy-MM-dd hh:mm:ss");
                             var eDate = new Date(item.questionnaireendtime).format("yyyy-MM-dd hh:mm:ss");
+                            if(item.questionnairebegintime==null || item.questionnairebegintime===""){
+                                bDate="未设";
+                            }
+                            if(item.questionnaireendtime==null || item.questionnaireendtime===""){
+                                eDate="未设";
+                            }
                             $(".questionnaire-content").append("<div id=\"" + item.id + "\" class=\"questionnaire-item\">" +
                                 "            <div class=\"questionnaire-one\">" +
                                 "                <ul>\n" +
                                 "                    <li>" + item.questionnairename + "</li>" +
-                                "                    <li>C:" + cDate +
-                                "                    <li>B:" + bDate +
-                                "                    <li>E:" + eDate + "</li>" +
+                                "                    <li>创建时间:" + cDate +
+                                "                    <li>开始时间:" + bDate +
+                                "                    <li>结束时间:" + eDate + "</li>" +
                                 "                    <li>题目数量：" + item.questions + "</li>" +
                                 "                    <li>制作者：" + item.author + "</li>" +
                                 "                </ul>" +
                                 "            </div>" +
                                 "            <div class=\"questionnaire-two\">" +
-                                "                <div style=\"display: block;\">" +
+                                "                <div style=\"display: block;\">"<shiro:hasPermission name="questionnaire:view"> +
                                 "                    <button onclick=\"window.parent.createTab({title:'" + item.questionnairename + "',isShowClose:true,url:'system/displayQuestionnaire?id=" + item.id + "'})\"" +
                                 "                            class=\"layui-btn  layui-btn-radius\">预览" +
                                 "                    </button>" +
-                                "                    <br><br>" +
+                                "                    <br><br>"</shiro:hasPermission> <shiro:hasPermission name="questionnaire:share">+
                                 "                    <button onclick=\"showDisplayURL('<%=baseUrl%>display/displayQuestionnaire?id=" + item.id + "');\"" +
                                 "                            class=\"layui-btn  layui-btn-radius\">链接" +
                                 "                   </button>" +
-                                "                    <br><br>" +
+                                "                    <br><br>"</shiro:hasPermission> <shiro:hasPermission name="questionnaire:update">+
                                 "                    <button onclick=\"window.parent.createTab({title:'" + item.questionnairename + "编辑',isShowClose:true,url:'system/questionnaireEditor?id=" + item.id + "'})\"" +
                                 "                            class=\"layui-btn  layui-btn-radius\">编辑" +
                                 "                    </button>" +
-                                "                    <br><br>" +
-                                "                    <button onclick=\"deleteQuestionnaire('" + item.id + "')\" class=\"layui-btn  layui-btn-radius\">删除</button>" +
+                                "                    <br><br>"</shiro:hasPermission> <shiro:hasPermission name="questionnaire:delete">+
+                                "                    <button onclick=\"deleteQuestionnaire('" + item.id + "')\" class=\"layui-btn  layui-btn-radius\">删除</button>"</shiro:hasPermission> +
                                 "                </div>" +
                                 "            </div>" +
                                 "        </div>");
                         });
                         count = result.count;
-                        setPageValue('system/questionnaireSearch',questionnaireName);
+                        setPageValue('system/questionnaireSearch', questionnaireName);
                     }
                     layer.msg(result.msg);
                     layer.close(loadIndex);

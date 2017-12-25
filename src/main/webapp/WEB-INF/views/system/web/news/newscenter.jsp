@@ -306,6 +306,7 @@
 
     function newsSearch() {
         var newstitle = $(":input[name='qname']").val();
+        newstitle=encodeURI(encodeURI(newstitle));
         var status = $("#status").val();
         var newstype = $("#newstype").val();
         newsTable.reload({

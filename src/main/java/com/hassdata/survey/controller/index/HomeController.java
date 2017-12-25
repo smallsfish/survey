@@ -30,6 +30,9 @@ public class HomeController {
     @Resource
     private NewsService newsService;
 
+    @Resource
+    private AdminUserService adminUserService;
+
     @Resource ScoreService scoreService;
 
     @Resource
@@ -92,6 +95,7 @@ public class HomeController {
             List<News> newsList=newsService.getAll(news,"id desc");
             for(News n : newsList){
                 newsDTO=new NewsDTO();
+                newsDTO.setId(n.getId());
                 newsDTO.setImageurl(n.getImageurl());
                 newsDTO.setCreatetime(simpleDateFormat1.format(n.getCreatetime()));
                 newsDTO.setNewstitle(n.getNewstitle());
@@ -102,6 +106,20 @@ public class HomeController {
         }
         map.addAttribute("nids",newsIndexDTOS);
         return "index/news";
+    }
+
+    @RequestMapping(value = "newsDetail",method = RequestMethod.GET)
+    public String newsDeatil(Long id,ModelMap map){
+        setLoopAttribute(map);
+        News news=newsService.find(id);
+        NewsDTO newsDTO=new NewsDTO();
+        newsDTO.setNewstitle(news.getNewstitle());
+        newsDTO.setComeform(news.getComeform());
+        newsDTO.setCreatetime(simpleDateFormat1.format(news.getCreatetime()));
+        newsDTO.setOperator(adminUserService.find(news.getOperator()).getAccount());
+        newsDTO.setNewscontent(news.getNewscontent());
+        map.addAttribute("news",newsDTO);
+        return "index/newsDetail";
     }
 
     @RequestMapping(value = "picture",method = RequestMethod.GET)

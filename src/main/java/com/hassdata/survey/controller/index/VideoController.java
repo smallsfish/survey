@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -73,7 +74,6 @@ public class VideoController {
             i++;
         }
     }
-
 
     @RequiresPermissions("video:add")
     @RequestMapping(value = "getVideoAdd", method = RequestMethod.GET)
@@ -150,9 +150,9 @@ public class VideoController {
     @ResponseBody
     public ServerResponse videoSearch(HttpServletRequest request, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
         Video video = new Video();
-        String videoTitle = null;
+        String videoTitle = request.getParameter("videoTitle");
         try {
-            videoTitle = new String(request.getParameter("videoTitle").getBytes("iso-8859-1"), "utf-8");
+            videoTitle= URLDecoder.decode(URLDecoder.decode(videoTitle,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

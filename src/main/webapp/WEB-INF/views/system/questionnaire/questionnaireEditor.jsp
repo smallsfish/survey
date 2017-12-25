@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -17,9 +18,9 @@
     </script>
     <script src="js/questionnaire.js"></script>
     <script>
-        var layer=null;
-        layui.use('layer',function () {
-            layer=layui.layer;
+        var layer = null;
+        layui.use('layer', function () {
+            layer = layui.layer;
         });
     </script>
 </head>
@@ -29,13 +30,20 @@
         <blockquote class="layui-elem-quote">问卷基础信息</blockquote>
         <ul>
             <li><span><i style="color:red;">*</i>问卷名称：</span><input onkeyup="questionnaireNameChange()" type="text"
-                                                                    required name="qname" value="${displayQuestionnaireModel.questionnaire.questionnairename}"></li>
-            <li><span>问候语：</span><input onkeyup="questionnaireCompChange()" type="text" name="comp" value="${displayQuestionnaireModel.questionnaire.questionnairecomp}"></li>
-            <li><span>问卷出处：</span><input onkeyup="questionnaireWhereChange()" type="text" name="qwhere" value="${displayQuestionnaireModel.questionnaire.questionnairefrom}"></li>
+                                                                    required name="qname"
+                                                                    value="${displayQuestionnaireModel.questionnaire.questionnairename}">
+            </li>
+            <li><span>问候语：</span><input onkeyup="questionnaireCompChange()" type="text" name="comp"
+                                        value="${displayQuestionnaireModel.questionnaire.questionnairecomp}"></li>
+            <li><span>问卷出处：</span><input onkeyup="questionnaireWhereChange()" type="text" name="qwhere"
+                                         value="${displayQuestionnaireModel.questionnaire.questionnairefrom}"></li>
             <li><span>问卷有效时间：</span><input onblur="questionnaireDateRangeChange()" name="daterange" type="text"
-                                           placeholder="yyyy-MM-dd HH:mm:ss ~ yyyy-MM-dd HH:mm:ss" id="dateselect" value='<c:if test="${displayQuestionnaireModel.questionnaire.questionnairebegintime!=null}"><fmt:formatDate value="${displayQuestionnaireModel.questionnaire.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/> ~ <fmt:formatDate value="${displayQuestionnaireModel.questionnaire.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/></c:if>'></li>
+                                           placeholder="yyyy-MM-dd HH:mm:ss ~ yyyy-MM-dd HH:mm:ss" id="dateselect"
+                                           value='<c:if test="${displayQuestionnaireModel.questionnaire.questionnairebegintime!=null}"><fmt:formatDate value="${displayQuestionnaireModel.questionnaire.questionnairebegintime}" pattern="yyyy-MM-dd  HH:mm:ss"/> ~ <fmt:formatDate value="${displayQuestionnaireModel.questionnaire.questionnaireendtime}" pattern="yyyy-MM-dd  HH:mm:ss"/></c:if>'>
+            </li>
             <li><span>问卷说明：</span><textarea onkeyup="questionnaireExplainChange()" name="explain" cols="14"
-                                            rows="5">${displayQuestionnaireModel.questionnaire.questionnaireexplain}</textarea></li>
+                                            rows="5">${displayQuestionnaireModel.questionnaire.questionnaireexplain}</textarea>
+            </li>
         </ul>
     </div>
     <div class="questionnaireadd-base-qs">
@@ -60,15 +68,20 @@
             <div class="questionnaireadd-main-from">${displayQuestionnaireModel.questionnaire.questionnairefrom}</div>
             <c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}">
                 <div class="questionnaireadd-main-type">
-                    <div class="questionnaireadd-main-type-title" onclick="questionnaireAddMainTypeLife(this,event)">${qt.questionType.questionTypename}<img src="img/icon/icon-delete.png" onclick="deleteItemTypes(this,event)" title="删除"></div>
+                    <div class="questionnaireadd-main-type-title"
+                         onclick="questionnaireAddMainTypeLife(this,event)">${qt.questionType.questionTypename}<img
+                            src="img/icon/icon-delete.png" onclick="deleteItemTypes(this,event)" title="删除"></div>
                     <div class="questionnaireadd-main-type-content">
                         <ul>
                             <c:forEach var="q" items="${qt.displayQuestionModels}">
                                 <li>
-                                    <label onblur='changeItemTitle(this)' contenteditable="true"><span>*</span>${q.question.questionname}</label>
+                                    <label onblur='changeItemTitle(this)'
+                                           contenteditable="true"><span>*</span>${q.question.questionname}</label>
                                     <div class="questionnaireadd-main-type-content-option">
                                         <c:forEach var="o" items="${q.optionsList}">
-                                            <input type="${q.question.questionstyle}"> <span onblur='changeItemOption(this)' contenteditable="true">${o.optionsname}</span><br>
+                                            <input type="${q.question.questionstyle}"> <span
+                                                onblur='changeItemOption(this)'
+                                                contenteditable="true">${o.optionsname}</span><br>
                                         </c:forEach>
                                     </div>
                                     <div class="questionnaireadd-main-type-item-tool" data-type="radio">
@@ -83,8 +96,13 @@
             </c:forEach>
         </div>
         <div class="questionnaireadd-show-bottom">
-            <button onclick="questionnaireEditorSubmit('${displayQuestionnaireModel.questionnaire.id}')" class="layui-btn">修改</button>
-            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查</button>
+            <shiro:hasPermission name="questionnaire:update">
+                <button onclick="questionnaireEditorSubmit('${displayQuestionnaireModel.questionnaire.id}')"
+                        class="layui-btn">修改
+                </button>
+            </shiro:hasPermission>
+            <button onclick="if(questionnaireCheck()){layer.msg('问卷正常，可提交')}" class="layui-btn layui-btn-normal">检查
+            </button>
         </div>
     </div>
 </div>

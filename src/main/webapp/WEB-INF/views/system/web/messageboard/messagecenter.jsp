@@ -150,6 +150,7 @@
 
     function searchSuccessMSG() {
         var msgTitle = $(":input[name='vname']").val();
+        msgTitle=encodeURI(encodeURI(msgTitle));
         if (msgTitle === "") {
             layer.msg("请输入留言信息标题！", {icon: 2, time: 3000});
             return;

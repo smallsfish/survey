@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
@@ -40,8 +41,10 @@
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>是否可用</label>
         <div class="layui-input-block">
-            <input type="radio" lay-verify="required" name="available" value="1" title="是" ${role.available ? 'checked':''}>
-            <input type="radio" lay-verify="required" name="available" value="0" title="否" ${role.available ? '':'checked'}>
+            <input type="radio" lay-verify="required" name="available" value="1"
+                   title="是" ${role.available ? 'checked':''}>
+            <input type="radio" lay-verify="required" name="available" value="0"
+                   title="否" ${role.available ? '':'checked'}>
         </div>
     </div>
     <div class="layui-form-item">
@@ -52,7 +55,9 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="editorRole" id="roleSubmit">立即修改</button>
+            <shiro:hasPermission name="role:update">
+                <button class="layui-btn" lay-submit lay-filter="editorRole" id="roleSubmit">立即修改</button>
+            </shiro:hasPermission>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -64,8 +69,8 @@
     // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
     var setting = {
         check: {
-            enable: true ,
-            chkboxType: { "Y": "", "N": "" }
+            enable: true,
+            chkboxType: {"Y": "", "N": ""}
         },
         view: {
             dblClickExpand: false
@@ -79,12 +84,26 @@
     // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
     var zNodes = [
         <c:forEach var="r" items="${resources}" varStatus="st">
-            <c:if test="${st.index==res.size()-1}">
-                {id:${r.id}, pId:${r.pId}, name: '${r.name}',checked:${r.checked},chkDisabled:${!r.available},open:${!r.available}}
-            </c:if>
-            <c:if test="${st.index!=res.size()-1}">
-                {id:${r.id}, pId:${r.pId}, name: '${r.name}',checked:${r.checked},chkDisabled:${!r.available},open:${!r.available}},
-            </c:if>
+        <c:if test="${st.index==res.size()-1}">
+        {
+            id:${r.id},
+            pId:${r.pId},
+            name: '${r.name}',
+            checked:${r.checked},
+            chkDisabled:${!r.available},
+            open:${!r.available}
+        }
+        </c:if>
+        <c:if test="${st.index!=res.size()-1}">
+        {
+            id:${r.id},
+            pId:${r.pId},
+            name: '${r.name}',
+            checked:${r.checked},
+            chkDisabled:${!r.available},
+            open:${!r.available}
+        },
+        </c:if>
         </c:forEach>
     ];
     zTreeObj = $.fn.zTree.init($("#resourceTree"), setting, zNodes);
@@ -98,15 +117,15 @@
             var loadIndex = layer.load();
             var fromData = new FormData($("#roleForm")[0]);
             var nodes = zTreeObj.getCheckedNodes(true);
-            var ids="";
-            for(var i=0;i<nodes.length;i++){
-                if(i!=nodes.length-1){
-                    ids+=nodes[i].id+",";
-                }else{
-                    ids+=nodes[i].id;
+            var ids = "";
+            for (var i = 0; i < nodes.length; i++) {
+                if (i != nodes.length - 1) {
+                    ids += nodes[i].id + ",";
+                } else {
+                    ids += nodes[i].id;
                 }
             }
-            fromData.append("ids",ids);
+            fromData.append("ids", ids);
             $.ajax({
                 type: "POST",
                 dataType: "json",

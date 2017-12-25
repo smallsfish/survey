@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,9 +95,9 @@ public class MessageBoardController {
     @ResponseBody
     public ServerResponse searchMsg(HttpServletRequest request, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
         MessageBoard messageBoard = new MessageBoard();
-        String name = null;
+        String name = request.getParameter("name");
         try {
-            name = new String(request.getParameter("name").getBytes("iso-8859-1"), "utf-8");
+            name= URLDecoder.decode(URLDecoder.decode(name,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

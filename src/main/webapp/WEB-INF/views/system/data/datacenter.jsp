@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!doctype html>
 <html lang="zh-CN">
@@ -17,28 +18,31 @@
 <div class="questionnaire-top">
     <div class="questionnaire-search">
         <input type="search" name="qname" placeholder="请输入问卷名称">
-        <div onclick="questionDataSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png"></div>
+        <div onclick="questionDataSearch()" class="questionnaire-search-button"><img src="img/icon/icon-search.png">
+        </div>
     </div>
 </div>
 <div class="questionnaire-content">
     <c:forEach var="q" items="${qs}">
-    <div class="questionnaire-item">
-        <div class="questionnaire-one">
-            <ul>
-                <li>${q.name}</li>
-                <li>开始时间:${q.b}</li>
-                <li>结束时间:${q.e}</li>
-                <li>参与学校：${q.schoolNumber}</li>
-                <li>参与城市：${q.cityNumber}</li>
-                <li>参与人数：${q.studentNumber}</li>
-            </ul>
+        <div class="questionnaire-item">
+            <div class="questionnaire-one">
+                <ul>
+                    <li>${q.name}</li>
+                    <li>开始时间:${q.b}</li>
+                    <li>结束时间:${q.e}</li>
+                    <li>参与学校：${q.schoolNumber}</li>
+                    <li>参与城市：${q.cityNumber}</li>
+                    <li>参与人数：${q.studentNumber}</li>
+                </ul>
+            </div>
+            <div class="questionnaire-two">
+                <shiro:hasPermission name="data:view">
+                    <button onclick="window.parent.createTab({title:'${q.name}数据分析',isShowClose:true,url:'${q.url}'})"
+                            class="layui-btn  layui-btn-radius">${q.button}
+                    </button>
+                </shiro:hasPermission>
+            </div>
         </div>
-        <div class="questionnaire-two">
-            <button onclick="window.parent.createTab({title:'${q.name}数据分析',isShowClose:true,url:'${q.url}'})"
-                    class="layui-btn  layui-btn-radius">${q.button}
-            </button>
-        </div>
-    </div>
     </c:forEach>
 </div>
 <div class="questionnaire-page">
@@ -46,18 +50,20 @@
 </div>
 </body>
 <script>
-    var count=${count};
+    var count =${count};
     var loadIndex = null;
-    var laypage=null,layer=null;
-    layui.use(['laypage','layer'], function () {
+    var laypage = null, layer = null;
+    layui.use(['laypage', 'layer'], function () {
         laypage = layui.laypage;
         layer = layui.layer;
-        setDataPageValue('system/dataList',null);
+        setDataPageValue('system/dataList', null);
     });
-    function clearItem(){
+
+    function clearItem() {
         $(".questionnaire-item").remove();
     }
-    function setDataPageValue(url,name){
+
+    function setDataPageValue(url, name) {
         //执行一个laypage实例
         laypage.render({
             elem: 'test1', //注意，这里的 test1 是 ID，不用加 # 号
@@ -73,7 +79,7 @@
                         type: "GET",
                         dataType: "json",
                         url: url,
-                        data: {'page': obj.curr, 'limit': obj.limit,'name':name},
+                        data: {'page': obj.curr, 'limit': obj.limit, 'name': name},
                         success: function (result) {
                             layer.msg(result.msg);
                             clearItem();
@@ -81,17 +87,17 @@
                                 $(".questionnaire-content").append("<div class=\"questionnaire-item\">\n" +
                                     "        <div class=\"questionnaire-one\">\n" +
                                     "            <ul>\n" +
-                                    "                <li>"+q.name+"</li>\n" +
-                                    "                <li>开始时间:"+q.b+"</li>\n" +
-                                    "                <li>结束时间:"+q.e+"</li>\n" +
-                                    "                <li>参与学校："+q.schoolNumber+"</li>\n" +
-                                    "                <li>参与城市："+q.cityNumber+"</li>\n" +
-                                    "                <li>参与人数："+q.studentNumber+"</li>\n" +
+                                    "                <li>" + q.name + "</li>\n" +
+                                    "                <li>开始时间:" + q.b + "</li>\n" +
+                                    "                <li>结束时间:" + q.e + "</li>\n" +
+                                    "                <li>参与学校：" + q.schoolNumber + "</li>\n" +
+                                    "                <li>参与城市：" + q.cityNumber + "</li>\n" +
+                                    "                <li>参与人数：" + q.studentNumber + "</li>\n" +
                                     "            </ul>\n" +
                                     "        </div>\n" +
                                     "        <div class=\"questionnaire-two\">\n" +
-                                    "            <button onclick=\"window.parent.createTab({title:'"+q.name+"数据分析',isShowClose:true,url:'"+q.url+"'})\"\n" +
-                                    "                    class=\"layui-btn  layui-btn-radius\">"+q.button+"\n" +
+                                    "            <button onclick=\"window.parent.createTab({title:'" + q.name + "数据分析',isShowClose:true,url:'" + q.url + "'})\"\n" +
+                                    "                    class=\"layui-btn  layui-btn-radius\">" + q.button + "\n" +
                                     "            </button>\n" +
                                     "        </div>\n" +
                                     "    </div>\n");
@@ -100,16 +106,18 @@
                         },
                         error: function () {
                             layer.close(loadIndex);
-                            layer.msg("搜索失败",{icon:2});
+                            layer.msg("搜索失败", {icon: 2});
                         }
                     });
                 }
             }
         });
     }
-    function questionDataSearch(){
+
+    function questionDataSearch() {
         var dataName = $(":input[name='qname']").val();
-        if(dataName!==""){
+        dataName=encodeURI(encodeURI(dataName));
+        if (dataName !== "") {
             loadIndex = layer.load();
             $.ajax({
                 type: "GET",
@@ -124,31 +132,31 @@
                         $(".questionnaire-content").append("<div class=\"questionnaire-item\">\n" +
                             "        <div class=\"questionnaire-one\">\n" +
                             "            <ul>\n" +
-                            "                <li>"+q.name+"</li>\n" +
-                            "                <li>开始时间:"+q.b+"</li>\n" +
-                            "                <li>结束时间:"+q.e+"</li>\n" +
-                            "                <li>参与学校："+q.schoolNumber+"</li>\n" +
-                            "                <li>参与城市："+q.cityNumber+"</li>\n" +
-                            "                <li>参与人数："+q.studentNumber+"</li>\n" +
+                            "                <li>" + q.name + "</li>\n" +
+                            "                <li>开始时间:" + q.b + "</li>\n" +
+                            "                <li>结束时间:" + q.e + "</li>\n" +
+                            "                <li>参与学校：" + q.schoolNumber + "</li>\n" +
+                            "                <li>参与城市：" + q.cityNumber + "</li>\n" +
+                            "                <li>参与人数：" + q.studentNumber + "</li>\n" +
                             "            </ul>\n" +
                             "        </div>\n" +
                             "        <div class=\"questionnaire-two\">\n" +
-                            "            <button onclick=\"window.parent.createTab({title:'"+q.name+"数据分析',isShowClose:true,url:'"+q.url+"'})\"\n" +
-                            "                    class=\"layui-btn  layui-btn-radius\">"+q.button+"\n" +
+                            "            <button onclick=\"window.parent.createTab({title:'" + q.name + "数据分析',isShowClose:true,url:'" + q.url + "'})\"\n" +
+                            "                    class=\"layui-btn  layui-btn-radius\">" + q.button + "\n" +
                             "            </button>\n" +
                             "        </div>\n" +
                             "    </div>\n");
                     });
                     count = result.count;
-                    setDataPageValue('system/dataSearch',dataName);
+                    setDataPageValue('system/dataSearch', dataName);
                 },
                 error: function () {
                     layer.close(loadIndex);
-                    layer.msg("搜索失败",{icon:2});
+                    layer.msg("搜索失败", {icon: 2});
                 }
             });
-        }else{
-            layer.msg("请输入问卷名称",{icon:2});
+        } else {
+            layer.msg("请输入问卷名称", {icon: 2});
         }
     }
 </script>

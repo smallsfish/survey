@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,9 +75,9 @@ public class NewsController {
     @ResponseBody
     public ServerResponse newsSearch(HttpServletRequest request, Integer status, Integer newstype, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "30") Integer limit) {
         News news = new News();
-        String newstitle = null;
+        String newstitle = request.getParameter("newstitle");
         try {
-            newstitle = new String(request.getParameter("newstitle").getBytes("iso-8859-1"), "utf-8");
+            newstitle= URLDecoder.decode(URLDecoder.decode(newstitle,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

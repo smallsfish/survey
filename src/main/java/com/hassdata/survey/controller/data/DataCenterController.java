@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,9 +148,9 @@ public class DataCenterController {
     @RequestMapping(value = "dataSearch", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse dataSearch(HttpServletRequest request, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "12") Integer limit) {
-        String name = null;
+        String name =request.getParameter("name");
         try {
-            name = new String(request.getParameter("name").getBytes("iso-8859-1"), "utf-8");
+            name=URLDecoder.decode(URLDecoder.decode(name,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

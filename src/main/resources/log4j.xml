@@ -21,7 +21,7 @@
 		</filter>
 	</appender>
 	<appender name="appOut" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="Threshold" value="debug"></param>
+		<param name="Threshold" value="error"></param>
 		<param name="ImmediateFlush" value="true"></param>
 		<param name="File" value="/backup/applogs/app.log"></param>
 		<param name="DatePattern" value="'.'yyyy-MM-dd"></param>
@@ -29,11 +29,8 @@
 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} | %-5p | %t:%c{1}:%L | %m%n" />
 		</layout>
 	</appender>
-	<logger name="com.yunzhe.mapper.VcOpenUserMapper" additivity="false">
-		<level value="debug"/>
-		<appender-ref ref="stdOut"/>
-	</logger>
 	<root>
+		<level value="ERROR"/>
 		<priority value="info"/>
 		<appender-ref ref="stdOut"/>
 		<appender-ref ref="appOut"/>

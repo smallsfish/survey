@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,9 +105,9 @@ public class UserController {
             limit = 30;
         }
         User user = new User();
-        String account = null;
+        String account = request.getParameter("account");
         try {
-            account = new String(request.getParameter("account").getBytes("iso-8859-1"), "utf-8");
+            account= URLDecoder.decode(URLDecoder.decode(account,"UTF-8"),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

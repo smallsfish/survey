@@ -16,7 +16,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter{
 
 		String path=request.getServletPath();
 		String parameter=request.getParameter("id");
-		String redirectPath="login";
+		String redirectPath="/display/login";
 		HttpSession session = request.getSession(true);
 		
 		User user = (User) session.getAttribute("CurrentUser");
