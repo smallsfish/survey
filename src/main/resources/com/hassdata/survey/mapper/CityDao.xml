@@ -76,6 +76,14 @@
 	        id = #{id}
 	    ]]>
     </delete>
+
+    <delete id="deleteByProvinceId" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from city where
+	        provinceid = #{provinceid}
+	    ]]>
+    </delete>
+
     <delete id="deleteByStringId" parameterType="java.lang.String">
         <![CDATA[
 	        delete from city where

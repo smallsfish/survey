@@ -24,8 +24,8 @@
             <if test="countyname != null">
                 and countyname = #{countyname}
             </if>
-            <if test="provinceid != null">
-                and provinceid = #{provinceid}
+            <if test="cityid != null">
+                and cityid = #{cityid}
             </if>
         </where>
     </sql>
@@ -36,11 +36,11 @@
 	        county (
 	        	id,
 	        	countyname,
-	        	provinceid
+	        	cityid
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
 	        	#{countyname,jdbcType=VARCHAR},
-	        	#{provinceid,jdbcType=INTEGER}
+	        	#{cityid,jdbcType=INTEGER}
 	        )
 	    ]]>
     </insert>
@@ -49,7 +49,7 @@
         <![CDATA[
 	        UPDATE county SET
 		        countyname = #{countyname,jdbcType=VARCHAR},
-		        provinceid = #{provinceid,jdbcType=INTEGER}
+		        cityid = #{cityid,jdbcType=INTEGER}
 			WHERE
 				id = #{id}
 	    ]]>
@@ -62,8 +62,8 @@
             <if test="countyname != null">
                 countyname = #{countyname,jdbcType=VARCHAR},
             </if>
-            <if test="provinceid != null">
-                provinceid = #{provinceid,jdbcType=VARCHAR}
+            <if test="cityid != null">
+                cityid = #{cityid,jdbcType=VARCHAR}
             </if>
         </set>
         WHERE
@@ -76,6 +76,14 @@
 	        id = #{id}
 	    ]]>
     </delete>
+
+    <delete id="deleteByCityId" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from county where
+	        cityid = #{cityid}
+	    ]]>
+    </delete>
+
     <delete id="deleteByStringId" parameterType="java.lang.String">
         <![CDATA[
 	        delete from county where
@@ -151,8 +159,8 @@
             <if test="countyname != null">
                 and countyname LIKE #{countyname}
             </if>
-            <if test="provinceid != null">
-                and provinceid LIKE #{provinceid}
+            <if test="cityid != null">
+                and cityid LIKE #{cityid}
             </if>
         </where>
     </sql>

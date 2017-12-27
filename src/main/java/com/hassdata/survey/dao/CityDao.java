@@ -11,4 +11,5 @@ import java.util.Map;
 public interface CityDao extends BaseDao<City> {
     List<City> getScrollDataByLike(Map<String, Object> params);
     long getScrollByLikeCount(Map<String, Object> params);
+    int deleteByProvinceId(Integer provinceid);
 }

@@ -8,4 +8,5 @@ import java.util.List;
 public interface CountyService extends BaseService<County> {
     List<County> getScrollDataByLike(County params, String orderBy, Integer fromIndex, Integer pageSize);
     long getScrollByLikeCount(County params);
+    int deleteByCityId(Integer cityid);
 }

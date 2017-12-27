@@ -30,4 +30,9 @@ public class CountyServiceImpl extends BaseServiceImpl<County> implements County
         Map<String, Object> map = buildParams(params ,null, null, null);
         return countyDao.getScrollByLikeCount(map);
     }
+
+    @Override
+    public int deleteByCityId(Integer cityid) {
+        return countyDao.deleteByCityId(cityid);
+    }
 }

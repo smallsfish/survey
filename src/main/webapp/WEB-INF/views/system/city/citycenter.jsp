@@ -38,7 +38,7 @@
                     <img onclick="addCity()" src="img/icon/icon-more2.png" alt="添加市" title="添加">
                 </shiro:hasPermission>
             </div>
-            <table id="dynamic-table-city" lay-filter="adminTable"></table>
+            <table id="dynamic-table-city" lay-filter="cityTable"></table>
         </div>
         <div class="layui-tab-item" style="height: 94%;">
             <div class="usertools">
@@ -76,12 +76,12 @@
                 {width: layui_tab_item_width * 0.05, field: 'id', title: 'ID', sort: true},
                 {width: layui_tab_item_width * 0.26, field: 'provincename', title: '所属省'},
                 {width: layui_tab_item_width * 0.26, field: 'cityname', title: '所属市'},
-                {width: layui_tab_item_width * 0.26, field: 'countyname', title: '县名'},
+                {width: layui_tab_item_width * 0.253, field: 'countyname', title: '县名'},
                 {
                     width: layui_tab_item_width * 0.141,
                     fixed: 'right',
                     align: 'center',
-                    toolbar: '#adminToolBar',
+                    toolbar: '#countyToolBar',
                     title: '操作'
                 }
             ]],
@@ -102,13 +102,73 @@
                             $.ajax({
                                 type: "GET",
                                 dataType: "json",
-                                url: 'system/adminUserDel',
+                                url: 'system/countyDel',
                                 data: {'id': obj.id},
                                 success: function (result) {
                                     if (index == data.length - 1) {
                                         layer.close(loadIndex);
                                         layer.msg(result.msg);
-                                        reflashAdminTable();
+                                        reflashCountyTable();
+                                    }
+                                },
+                                error: function (data) {
+                                    layer.close(loadIndex);
+                                    layer.alert("出现异常！" + JSON.stringify(data));
+                                }
+                            });
+                        });
+                    });
+                }
+            },
+            checkCityData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('cityTable')
+                    , data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.msg("请选择要删除的信息！", {icon: 2})
+                } else {
+                    layer.confirm("确定删除所选用户吗？", {icon: 2, title: '系统提示'}, function (index) {
+                        $.each(checkStatus.data, function (index, obj) {
+                            loadIndex = layer.load();
+                            $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                url: 'system/cityDel',
+                                data: {'id': obj.id},
+                                success: function (result) {
+                                    if (index == data.length - 1) {
+                                        layer.close(loadIndex);
+                                        layer.msg(result.msg);
+                                        reflashCityTable();
+                                    }
+                                },
+                                error: function (data) {
+                                    layer.close(loadIndex);
+                                    layer.alert("出现异常！" + JSON.stringify(data));
+                                }
+                            });
+                        });
+                    });
+                }
+            },
+            checkProvinceData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('provinceTable')
+                    , data = checkStatus.data;
+                if (data.length == 0) {
+                    layer.msg("请选择要删除的信息！", {icon: 2})
+                } else {
+                    layer.confirm("确定删除所选用户吗？", {icon: 2, title: '系统提示'}, function (index) {
+                        $.each(checkStatus.data, function (index, obj) {
+                            loadIndex = layer.load();
+                            $.ajax({
+                                type: "GET",
+                                dataType: "json",
+                                url: 'system/provinceDel',
+                                data: {'id': obj.id},
+                                success: function (result) {
+                                    if (index == data.length - 1) {
+                                        layer.close(loadIndex);
+                                        layer.msg(result.msg);
+                                        reflashProvicneTable();
                                     }
                                 },
                                 error: function (data) {
@@ -132,10 +192,10 @@
             if (layEvent === 'detail') { //查看
                 //do somehing
                 layer.open({
-                    title: '修改' + data.account + '县',
+                    title: '修改' + data.countyname,
                     type: 2,
                     area: ['50%', '70%'],
-                    content: 'system/getEditorAdminUser?id=' + data.id,
+                    content: 'system/getEditorCounty?id=' + data.id,
                     skin: 'layui-layer-molv'
                 });
             } else if (layEvent === 'del') { //删除
@@ -145,7 +205,7 @@
                     $.ajax({
                         type: "GET",
                         dataType: "json",
-                        url: 'system/adminUserDel',
+                        url: 'system/countyDel',
                         data: {'id': data.id},
                         success: function (result) {
                             layer.close(loadIndex);
@@ -198,7 +258,7 @@
             if (layEvent === 'detail') { //查看
                 //do somehing
                 layer.open({
-                    title: '修改' + data.account + '县',
+                    title: '修改' + data.provincename,
                     type: 2,
                     area: ['50%', '40%'],
                     content: 'system/getEditorProvince?id=' + data.id,
@@ -240,8 +300,8 @@
             height: 'full-115',//容器高度
             cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
                 {width: layui_tab_item_width * 0.04, field: 'id', title: 'ID', sort: true},
-                {width: layui_tab_item_width * 0.38, field: 'province', title: '所属省'},
-                {width: layui_tab_item_width * 0.38, field: 'cityname', title: '市名'},
+                {width: layui_tab_item_width * 0.4, field: 'provincename', title: '所属省'},
+                {width: layui_tab_item_width * 0.383, field: 'cityname', title: '市名'},
                 {
                     width: layui_tab_item_width * 0.141,
                     fixed: 'right',
@@ -254,6 +314,49 @@
             limits: [30, 60, 90, 150, 300],
             limit: 30 //默认采用30
         });
+
+
+
+        table.on('tool(cityTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'detail') { //查看
+                //do somehing
+                layer.open({
+                    title: '修改' + data.cityname,
+                    type: 2,
+                    area: ['50%', '40%'],
+                    content: 'system/getEditorCity?id=' + data.id,
+                    skin: 'layui-layer-molv'
+                });
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('真的删除该用户吗？', function (index) {
+                    loadIndex = layer.load();
+                    layer.close(index);
+                    $.ajax({
+                        type: "GET",
+                        dataType: "json",
+                        url: 'system/cityDel',
+                        data: {'id': data.id},
+                        success: function (result) {
+                            layer.close(loadIndex);
+                            if (result.status == 0) {
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            }
+                            layer.msg(result.msg);
+                        },
+                        error: function (data) {
+                            layer.close(loadIndex);
+                            layer.alert("出现异常！" + JSON.stringify(data));
+                        }
+                    });
+                });
+            }
+        });
+
+
+
+
     });
 
     function addCounty() {
@@ -263,7 +366,7 @@
                 title: '添加县',
                 type: 2,
                 area: ['50%', '70%'],
-                content: 'system/getAddCounty',
+                content: 'system/getCountyAdd',
                 skin: 'layui-layer-molv'
             });
         });

@@ -30,4 +30,9 @@ public class CityServiceImpl extends BaseServiceImpl<City> implements CityServic
         Map<String, Object> map = buildParams(params ,null, null, null);
         return cityDao.getScrollByLikeCount(map);
     }
+
+    @Override
+    public int deleteByProvinceId(Integer provinceid) {
+        return cityDao.deleteByProvinceId(provinceid);
+    }
 }
