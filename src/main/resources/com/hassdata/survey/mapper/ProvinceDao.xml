@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.ProvinceDao">
+    <resultMap id="provinceResult" type="Province">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="provinceColumns">
+        <![CDATA[
+        	id,
+            provincename
+	    ]]>
+    </sql>
+
+    <sql id="provinceDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="provincename != null">
+                and provincename = #{provincename}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="Province" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        province (
+	        	id,
+	        	provincename
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{provincename,jdbcType=VARCHAR}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="Province">
+        <![CDATA[
+	        UPDATE province SET
+		        provincename = #{provincename,jdbcType=VARCHAR}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="Province">
+        UPDATE
+        province
+        <set>
+            <if test="provincename != null">
+                provincename = #{provincename,jdbcType=VARCHAR}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from province where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from province where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="provinceResult">
+        select <include refid="provinceColumns" />
+        <![CDATA[
+		    from province
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="provinceResult">
+        select <include refid="provinceColumns" />
+        <![CDATA[
+		    from province
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="Province">
+        select count(1) from province
+        <include refid="provinceDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="provinceResult" parameterType="map">
+        select <include refid="provinceColumns"/> from province
+        <include refid="provinceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="provinceResult" parameterType="map">
+        select <include refid="provinceColumns"/> from province
+        <include refid="provinceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="provinceResult" parameterType="map">
+        select <include refid="provinceColumns" />
+        from province
+        <include refid="provinceDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from province
+        <include refid="provinceDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="provinceLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="provincename != null">
+                and provincename LIKE #{provincename}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="provinceResult" parameterType="map">
+        select
+        <include refid="provinceColumns"/>
+        from province
+        <include refid="provinceLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from province
+        <include refid="provinceLikeDynamicWhere"/>
+    </select>
+
+</mapper>

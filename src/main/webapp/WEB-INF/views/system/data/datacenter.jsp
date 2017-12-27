@@ -36,11 +36,19 @@
                 </ul>
             </div>
             <div class="questionnaire-two">
-                <shiro:hasPermission name="data:view">
-                    <button onclick="window.parent.createTab({title:'${q.name}数据分析',isShowClose:true,url:'${q.url}'})"
-                            class="layui-btn  layui-btn-radius">${q.button}
-                    </button>
-                </shiro:hasPermission>
+                <div style="display: block;">
+                    <shiro:hasPermission name="data:view">
+                        <button onclick="window.parent.createTab({title:'${q.name}数据分析',isShowClose:true,url:'${q.url}'})"
+                                class="layui-btn  layui-btn-radius">${q.button}
+                        </button>
+                        <br><br>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="data:view">
+                        <button onclick="javascript:;"
+                                class="layui-btn  layui-btn-radius">表格导出
+                        </button>
+                    </shiro:hasPermission>
+                </div>
             </div>
         </div>
     </c:forEach>
@@ -95,10 +103,15 @@
                                     "                <li>参与人数：" + q.studentNumber + "</li>\n" +
                                     "            </ul>\n" +
                                     "        </div>\n" +
-                                    "        <div class=\"questionnaire-two\">\n" +
+                                    "        <div class=\"questionnaire-two\">\n<div style=\"display: block;\">" +
                                     "            <button onclick=\"window.parent.createTab({title:'" + q.name + "数据分析',isShowClose:true,url:'" + q.url + "'})\"\n" +
                                     "                    class=\"layui-btn  layui-btn-radius\">" + q.button + "\n" +
                                     "            </button>\n" +
+                                    "<shiro:hasPermission name="data:view">" +
+                                    "<br><br><button onclick=\"javascript:;\"" +
+                                    "   class=\"layui-btn  layui-btn-radius\">表格导出" +
+                                    "</button>" +
+                                    " </shiro:hasPermission></div>" +
                                     "        </div>\n" +
                                     "    </div>\n");
                             });
@@ -116,7 +129,7 @@
 
     function questionDataSearch() {
         var dataName = $(":input[name='qname']").val();
-        dataName=encodeURI(encodeURI(dataName));
+        dataName = encodeURI(encodeURI(dataName));
         if (dataName !== "") {
             loadIndex = layer.load();
             $.ajax({
@@ -140,10 +153,15 @@
                             "                <li>参与人数：" + q.studentNumber + "</li>\n" +
                             "            </ul>\n" +
                             "        </div>\n" +
-                            "        <div class=\"questionnaire-two\">\n" +
+                            "        <div class=\"questionnaire-two\">\n <div style=\"display: block;\">" +
                             "            <button onclick=\"window.parent.createTab({title:'" + q.name + "数据分析',isShowClose:true,url:'" + q.url + "'})\"\n" +
                             "                    class=\"layui-btn  layui-btn-radius\">" + q.button + "\n" +
                             "            </button>\n" +
+                            "<shiro:hasPermission name="data:view">" +
+                            "<br><br><button onclick=\"javascript:;\"" +
+                            "   class=\"layui-btn  layui-btn-radius\">表格导出" +
+                            "</button>" +
+                            " </shiro:hasPermission></div>" +
                             "        </div>\n" +
                             "    </div>\n");
                     });

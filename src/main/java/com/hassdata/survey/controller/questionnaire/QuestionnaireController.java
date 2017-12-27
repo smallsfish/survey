@@ -67,7 +67,7 @@ public class QuestionnaireController {
             page = 1;
             limit = 12;
         }
-        List<Questionnaire> questionnaires = questionnaireService.getScrollData(null, "id DESC", (page - 1) * limit, limit);
+        List<Questionnaire> questionnaires = questionnaireService.getScrollData(null, "questionnairecreatetime DESC", (page - 1) * limit, limit);
         return getServerResponse(questionnaires, 0);
     }
 
@@ -86,7 +86,7 @@ public class QuestionnaireController {
         }
         Questionnaire questionnaire = new Questionnaire();
         questionnaire.setQuestionnairename("%" + name + "%");
-        List<Questionnaire> questionnaires = questionnaireService.getScrollDataByLike(questionnaire, "id DESC", (page - 1) * limit, limit);
+        List<Questionnaire> questionnaires = questionnaireService.getScrollDataByLike(questionnaire, "questionnairecreatetime DESC", (page - 1) * limit, limit);
         long count = questionnaireService.getScrollByLikeCount(questionnaire);
         System.out.println(count);
         return getServerResponse(questionnaires, count);

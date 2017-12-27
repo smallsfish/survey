@@ -11,7 +11,14 @@ import com.hassdata.survey.service.QuestionService;
 import com.hassdata.survey.service.QuestionnaireService;
 import com.hassdata.survey.service.ScoreService;
 import com.hassdata.survey.util.ServerResponse;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,12 +29,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("system")
@@ -161,6 +167,61 @@ public class DataCenterController {
         List<DataCenterDTO> dataCenterDTOS = new ArrayList<>();
         setDataDTO(questionnaireList, dataCenterDTOS);
         return ServerResponse.createBySuccessForLayuiTable("搜索成功", dataCenterDTOS, count);
+    }
+
+    @RequestMapping(value = "dataExcel",method = RequestMethod.GET)
+    public void dataExcel(String id, HttpServletResponse response){
+        XSSFWorkbook xss=new XSSFWorkbook();
+        //表头样式
+        CellStyle titleStyle = xss.createCellStyle();
+        titleStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+        Font titleFont = xss.createFont();
+        titleFont.setFontHeightInPoints((short) 20);
+        titleFont.setBoldweight((short) 700);
+        titleStyle.setFont(titleFont);
+        // 列头样式
+        CellStyle headerStyle = xss.createCellStyle();
+        headerStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+        headerStyle.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+        headerStyle.setBorderLeft(XSSFCellStyle.BORDER_THIN);
+        headerStyle.setBorderRight(XSSFCellStyle.BORDER_THIN);
+        headerStyle.setBorderTop(XSSFCellStyle.BORDER_THIN);
+        headerStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+        Font headerFont = xss.createFont();
+        headerFont.setFontHeightInPoints((short) 12);
+        headerFont.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+        headerStyle.setFont(headerFont);
+        // 单元格样式
+        CellStyle cellStyle = xss.createCellStyle();
+        cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+        cellStyle.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+        cellStyle.setBorderLeft(XSSFCellStyle.BORDER_THIN);
+        cellStyle.setBorderRight(XSSFCellStyle.BORDER_THIN);
+        cellStyle.setBorderTop(XSSFCellStyle.BORDER_THIN);
+        cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);
+        Font cellFont = xss.createFont();
+        cellFont.setBoldweight(XSSFFont.BOLDWEIGHT_NORMAL);
+        cellStyle.setFont(cellFont);
+        Questionnaire questionnaire=questionnaireService.findByStringId(id);
+        Question question=new Question();
+        question.setQuestionnaireid(questionnaire.getId());
+        List<Question> questionList=questionService.getAll(question);
+        XSSFSheet xssfSheet=null;
+        Collections.sort(questionList, new Comparator<Question>() {
+            @Override
+            public int compare(Question o1, Question o2) {
+                return o1.getQuestionsort()-o2.getQuestionsort();
+            }
+        });
+        for(Question q : questionList){
+            xssfSheet=xss.createSheet(q.getQuestionname().split(":")[0]);
+
+        }
+//        response.reset();
+//        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+//        response.addHeader("Content-Length", "" + data.length);
+//        response.setContentType("application/octet-stream;charset=UTF-8");
     }
 
     @RequiresPermissions("data:view")

@@ -24,5 +24,8 @@
 		<typeAlias alias="Resource" type="com.hassdata.survey.po.Resource" />
 		<typeAlias alias="Role_Resource" type="com.hassdata.survey.po.Role_Resource" />
 		<typeAlias alias="Admin_Role" type="com.hassdata.survey.po.Admin_Role" />
+		<typeAlias alias="Province" type="com.hassdata.survey.po.Province" />
+		<typeAlias alias="City" type="com.hassdata.survey.po.City" />
+		<typeAlias alias="County" type="com.hassdata.survey.po.County" />
 	</typeAliases>
 </configuration>

@@ -21,6 +21,7 @@
             lastlogintime,
             status,
             operationuser,
+            countyid,
             explains
 	    ]]>
     </sql>
@@ -64,6 +65,9 @@
             <if test="operationuser != null">
                 and operationuser = #{operationuser}
             </if>
+            <if test="countyid != null">
+                and countyid = #{countyid}
+            </if>
             <if test="explains != null">
                 and explains = #{explains}
             </if>
@@ -86,6 +90,7 @@
 	        	lastlogintime,
 	        	status,
 	        	operationuser,
+	        	countyid,
 	        	explains
 	        ) VALUES (
 	        	#{id,jdbcType=INTEGER} ,
@@ -100,6 +105,7 @@
 	        	#{lastlogintime,jdbcType=TIMESTAMP},
 	        	#{status,jdbcType=INTEGER},
 	        	#{operationuser,jdbcType=INTEGER},
+	        	#{countyid,jdbcType=INTEGER},
 	        	#{explains,jdbcType=VARCHAR}
 	        )
 	    ]]>
@@ -119,6 +125,7 @@
 		        lastlogintime = #{lastlogintime,jdbcType=TIMESTAMP},
 		        status = #{status,jdbcType=INTEGER},
 	        	operationuser = #{operationuser,jdbcType=INTEGER},
+	        	countyid = #{countyid,jdbcType=INTEGER},
 	        	explains = #{explains,jdbcType=VARCHAR}
 			WHERE
 				id = #{id}
@@ -161,6 +168,9 @@
             </if>
             <if test="operationuser != null">
                 operationuser = #{operationuser,jdbcType=INTEGER},
+            </if>
+            <if test="countyid != null">
+                countyid = #{countyid,jdbcType=INTEGER},
             </if>
             <if test="explains != null">
                 explains = #{explains,jdbcType=VARCHAR}
@@ -264,10 +274,10 @@
                 and address LIKE #{address}
             </if>
             <if test="playhousename != null">
-                and playhousename LIKE #{playhousename}
+                and playhousename = #{playhousename}
             </if>
             <if test="booknumber != null">
-                and booknumber LIKE #{booknumber}
+                and booknumber = #{booknumber}
             </if>
             <if test="remarks != null">
                 and remarks LIKE #{remarks}
@@ -276,10 +286,13 @@
                 and lastlogintime LIKE #{lastlogintime}
             </if>
             <if test="status != null">
-                and status LIKE #{status}
+                and status = #{status}
             </if>
             <if test="operationuser != null">
-                and operationuser LIKE #{operationuser}
+                and operationuser = #{operationuser}
+            </if>
+            <if test="countyid != null">
+                and countyid = #{countyid}
             </if>
             <if test="explain != null">
                 and explain LIKE #{explain}

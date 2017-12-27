@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hassdata.survey.dao.CountyDao">
+    <resultMap id="countyResult" type="County">
+    </resultMap>
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="countyColumns">
+        <![CDATA[
+        	id,
+            countyname,
+            cityid
+	    ]]>
+    </sql>
+
+    <sql id="countyDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="countyname != null">
+                and countyname = #{countyname}
+            </if>
+            <if test="provinceid != null">
+                and provinceid = #{provinceid}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="save" parameterType="County" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+	        INSERT INTO
+	        county (
+	        	id,
+	        	countyname,
+	        	provinceid
+	        ) VALUES (
+	        	#{id,jdbcType=INTEGER} ,
+	        	#{countyname,jdbcType=VARCHAR},
+	        	#{provinceid,jdbcType=INTEGER}
+	        )
+	    ]]>
+    </insert>
+
+    <update id="update" parameterType="County">
+        <![CDATA[
+	        UPDATE county SET
+		        countyname = #{countyname,jdbcType=VARCHAR},
+		        provinceid = #{provinceid,jdbcType=INTEGER}
+			WHERE
+				id = #{id}
+	    ]]>
+    </update>
+
+    <update id="updateParams" parameterType="County">
+        UPDATE
+        county
+        <set>
+            <if test="countyname != null">
+                countyname = #{countyname,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceid != null">
+                provinceid = #{provinceid,jdbcType=VARCHAR}
+            </if>
+        </set>
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        <![CDATA[
+	        delete from county where
+	        id = #{id}
+	    ]]>
+    </delete>
+    <delete id="deleteByStringId" parameterType="java.lang.String">
+        <![CDATA[
+	        delete from county where
+	        id = #{id}
+	    ]]>
+    </delete>
+
+    <select id="find" parameterType="java.lang.Integer" resultMap="countyResult">
+        select <include refid="countyColumns" />
+        <![CDATA[
+		    from county
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+    <select id="findByStringId" parameterType="java.lang.String" resultMap="countyResult">
+        select <include refid="countyColumns" />
+        <![CDATA[
+		    from county
+	        where
+		        id = #{id}
+	    ]]>
+    </select>
+
+    <select id="count" resultType="long" parameterType="County">
+        select count(1) from county
+        <include refid="countyDynamicWhere"/>
+    </select>
+
+    <select id="getOne" resultMap="countyResult" parameterType="map">
+        select <include refid="countyColumns"/> from county
+        <include refid="countyDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        limit 0,1
+    </select>
+
+    <select id="getAll" resultMap="countyResult" parameterType="map">
+        select <include refid="countyColumns"/> from county
+        <include refid="countyDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+    </select>
+
+    <select id="getScrollData" resultMap="countyResult" parameterType="map">
+        select <include refid="countyColumns" />
+        from county
+        <include refid="countyDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+
+    <select id="getScrollCount" resultType="long" parameterType="map">
+        select count(1) from county
+        <include refid="countyDynamicWhere"/>
+    </select>
+    <!-- 以上为自动生成部分，使用中勿作改动；自己新增sql在以下部分去写。如库表变动，将生成的部分覆盖以上部分即可。 -->
+
+
+
+    <sql id="countyLikeDynamicWhere">
+        <!-- ognl访问静态方法的表达式 为@class@method(args),以下为调用rapid中的Ognl.isNotEmpty()方法,还有其它方法如isNotBlank()可以使用，具体请查看Ognl类 -->
+        <where>
+            <if test="id != null">
+                and id LIKE #{id}
+            </if>
+            <if test="countyname != null">
+                and countyname LIKE #{countyname}
+            </if>
+            <if test="provinceid != null">
+                and provinceid LIKE #{provinceid}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getScrollDataByLike" resultMap="countyResult" parameterType="map">
+        select
+        <include refid="countyColumns"/>
+        from county
+        <include refid="countyLikeDynamicWhere"/>
+        <if test="orderBy != null">
+            order by ${orderBy}
+        </if>
+        <if test="fromIndex != null and fromIndex > -1 and pageSize != null and pageSize > 0">
+            limit #{fromIndex},#{pageSize}
+        </if>
+    </select>
+    <select id="getScrollByLikeCount" resultType="long" parameterType="map">
+        select count(1) from county
+        <include refid="countyLikeDynamicWhere"/>
+    </select>
+
+</mapper>

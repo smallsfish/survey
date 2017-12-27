@@ -16,6 +16,7 @@ public class User implements Serializable{
     private Date lastlogintime;
     private Integer status;
     private Integer operationuser;
+    private Integer countyid;
     private String explains;
 
     public Integer getStatus() {
@@ -100,6 +101,14 @@ public class User implements Serializable{
 
     public Integer getBooknumber() {
         return booknumber;
+    }
+
+    public Integer getCountyid() {
+        return countyid;
+    }
+
+    public void setCountyid(Integer countyid) {
+        this.countyid = countyid;
     }
 
     public void setBooknumber(Integer booknumber) {

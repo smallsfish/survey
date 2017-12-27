@@ -33,7 +33,7 @@ nav{
 }
 
 .header-nav ul li:first-of-type {
-    width: 30%;
+    width: 60%;
 }
 .header-nav ul li:first-child img{
     width: 80px;
@@ -43,7 +43,7 @@ nav{
     display: block;
     width: calc(100% - 90px);
     height: 100%;
-    font-size: 22px;
+    font-size: 31px;
     float: right;
 }
 .header-nav ul li a {
@@ -95,9 +95,26 @@ section {
     height: 44px;
     border-bottom: 1px rgba(32, 54, 40, 0.16) solid;
 }
+.home-aside-left ul li span{
+    display: block;
+    width: 84%;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.home-aside-left ul li label{
+    display: block;
+    float: right;
+    padding-right: 15px;
+    width: 13%;
+    height: 100%;
+}
 
 .home-aside-left ul li:first-of-type {
     height: 50px;
+    list-style: none;
 }
 
 .home-aside-left ul li:first-of-type span {
@@ -289,30 +306,24 @@ footer {
 }
 
 .news-tab ul {
-    width: 100%;
-    height: 100%;
-}
-
-.news-tab-focus {
-    width: calc(98% - 4px) !important;
-    padding-left: 2%;
-    border-left: 4px #33aaff solid;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    margin-top: 1px;
+    border-radius: 5px;
+    border: 1px rgba(111,111,111,.8) solid;
 }
 
 .news-tab ul li {
-    width: 98%;
+    width: calc(100% - 5px);
     height: 45px;
-    background-color: #9F9F9F;
-    margin-top: 5px;
     padding-left: 2%;
     cursor: pointer;
     line-height: 45px;
+    border-bottom: 1px grey solid;
 }
-
-.news-tab ul li:hover {
-    width: calc(98% - 4px);
-    border-left: 4px #33aaff solid;
-    padding-left: 2%;
+.news-tab ul li:hover{
+    color: #0E8AF8;
+    font-weight: bold;
 }
 
 .news-content {

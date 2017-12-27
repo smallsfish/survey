@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -34,11 +35,11 @@
             <ul>
                 <li><img src="img/logo.png" alt="logo"><span>基础教育改革与发展协同创新中心</span></li>
                 <li><a href="index/home">留守儿童之家<i></i></a></li>
-                <li><a href="index/news">留守儿童资讯<i></i></a></li>
-                <li><a href="index/picture">留守儿童图片<i></i></a></li>
-                <li><a href="index/video">留守儿童视频<i></i></a></li>
+                <%--<li><a href="index/news">留守儿童资讯<i></i></a></li>--%>
+                <%--<li><a href="index/picture">留守儿童图片<i></i></a></li>--%>
+                <%--<li><a href="index/video">留守儿童视频<i></i></a></li>--%>
                 <li><a href="index/questionnaire">留守儿童问卷<i></i></a></li>
-                <li><a href="index/video">问卷分析<i></i></a></li>
+                <li><a href="index/data">问卷分析<i></i></a></li>
                 <li><a href="index/msg">留言板</a></li>
             </ul>
         </div>
@@ -56,23 +57,23 @@
 <section>
     <aside class="home-aside-left">
         <ul>
-            <li><span>热点资讯</span><a href="javascript:;">更多...</a></li>
+            <li><span>热点资讯</span><a href="index/news">更多...</a></li>
             <c:forEach var="n" items="${news}">
-                <li><a href="index/newsDetail?id=${n.id}">${n.newstitle}</a></li>
+                <li><a href="index/newsDetail?id=${n.id}"><span>${n.newstitle}</span> <label><fmt:formatDate value="${n.createtime}" pattern="yyyy-MM-dd"/></label></a></li>
             </c:forEach>
         </ul>
     </aside>
     <aside class="home-aside-right">
         <ul>
-            <li><span>热点图片</span><a href="javascript:;">更多...</a></li>
+            <li><span>热点图片</span><a href="index/picture">更多...</a></li>
             <c:forEach var="p" items="${pcitures}" varStatus="st">
-                <li class="pic${st.index}"><img onload="loadimg${st.index+1}()" id="p${st.index}" src="uploadimage/${p.pictureurl}" alt="${p.picturetitle}"></li>
+                <li class="pic${st.index}"><img id="p${st.index}" src="uploadimage/${p.pictureurl}" alt="${p.picturetitle}"></li>
             </c:forEach>
         </ul>
     </aside>
     <div class="home-video">
         <ul>
-            <li><span>热点视频</span><a href="javascript:;">更多...</a></li>
+            <li><span>热点视频</span><a href="index/video">更多...</a></li>
         </ul>
         <div class="video-list">
             <ol>
@@ -167,7 +168,13 @@
     }
 
 
-
+    loadimg1();
+    loadimg2();
+    loadimg3();
+    loadimg4();
+    loadimg5();
+    loadimg6();
+    loadimg7();
 
 
     function setWH(imgheight, imgwidth, imgbl,id) {

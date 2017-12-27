@@ -158,7 +158,7 @@ public class HomeController {
     @RequestMapping(value = "questionnaire",method = RequestMethod.GET)
     public String getIndexQuestionnaire(ModelMap map){
         setLoopAttribute(map);
-        List<Questionnaire> questionnaireList=questionnaireService.getAll(null,"id desc");
+        List<Questionnaire> questionnaireList=questionnaireService.getAll(null,"questionnairecreatetime desc");
         List<QuestionnaireIndexDTO> questionnaireIndexDTOS =new ArrayList<>();
         QuestionnaireIndexDTO questionnaireIndexDTO =null;
         Date nDate=new Date();
@@ -202,7 +202,7 @@ public class HomeController {
     @RequestMapping(value = "data",method = RequestMethod.GET)
     public String getIndexData(ModelMap map){
         setLoopAttribute(map);
-        List<Questionnaire> questionnaireList=questionnaireService.getAll(null,"id desc");
+        List<Questionnaire> questionnaireList=questionnaireService.getAll(null,"questionnairecreatetime desc");
         List<DataIndexDTO> dataIndexDTOS =new ArrayList<>();
         DataIndexDTO dataIndexDTO =null;
         Date nDate=new Date();
