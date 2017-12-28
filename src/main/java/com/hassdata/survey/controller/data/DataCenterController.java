@@ -1,8 +1,6 @@
 package com.hassdata.survey.controller.data;
 
-import com.hassdata.survey.dto.DataCenterDTO;
-import com.hassdata.survey.dto.OptionInfo;
-import com.hassdata.survey.dto.QuestionCharts;
+import com.hassdata.survey.dto.*;
 import com.hassdata.survey.po.County;
 import com.hassdata.survey.po.Options;
 import com.hassdata.survey.po.Question;
@@ -291,10 +289,25 @@ public class DataCenterController {
     @RequestMapping(value = "getDataByQuestionIdOrCountyId",method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getDataByQuestionIdOrCountyId(String questionid,Integer countyid){
-
-        System.out.println(questionid+"_"+countyid);
-
-        return ServerResponse.createBySuccessMessage(questionid+"_"+countyid);
+        Question question=questionService.findByStringId(questionid);
+        DataDTO dataDTO=new DataDTO();
+        dataDTO.setQuestionname(question.getQuestionname());
+        Options options=new Options();
+        options.setQuestionid(question.getId());
+        List<Options> optionsList=optionsService.getAll(options);
+        List<OptionDTO> optionDTOS=new ArrayList<>();
+        OptionDTO optionDTO=null;
+        if(countyid==0){
+            countyid=null;
+        }
+        for (Options o : optionsList){
+            optionDTO=new OptionDTO();
+            optionDTO.setName(o.getOptionsname());
+            optionDTO.setCount(scoreService.getSelectCountByOptionId("%"+o.getId()+"%",countyid));
+            optionDTOS.add(optionDTO);
+        }
+        dataDTO.setOptionDTOS(optionDTOS);
+        return ServerResponse.createBySuccess(dataDTO);
     }
 
     /**

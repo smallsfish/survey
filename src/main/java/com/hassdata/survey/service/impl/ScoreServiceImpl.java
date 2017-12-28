@@ -58,4 +58,12 @@ public class ScoreServiceImpl extends BaseServiceImpl<Score> implements ScoreSer
         return scoreDao.getSelectCountByCountyId(params);
     }
 
+    @Override
+    public long getSelectCountByOptionId(String optionid, Integer countyid) {
+        Map<String,Object> params=new HashMap<>();
+        params.put("optionid",optionid);
+        params.put("countyid",countyid);
+        return scoreDao.getSelectCountByOptionId(params);
+    }
+
 }

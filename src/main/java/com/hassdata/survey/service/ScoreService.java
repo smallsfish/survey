@@ -13,4 +13,5 @@ public interface ScoreService extends BaseService<Score> {
     List<Score> getQuestionnaireWithStudentId(String id);
     List<Score> getOptionCountWidthQuesitonnaire(String questionnaireid,String questionid,String optionid);
     long getSelectCountByCountyId(String option,Integer countyid,String questionnaireid);
+    long getSelectCountByOptionId(String optionid,Integer countyid);
 }

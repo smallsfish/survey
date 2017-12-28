@@ -223,4 +223,15 @@
     </select>
 
 
+    <select id="getSelectCountByOptionId" parameterType="map" resultType="long">
+        select count(id) from score where options like #{optionid}
+         <if test="countyid != null ">
+             and uid in (select id from user where countyid=#{countyid} )
+         </if>
+    </select>
+
+
+
+
+
 </mapper>
