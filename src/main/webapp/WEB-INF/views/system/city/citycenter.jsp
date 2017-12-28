@@ -416,11 +416,6 @@
             url: 'system/getProvinceList'
         });
     }
-
-
-
-
-
 </script>
 
 <script id="provinceToolBar" type="text/html">

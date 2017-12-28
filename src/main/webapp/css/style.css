@@ -930,34 +930,108 @@ body,html{
 	width: 100%;
 	height: 100%;
 }
-.da-item{
-	display:-webkit-flex;
-	display:-moz-flex;
-	display:flex;
-	display:-ms-flexbox;
-	-webkit-box-orient: horizontal;
-	-moz-box-orient: horizontal;
-	/*垂直居中*/
-	/*老版本语法*/
-	-webkit-box-align: center;
-	-moz-box-align: center;
-	/*混合版本语法*/
-	-ms-flex-align: center;
-	/*新版本语法*/
-	-webkit-align-items: center;
-	align-items: center;
-	/*水平居中*/
-	/*老版本语法*/
-	-webkit-box-pack: center;
-	-moz-box-pack: center;
-	/*混合版本语法*/
-	-ms-flex-pack: center;
-	/*新版本语法*/
-	-webkit-justify-content: center;
-	justify-content: center;
-	width: 100%;
-	height: 70%;
+.da-items .questions , .county{
+	width: 10%;
+	height: 100%;
 	float: left;
+	overflow-y:scroll;
+	overflow-x: hidden;
+}
+.questions,.county ul{
+    width: 100%;
+}
+.questions li{
+    display: inline-block;
+    width: 30%;
+    margin-left: 0.8%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: rgba(0,0,0,.2);
+    margin-top: 5px;
+    cursor: pointer;
+}
+.qc-show{
+    background-color: tomato !important;
+    color:#fff;
+}
+.county li{
+    width: 96%;
+    margin-left: 2%;
+    margin-top: 5px;
+    background-color: rgba(0,0,0,.2);
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.da-item{
+	width: 80%;
+	height: 100%;
+	float: left;
+}
+.charts{
+    position: relative;
+    display:-webkit-flex;
+    display:-moz-flex;
+    display:flex;
+    display:-ms-flexbox;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    /*垂直居中*/
+    /*老版本语法*/
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    /*混合版本语法*/
+    -ms-flex-align: center;
+    /*新版本语法*/
+    -webkit-align-items: center;
+    align-items: center;
+    /*水平居中*/
+    /*老版本语法*/
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    /*混合版本语法*/
+    -ms-flex-pack: center;
+    /*新版本语法*/
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+.charts-show{
+    opacity:1 !important;
+}
+.charts #dazhu,#dazhe,#dabing{
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    opacity: 0;
+}
+.da-tools{
+    width: 100%;
+    height: 40px;
+}
+.da-tools li{
+    float: right;
+    height: 100%;
+    width: 40px;
+    cursor: pointer;
+    margin-right: 15px;
+}
+.da-tools li:hover{
+    background-color: rgba(0,0,0,.2);
+}
+.da-tool-show{
+    background-color: rgba(0,0,0,.2) !important;
+}
+.da-tools li img{
+    width: 80%;
+    height: 80%;
+    margin-top: 10%;
+    margin-left: 10%;
 }
 /*数据分析样式结束*/
 

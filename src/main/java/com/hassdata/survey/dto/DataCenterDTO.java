@@ -3,6 +3,7 @@ package com.hassdata.survey.dto;
 import java.io.Serializable;
 
 public class DataCenterDTO implements Serializable {
+    private String id;
     private String name;
     private String b;
     private String e;
@@ -11,6 +12,14 @@ public class DataCenterDTO implements Serializable {
     private String studentNumber;
     private String button;
     private String url;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

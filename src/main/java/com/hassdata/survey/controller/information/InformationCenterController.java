@@ -2,8 +2,10 @@ package com.hassdata.survey.controller.information;
 
 import com.hassdata.survey.dto.UserDTO;
 import com.hassdata.survey.po.Admin_User;
+import com.hassdata.survey.po.Province;
 import com.hassdata.survey.po.Student;
 import com.hassdata.survey.po.User;
+import com.hassdata.survey.service.ProvinceService;
 import com.hassdata.survey.service.ScoreService;
 import com.hassdata.survey.service.StudentService;
 import com.hassdata.survey.service.UserService;
@@ -34,6 +36,9 @@ public class InformationCenterController {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Resource
     private UserService userService;
+
+    @Resource
+    private ProvinceService provinceService;
 
     @Resource
     private StudentService studentService;
@@ -165,7 +170,9 @@ public class InformationCenterController {
 
     @RequiresPermissions("info:add")
     @RequestMapping(value = "getUserAdd", method = RequestMethod.GET)
-    public String getAddUser() {
+    public String getAddUser(ModelMap map) {
+        List<Province> provinceList=provinceService.getAll(null);
+        map.addAttribute(provinceList);
         return "system/information/addUser";
     }
 

@@ -212,4 +212,25 @@ public class CityController {
     }
 
 
+
+
+    @RequestMapping(value = "getCityByProvinceId",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getCityByProvinceId(Integer provinceid){
+        City city=new City();
+        city.setProvinceid(provinceid);
+        List<City> cities=cityService.getAll(city);
+        return ServerResponse.createBySuccess(cities);
+    }
+
+    @RequestMapping(value = "getCountyByCityId",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getCountyByCityId(Integer cityid){
+        County county=new County();
+        county.setCityid(cityid);
+        List<County> counties=countyService.getAll(county);
+        return ServerResponse.createBySuccess(counties);
+    }
+
+
 }

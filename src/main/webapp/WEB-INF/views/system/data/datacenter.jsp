@@ -44,9 +44,9 @@
                         <br><br>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="data:view">
-                        <button onclick="javascript:;"
-                                class="layui-btn  layui-btn-radius">表格导出
-                        </button>
+                        <a href="system/dataExcel?id=${q.id}"><button onclick="javascript:;"
+                                class="layui-btn  layui-btn-radius">数据导出
+                        </button></a>
                     </shiro:hasPermission>
                 </div>
             </div>
@@ -108,9 +108,9 @@
                                     "                    class=\"layui-btn  layui-btn-radius\">" + q.button + "\n" +
                                     "            </button>\n" +
                                     "<shiro:hasPermission name="data:view">" +
-                                    "<br><br><button onclick=\"javascript:;\"" +
-                                    "   class=\"layui-btn  layui-btn-radius\">表格导出" +
-                                    "</button>" +
+                                    "<br><br>\n<a href=\"system/dataExcel?id="+q.id+"\"><button onclick=\"javascript:;\"" +
+                                    "   class=\"layui-btn  layui-btn-radius\">数据导出" +
+                                    "</button></a>" +
                                     " </shiro:hasPermission></div>" +
                                     "        </div>\n" +
                                     "    </div>\n");
@@ -158,9 +158,9 @@
                             "                    class=\"layui-btn  layui-btn-radius\">" + q.button + "\n" +
                             "            </button>\n" +
                             "<shiro:hasPermission name="data:view">" +
-                            "<br><br><button onclick=\"javascript:;\"" +
-                            "   class=\"layui-btn  layui-btn-radius\">表格导出" +
-                            "</button>" +
+                            "<br><br>\\n<a href=\\\"system/dataExcel?id=\"+q.id+\"\\\"><button onclick=\"javascript:;\"" +
+                            "   class=\"layui-btn  layui-btn-radius\">数据导出" +
+                            "</button></a>" +
                             " </shiro:hasPermission></div>" +
                             "        </div>\n" +
                             "    </div>\n");

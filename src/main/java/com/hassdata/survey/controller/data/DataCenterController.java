@@ -3,20 +3,16 @@ package com.hassdata.survey.controller.data;
 import com.hassdata.survey.dto.DataCenterDTO;
 import com.hassdata.survey.dto.OptionInfo;
 import com.hassdata.survey.dto.QuestionCharts;
+import com.hassdata.survey.po.County;
 import com.hassdata.survey.po.Options;
 import com.hassdata.survey.po.Question;
 import com.hassdata.survey.po.Questionnaire;
-import com.hassdata.survey.service.OptionsService;
-import com.hassdata.survey.service.QuestionService;
-import com.hassdata.survey.service.QuestionnaireService;
-import com.hassdata.survey.service.ScoreService;
+import com.hassdata.survey.service.*;
 import com.hassdata.survey.util.ServerResponse;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.context.annotation.Scope;
@@ -28,8 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
@@ -44,6 +43,15 @@ public class DataCenterController {
 
     @Resource
     private ScoreService scoreService;
+
+    @Resource
+    private CountyService countyService;
+
+    @Resource
+    private CityService cityService;
+
+    @Resource
+    private ProvinceService provinceService;
 
     @Resource
     private QuestionService questionService;
@@ -78,6 +86,7 @@ public class DataCenterController {
         DataCenterDTO dataCenterDTO = null;
         for (Questionnaire q : questionnaireList) {
             dataCenterDTO = new DataCenterDTO();
+            dataCenterDTO.setId(q.getId());
             dataCenterDTO.setName(q.getQuestionnairename());
             boolean b = false, e = false;
             if (q.getQuestionnairebegintime() == null || q.getQuestionnairebegintime().equals("")) {
@@ -154,9 +163,9 @@ public class DataCenterController {
     @RequestMapping(value = "dataSearch", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse dataSearch(HttpServletRequest request, @RequestParam(required = false, defaultValue = "1") Integer page, @RequestParam(required = false, defaultValue = "12") Integer limit) {
-        String name =request.getParameter("name");
+        String name = request.getParameter("name");
         try {
-            name=URLDecoder.decode(URLDecoder.decode(name,"UTF-8"),"UTF-8");
+            name = URLDecoder.decode(URLDecoder.decode(name, "UTF-8"), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -169,59 +178,92 @@ public class DataCenterController {
         return ServerResponse.createBySuccessForLayuiTable("搜索成功", dataCenterDTOS, count);
     }
 
-    @RequestMapping(value = "dataExcel",method = RequestMethod.GET)
-    public void dataExcel(String id, HttpServletResponse response){
-        XSSFWorkbook xss=new XSSFWorkbook();
+    @RequestMapping(value = "dataExcel", method = RequestMethod.GET)
+    public void dataExcel(String id, HttpServletResponse response) {
+        XSSFWorkbook xss = new XSSFWorkbook();
+        XSSFRow row = null;
+        XSSFCell cell = null;
         //表头样式
         CellStyle titleStyle = xss.createCellStyle();
         titleStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
         Font titleFont = xss.createFont();
         titleFont.setFontHeightInPoints((short) 20);
-        titleFont.setBoldweight((short) 700);
+        titleFont.setBoldweight((short) 400);
         titleStyle.setFont(titleFont);
         // 列头样式
         CellStyle headerStyle = xss.createCellStyle();
-        headerStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
-        headerStyle.setBorderBottom(XSSFCellStyle.BORDER_THIN);
-        headerStyle.setBorderLeft(XSSFCellStyle.BORDER_THIN);
-        headerStyle.setBorderRight(XSSFCellStyle.BORDER_THIN);
-        headerStyle.setBorderTop(XSSFCellStyle.BORDER_THIN);
         headerStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+        headerStyle.setFillBackgroundColor(new XSSFColor().getIndexed());
         Font headerFont = xss.createFont();
         headerFont.setFontHeightInPoints((short) 12);
-        headerFont.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
         headerStyle.setFont(headerFont);
         // 单元格样式
         CellStyle cellStyle = xss.createCellStyle();
-        cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
-        cellStyle.setBorderBottom(XSSFCellStyle.BORDER_THIN);
-        cellStyle.setBorderLeft(XSSFCellStyle.BORDER_THIN);
-        cellStyle.setBorderRight(XSSFCellStyle.BORDER_THIN);
-        cellStyle.setBorderTop(XSSFCellStyle.BORDER_THIN);
         cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
         cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);
         Font cellFont = xss.createFont();
         cellFont.setBoldweight(XSSFFont.BOLDWEIGHT_NORMAL);
         cellStyle.setFont(cellFont);
-        Questionnaire questionnaire=questionnaireService.findByStringId(id);
-        Question question=new Question();
+        Questionnaire questionnaire = questionnaireService.findByStringId(id);
+        Question question = new Question();
         question.setQuestionnaireid(questionnaire.getId());
-        List<Question> questionList=questionService.getAll(question);
-        XSSFSheet xssfSheet=null;
+        List<Question> questionList = questionService.getAll(question);
+        XSSFSheet xssfSheet = null;
         Collections.sort(questionList, new Comparator<Question>() {
             @Override
             public int compare(Question o1, Question o2) {
-                return o1.getQuestionsort()-o2.getQuestionsort();
+                return o1.getQuestionsort() - o2.getQuestionsort();
             }
         });
-        for(Question q : questionList){
-            xssfSheet=xss.createSheet(q.getQuestionname().split(":")[0]);
-
+        List<County> countyList = countyService.getAll(null);
+        for (Question q : questionList) {
+            xssfSheet = xss.createSheet(q.getQuestionname().split(":")[0]);
+            row = xssfSheet.createRow(0);
+            cell = row.createCell(0);
+            cell.setCellStyle(titleStyle);
+            cell.setCellValue(q.getQuestionname());
+            row = xssfSheet.createRow(1);
+            cell = row.createCell(0);
+            cell.setCellStyle(headerStyle);
+            cell.setCellValue("选项");
+            int cellCount = 1;
+            for (County c : countyList) {
+                cell = row.createCell(cellCount++);
+                cell.setCellStyle(headerStyle);
+                cell.setCellValue(c.getCountyname());
+            }
+            Options options=new Options();
+            options.setQuestionid(q.getId());
+            List<Options> optionsList=optionsService.getAll(options);
+            int rowCount=2;
+            for(Options o : optionsList){
+                row = xssfSheet.createRow(rowCount++);
+                cell = row.createCell(0);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(o.getOptionsname());
+                int cc=1;
+                for(County c : countyList){
+                    cell = row.createCell(cc++);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(scoreService.getSelectCountByCountyId("%"+o.getId()+"%",c.getId(),questionnaire.getId()));
+                }
+            }
         }
-//        response.reset();
-//        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-//        response.addHeader("Content-Length", "" + data.length);
-//        response.setContentType("application/octet-stream;charset=UTF-8");
+        String filename= null;
+        try {
+            filename = "attachment; filename="+new String(questionnaire.getQuestionnairename().getBytes("GBK"),"iso-8859-1")+".xlsx";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        try {
+            response.reset();
+            response.setHeader("Content-Disposition", filename);
+            response.setContentType("application/octet-stream;charset=UTF-8");
+            ServletOutputStream outputStream = response.getOutputStream();
+            xss.write(outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @RequiresPermissions("data:view")
@@ -230,28 +272,29 @@ public class DataCenterController {
         Question question = new Question();
         question.setQuestionnaireid(id);
         List<Question> questionList = questionService.getAll(question);
-        List<QuestionCharts> questionCharts = new ArrayList<>();
-        List<OptionInfo> optionInfos = null;
-        QuestionCharts qc = null;
-        OptionInfo oi = null;
-        for (Question q : questionList) {
-            optionInfos = new ArrayList<>();
-            qc = new QuestionCharts();
-            qc.setName(splitName(true, q.getQuestionname()));
-            Options op = new Options();
-            op.setQuestionid(q.getId());
-            List<Options> optionsList = optionsService.getAll(op);
-            for (Options o : optionsList) {
-                oi = new OptionInfo();
-                oi.setName(splitName(false, o.getOptionsname()));
-                oi.setCount((long) scoreService.getOptionCountWidthQuesitonnaire(id, q.getId(), "%" + o.getId() + "%").size());
-                optionInfos.add(oi);
+        List<County> countyList=countyService.getAll(null,"id DESC");
+        Collections.sort(questionList, new Comparator<Question>() {
+            @Override
+            public int compare(Question o1, Question o2) {
+                return o1.getQuestionsort()-o2.getQuestionsort();
             }
-            qc.setOptionInfos(optionInfos);
-            questionCharts.add(qc);
+        });
+        for(int i=0;i<questionList.size();i++){
+            questionList.get(i).setQuestionname(questionList.get(i).getQuestionname().split(":")[0]);
         }
-        map.addAttribute("ch", questionCharts);
+        map.addAttribute(questionList);
+        map.addAttribute(countyList);
         return "system/data/da";
+    }
+
+
+    @RequestMapping(value = "getDataByQuestionIdOrCountyId",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getDataByQuestionIdOrCountyId(String questionid,Integer countyid){
+
+        System.out.println(questionid+"_"+countyid);
+
+        return ServerResponse.createBySuccessMessage(questionid+"_"+countyid);
     }
 
     /**

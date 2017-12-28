@@ -14,4 +14,5 @@ public interface ScoreDao extends BaseDao<Score> {
     List<Score> getQuestionnaireWithUserId(String id);
     List<Score> getQuestionnaireWithStudentId(String id);
     List<Score> getOptionCountWidthQuesitonnaire(Map<String,String> params);
+    long getSelectCountByCountyId(Map<String,Object> params);
 }

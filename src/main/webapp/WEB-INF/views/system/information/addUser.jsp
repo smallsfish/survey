@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!doctype html>
 <html lang="zh-CN">
@@ -36,22 +36,56 @@
                    class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item user-address">
+        <label class="layui-form-label"><span style="color: #f00;">*</span>地址：</label>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="province" lay-filter="province" lay-verify="required" lay-search>
+                    <option value="">---请选择省份---</option>
+                    <c:forEach var="p" items="${provinceList}">
+                        <option value="${p.id}">${p.provincename}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+        <%--<div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="city" lay-verify="city" lay-search>
+                    <option value="010">layer</option>
+                    <option value="021">form</option>
+                    <option value="0571" selected>layim</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <select name="city" lay-verify="county" lay-search>
+                    <option value="010">layer</option>
+                    <option value="021">form</option>
+                    <option value="0571" selected>layim</option>
+                </select>
+            </div>
+        </div>--%>
+    </div>
     <div class="layui-form-item">
-        <label class="layui-form-label"><span style="color: #f00;">*</span>学校地址：</label>
+        <label class="layui-form-label"><span style="color: #f00;">*</span>详细地址：</label>
         <div class="layui-input-block">
-            <input type="text" name="address" lay-verify="required" placeholder="请输入学校地址" autocomplete="off" class="layui-input">
+            <input type="text" name="address" lay-verify="required" placeholder="请输入详细地址" autocomplete="off"
+                   class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>留守儿童之家名称：</label>
         <div class="layui-input-block">
-            <input type="text" name="playhousename" lay-verify="required" placeholder="请输入留守儿童之家名称" autocomplete="off" class="layui-input">
+            <input type="text" name="playhousename" lay-verify="required" placeholder="请输入留守儿童之家名称" autocomplete="off"
+                   class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>图书数量：</label>
         <div class="layui-input-block">
-            <input type="number" name="booknumber" lay-verify="required" placeholder="请输入图书数量" autocomplete="off" class="layui-input">
+            <input type="number" name="booknumber" lay-verify="required" placeholder="请输入图书数量" autocomplete="off"
+                   class="layui-input">
         </div>
     </div>
     <div class="layui-form-item layui-form-text">
@@ -102,6 +136,69 @@
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        form.on('select(province)', function (data) {
+            //user-address
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: 'system/getCityByProvinceId',
+                data: {'provinceid':data.value},
+                success: function (result) {
+                    if (result.status == 0) {
+                        var options="\n";
+                        for(var i=0; i< result.data.length;i++){
+                            options=options+"<option value=\""+result.data[i].id+"\">"+result.data[i].cityname+"</option>\n";
+                        }
+                        $('.user-address').append("<div class=\"layui-inline\">\n" +
+                            "            <div class=\"layui-input-inline\">\n" +
+                            "                <select name=\"city\" lay-filter=\"city\" lay-verify=\"required\" lay-search>\n" +
+                            "                    <option value=\"\">---请选择城市---</option>\n" +
+                            "                    \n" +
+                             options +
+                            "                    \n" +
+                            "                </select>\n" +
+                            "            </div>\n" +
+                            "        </div>");
+                        form.render();
+                    }
+                },
+                error: function (data) {
+                    alert("获取城市出现异常！");
+                }
+            });
+        });
+
+        form.on('select(city)', function (data) {
+            //user-address
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: 'system/getCountyByCityId',
+                data: {'cityid':data.value},
+                success: function (result) {
+                    if (result.status == 0) {
+                        var options="\n";
+                        for(var i=0; i< result.data.length;i++){
+                            options=options+"<option value=\""+result.data[i].id+"\">"+result.data[i].countyname+"</option>\n";
+                        }
+                        $('.user-address').append("<div class=\"layui-inline\">\n" +
+                            "            <div class=\"layui-input-inline\">\n" +
+                            "                <select name=\"countyid\" lay-filter=\"county\" lay-verify=\"required\" lay-search>\n" +
+                            "                    <option value=\"\">---请选择县---</option>\n" +
+                            "                    \n" +
+                            options +
+                            "                    \n" +
+                            "                </select>\n" +
+                            "            </div>\n" +
+                            "        </div>");
+                        form.render();
+                    }
+                },
+                error: function (data) {
+                    alert("获取城市出现异常！");
+                }
+            });
         });
     });
 </script>
