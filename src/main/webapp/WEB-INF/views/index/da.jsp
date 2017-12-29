@@ -8,132 +8,201 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>数据查看</title>
+    <title>数据分析</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="layui/css/layui.css">
     <script src="js/echarts.js"></script>
-    <style>
-        /* 设置滚动条的样式 */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 5px;
-        }
-    </style>
 </head>
 
 <body oncontextmenu="return false" onselect="return false">
 <div class="da-items">
-    <c:forEach var="c" items="${ch}" varStatus="st">
-        <div class="da-item">
-            <div id="da${st.index}" style="width: 50%;height: 90%; float:left;"></div>
-            <div id="ba${st.index}" style="width: 50%;height: 90%;float:left;"></div>
+    <div class="questions">
+        <ul>
+            <c:forEach var="q" items="${questionList}" varStatus="st">
+                <li data-qid="${q.id}" ${st.index==0 ? 'class="qc-show"':''}>${q.questionname}</li>
+            </c:forEach>
+        </ul>
+    </div>
+
+    <div class="da-item">
+        <div class="da-tools">
+            <ul>
+                <li><img src="img/icon/bingzhuang.png" alt="饼状图"></li>
+                <li><img src="img/icon/zhexian.png" alt="折线图"></li>
+                <li class="da-tool-show"><img src="img/icon/zhuzhuang.png" alt="柱状图"></li>
+            </ul>
         </div>
-    </c:forEach>
+        <div class="charts">
+            <div id="dabing"></div>
+            <div id="dazhe"></div>
+            <div id="dazhu" class="charts-show"></div>
+        </div>
+    </div>
+    <div class="county">
+        <ul>
+            <li data-cid="0" class="qc-show">全部</li>
+            <c:forEach var="c" items="${countyList}">
+                <li data-cid="${c.id}">${c.countyname}</li>
+            </c:forEach>
+        </ul>
+    </div>
 </div>
 </body>
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myCharts = new Array();
-    var bCharts = new Array();
-    var options = new Array();
-    var bOptions = new Array();
-    <c:forEach var="c" items="${ch}" varStatus="st">
-    myCharts[${st.index}] = echarts.init(document.getElementById('da${st.index}'));
-    bCharts[${st.index}] = echarts.init(document.getElementById('ba${st.index}'));
-    </c:forEach>
+    var name = "";
+    var currentQuestionId = '${questionList.get(0).id}';
+    var currentCountyId = 0;
+    var ydata = [];
+    var xdata = [];
+    var bydata = [];
+    var myChartBing, optionZhu;
+    var myChartZhe, optionZhe;
+    var myChartZhu, optionBing;
+    $(".da-tools ul").on('click', 'li', function (ev) {
+        var liid = $('.da-tools ul li').index($(this));
+        clearDaToolStyle();
+        if (liid == 0) {
+            $("#dabing").attr("class", "charts-show");
+            $("#dabing").css("display", "block");
+        } else if (liid == 1) {
+            $("#dazhe").attr("class", "charts-show");
+            $("#dazhe").css("display", "block");
+        } else {
+            $("#dazhu").attr("class", "charts-show");
+            $("#dazhu").css("display", "block");
+        }
+        $('.da-tools ul li:eq(' + liid + ')').attr("class", "da-tool-show");
+    });
 
-    // 指定图表的配置项和数据
-    <c:forEach var="c" items="${ch}" varStatus="st1">
-    options[${st1.index}] = {
+    function clearDaToolStyle() {
+        setNone();
+        $('.da-tools ul li').attr("class", "");
+        $(".charts-show").attr("class", "");
+    }
+
+    function setNone() {
+        $("#dabing").css("display", "none");
+        $("#dazhe").css("display", "none");
+        $("#dazhu").css("display", "none");
+    }
+
+    // 基于准备好的dom，初始化echarts实例
+    myChartZhu = echarts.init(document.getElementById('dazhu'));
+    myChartZhe = echarts.init(document.getElementById('dazhe'));
+    myChartBing = echarts.init(document.getElementById('dabing'));
+    optionZhu = {
         title: {
-            text: '${c.name}',
+            text: name,
+            left: '8%'
         },
+        color: ['#3398DB'],
         tooltip: {
             trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
             }
         },
-        legend: {
-            data: ['选择数量'],
-            right: '6%'
-        },
         grid: {
-            left: '1%',
-            right: '1.3%',
-            bottom: '1%',
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
             containLabel: true
         },
-        xAxis: {
-            type: 'value',
-            boundaryGap: [0, 1]
-        },
-        yAxis: {
-            type: 'category',
-            data: [<c:forEach var="o" items="${c.optionInfos}" varStatus="st2">
-                <c:if test="${st2.index!=c.optionInfos.size()-1}">
-                "${o.name}",
-                </c:if>
-                <c:if test="${st2.index==c.optionInfos.size()-1}">
-                "${o.name}"
-                </c:if>
-                </c:forEach>]
-        },
+        xAxis: [
+            {
+                type: 'category',
+                data: [],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
         series: [
             {
-                name: '选择数量',
+                name: '',
                 type: 'bar',
-                data: [<c:forEach var="o" items="${c.optionInfos}" varStatus="st3">
-                    <c:if test="${st3.index!=c.optionInfos.size()-1}">
-                    "${o.count}",
-                    </c:if>
-                    <c:if test="${st3.index==c.optionInfos.size()-1}">
-                    "${o.count}"
-                    </c:if>
-                    </c:forEach>]
+                barWidth: '60%',
+                data: []
             }
         ]
     };
 
-    bOptions[${st1.index}] = {
+    optionZhe = {
         title: {
-            text: '饼状图分析',
+            text: name,
+            left: '8%'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
+            }
+        },
+        legend: {
+            data: ['选择情况']
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '选择情况',
+                type: 'line',
+                stack: '总量',
+                areaStyle: {normal: {}},
+                data: []
+            }
+        ]
+    };
+    optionBing = {
+        title: {
+            text: name,
             x: 'center'
         },
         tooltip: {
             trigger: 'item',
-            formatter: "{a}<br/>{b} : {c} ({d}%)"
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
         legend: {
             orient: 'vertical',
-            left: '1%',
-            top: '1%',
-            data: [<c:forEach var="o" items="${c.optionInfos}" varStatus="st2">
-                <c:if test="${st2.index!=c.optionInfos.size()-1}">
-                '${o.name}',
-                </c:if>
-                <c:if test="${st2.index==c.optionInfos.size()-1}">
-                '${o.name}'
-                </c:if>
-                </c:forEach>]
+            left: 'left',
+            data: []
         },
         series: [
             {
-                name: '选择情况',
+                name: '',
                 type: 'pie',
                 radius: '55%',
-                center: ['65%', '50%'],
-                data: [
-                    //{value:335, name:'直接访问'},
-                    <c:forEach var="o" items="${c.optionInfos}" varStatus="st2">
-                    <c:if test="${st2.index!=c.optionInfos.size()-1}">
-                    {value:${o.count},name:'${o.name}'},
-                    </c:if>
-                    <c:if test="${st2.index==c.optionInfos.size()-1}">
-                    {value:${o.count},name:'${o.name}'}
-                    </c:if>
-                    </c:forEach>
-                ],
+                center: ['50%', '60%'],
+                data: [],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -144,12 +213,65 @@
             }
         ]
     };
-    </c:forEach>
-    // 使用刚指定的配置项和数据显示图表。
-    <c:forEach var="c" items="${ch}" varStatus="st">
-    myCharts[${st.index}].setOption(options[${st.index}]);
-    bCharts[${st.index}].setOption(bOptions[${st.index}]);
-    </c:forEach>
+    myChartZhu.setOption(optionZhu, {notMerge: true});
+    myChartZhe.setOption(optionZhe, {notMerge: true});
+    myChartBing.setOption(optionBing, {notMerge: true});
 
+    function clearQuesitonStyle() {
+        $(".questions ul li").attr("class", "");
+    }
+
+    $(".questions ul").on("click", "li", function (ev) {
+        clearQuesitonStyle();
+        $(this).attr("class", "qc-show");
+        currentQuestionId = $(this).data("qid");
+        ajaxGetData();
+    });
+
+    function clearCountyStyle() {
+        $(".county ul li").attr("class", "");
+    }
+
+    $(".county ul").on("click", "li", function (ev) {
+        clearCountyStyle();
+        $(this).attr("class", "qc-show");
+        currentCountyId = $(this).data("cid");
+        ajaxGetData();
+    });
+
+    function ajaxGetData() {
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: 'index/getDataByQuestionIdOrCountyId',
+            data: {'questionid': currentQuestionId, 'countyid': currentCountyId},
+            success: function (result) {
+                optionZhu.title.text = result.data.questionname;
+                optionZhe.title.text = result.data.questionname;
+                optionBing.title.text = result.data.questionname;
+                $(result.data.optionDTOS).each(function (index, item) {
+                    ydata[index] = item.count;
+                    xdata[index] = item.name;
+                    bydata[index] = {};
+                    bydata[index].value = item.count;
+                    bydata[index].name = item.name;
+                });
+                optionZhu.xAxis[0].data = xdata;
+                optionZhu.series[0].data = ydata;
+                optionZhe.xAxis[0].data = xdata;
+                optionZhe.series[0].data = ydata;
+                optionBing.legend.data = xdata;
+                optionBing.series[0].data = bydata;
+                myChartZhu.setOption(optionZhu, {notMerge: true});
+                myChartZhe.setOption(optionZhe, {notMerge: true});
+                myChartBing.setOption(optionBing, {notMerge: true});
+            },
+            error: function (data) {
+                layer.alert("出现异常！");
+            }
+        });
+    }
+
+    ajaxGetData();
 </script>
 </html>

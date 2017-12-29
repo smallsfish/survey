@@ -63,28 +63,158 @@
         clearDaToolStyle();
         if (liid == 0) {
             $("#dabing").attr("class", "charts-show");
+            $("#dabing").css("display", "block");
         } else if (liid == 1) {
             $("#dazhe").attr("class", "charts-show");
+            $("#dazhe").css("display", "block");
         } else {
             $("#dazhu").attr("class", "charts-show");
+            $("#dazhu").css("display", "block");
         }
         $('.da-tools ul li:eq(' + liid + ')').attr("class", "da-tool-show");
     });
 
     function clearDaToolStyle() {
+        setNone();
         $('.da-tools ul li').attr("class", "");
         $(".charts-show").attr("class", "");
     }
 
+    function setNone() {
+        $("#dabing").css("display", "none");
+        $("#dazhe").css("display", "none");
+        $("#dazhu").css("display", "none");
+    }
     // 基于准备好的dom，初始化echarts实例
     myChartZhu = echarts.init(document.getElementById('dazhu'));
     myChartZhe = echarts.init(document.getElementById('dazhe'));
     myChartBing = echarts.init(document.getElementById('dabing'));
-    initOption();
+    optionZhu = {
+        title: {
+            text: name,
+            left: '8%'
+        },
+        color: ['#3398DB'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: [],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '',
+                type: 'bar',
+                barWidth: '60%',
+                data: []
+            }
+        ]
+    };
 
-    myChartZhu.setOption(optionZhu,true);
-    myChartZhe.setOption(optionZhe,true);
-    myChartBing.setOption(optionBing,true);
+    optionZhe = {
+        title: {
+            text: name,
+            left: '8%'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
+            }
+        },
+        legend: {
+            data: ['选择情况']
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '选择情况',
+                type: 'line',
+                stack: '总量',
+                areaStyle: {normal: {}},
+                data: []
+            }
+        ]
+    };
+    optionBing = {
+        title: {
+            text: name,
+            x: 'center'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data: []
+        },
+        series: [
+            {
+                name: '',
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: [],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChartZhu.setOption(optionZhu,{ notMerge:true});
+    myChartZhe.setOption(optionZhe,{ notMerge:true});
+    myChartBing.setOption(optionBing,{ notMerge:true});
 
     function clearQuesitonStyle() {
         $(".questions ul li").attr("class", "");
@@ -108,132 +238,6 @@
         ajaxGetData();
     });
 
-    function initOption(){
-        optionZhu = {
-            title: {
-                text: name,
-                left: '8%'
-            },
-            color: ['#3398DB'],
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                }
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: [
-                {
-                    type: 'category',
-                    data: [],
-                    axisTick: {
-                        alignWithLabel: true
-                    }
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value'
-                }
-            ],
-            series: [
-                {
-                    name: '',
-                    type: 'bar',
-                    barWidth: '60%',
-                    data: []
-                }
-            ]
-        };
-
-        optionZhe = {
-            title: {
-                text: name,
-                left: '8%'
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    label: {
-                        backgroundColor: '#6a7985'
-                    }
-                }
-            },
-            legend: {
-                data: ['选择情况']
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: [
-                {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: []
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value'
-                }
-            ],
-            series: [
-                {
-                    name: '选择情况',
-                    type: 'line',
-                    stack: '总量',
-                    areaStyle: {normal: {}},
-                    data: []
-                }
-            ]
-        };
-        optionBing = {
-            title: {
-                text: name,
-                x: 'center'
-            },
-            tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            legend: {
-                orient: 'vertical',
-                left: 'left',
-                data: []
-            },
-            series: [
-                {
-                    name: '访问来源',
-                    type: 'pie',
-                    radius: '55%',
-                    center: ['50%', '60%'],
-                    data: [],
-                    itemStyle: {
-                        emphasis: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }
-            ]
-        };
-    }
-
     function ajaxGetData() {
         $.ajax({
             type: "GET",
@@ -251,19 +255,15 @@
                     bydata[index].value=item.count;
                     bydata[index].name=item.name;
                 });
-                myChartZhu.clear();
-                myChartZhe.clear();
-                myChartBing.clear();
-                initOption();
                 optionZhu.xAxis[0].data=xdata;
                 optionZhu.series[0].data=ydata;
                 optionZhe.xAxis[0].data=xdata;
                 optionZhe.series[0].data=ydata;
                 optionBing.legend.data=xdata;
                 optionBing.series[0].data=bydata;
-                myChartZhu.setOption(optionZhu,true);
-                myChartZhe.setOption(optionZhe,true);
-                myChartBing.setOption(optionBing,true);
+                myChartZhu.setOption(optionZhu,{ notMerge:true});
+                myChartZhe.setOption(optionZhe,{ notMerge:true});
+                myChartBing.setOption(optionBing,{ notMerge:true});
             },
             error: function (data) {
                 layer.alert("出现异常！");
