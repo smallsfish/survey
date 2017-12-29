@@ -78,6 +78,11 @@ public class HomeController {
         return "index/home";
     }
 
+    @RequestMapping(value = "getNews",method = RequestMethod.GET)
+    public String getNews(){
+        return "index/new";
+    }
+
     @RequestMapping(value = "news",method = RequestMethod.GET)
     public String getIndexNews(ModelMap map){
         setLoopAttribute(map);
