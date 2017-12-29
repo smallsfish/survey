@@ -1,16 +1,11 @@
 package com.hassdata.survey.controller.information;
 
 import com.hassdata.survey.dto.UserDTO;
-import com.hassdata.survey.po.Admin_User;
-import com.hassdata.survey.po.Province;
-import com.hassdata.survey.po.Student;
-import com.hassdata.survey.po.User;
-import com.hassdata.survey.service.ProvinceService;
-import com.hassdata.survey.service.ScoreService;
-import com.hassdata.survey.service.StudentService;
-import com.hassdata.survey.service.UserService;
+import com.hassdata.survey.po.*;
+import com.hassdata.survey.service.*;
 import com.hassdata.survey.util.MD5TUtils;
 import com.hassdata.survey.util.ServerResponse;
+import net.sf.ehcache.search.aggregator.Count;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -39,6 +34,12 @@ public class InformationCenterController {
 
     @Resource
     private ProvinceService provinceService;
+
+    @Resource
+    private CityService cityService;
+
+    @Resource
+    private CountyService countyService;
 
     @Resource
     private StudentService studentService;
@@ -180,7 +181,22 @@ public class InformationCenterController {
     @RequestMapping(value = "getEditorAdd", method = RequestMethod.GET)
     public String getEditorUser(Integer id, ModelMap map) {
         User user = userService.find(id);
+        Integer cityid=countyService.find(user.getCountyid()).getCityid();
+        Integer proviceid=provinceService.find( cityService.find(cityid).getProvinceid()).getId();
+        City city=new City();
+        city.setProvinceid(proviceid);
+        List<City> citiyList=cityService.getAll(city);
+        List<Province> provinceList=provinceService.getAll(null);
+        County county=new County();
+        county.setCityid(cityid);
+        List<County> countyList = countyService.getAll(county);
+        map.addAttribute(provinceList);
+        map.addAttribute(citiyList);
+        map.addAttribute(countyList);
         map.addAttribute("user", user);
+        map.addAttribute("cityid",cityid);
+        map.addAttribute("proviceid",proviceid);
+        map.addAttribute("countyid",user.getCountyid());
         return "system/information/editorUser";
     }
 

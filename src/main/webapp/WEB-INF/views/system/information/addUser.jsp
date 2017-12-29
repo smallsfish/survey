@@ -41,31 +41,13 @@
         <div class="layui-inline">
             <div class="layui-input-inline">
                 <select name="province" lay-filter="province" lay-verify="required" lay-search>
-                    <option value="">---请选择省份---</option>
+                    <option value="" disabled>---请选择省份---</option>
                     <c:forEach var="p" items="${provinceList}">
                         <option value="${p.id}">${p.provincename}</option>
                     </c:forEach>
                 </select>
             </div>
         </div>
-        <%--<div class="layui-inline">
-            <div class="layui-input-inline">
-                <select name="city" lay-verify="city" lay-search>
-                    <option value="010">layer</option>
-                    <option value="021">form</option>
-                    <option value="0571" selected>layim</option>
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
-            <div class="layui-input-inline">
-                <select name="city" lay-verify="county" lay-search>
-                    <option value="010">layer</option>
-                    <option value="021">form</option>
-                    <option value="0571" selected>layim</option>
-                </select>
-            </div>
-        </div>--%>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><span style="color: #f00;">*</span>详细地址：</label>
@@ -146,14 +128,16 @@
                 data: {'provinceid':data.value},
                 success: function (result) {
                     if (result.status == 0) {
+                        $(".select-city").remove();
+                        $(".select-county").remove();
                         var options="\n";
                         for(var i=0; i< result.data.length;i++){
                             options=options+"<option value=\""+result.data[i].id+"\">"+result.data[i].cityname+"</option>\n";
                         }
-                        $('.user-address').append("<div class=\"layui-inline\">\n" +
+                        $('.user-address').append("<div class=\"layui-inline select-city\">\n" +
                             "            <div class=\"layui-input-inline\">\n" +
                             "                <select name=\"city\" lay-filter=\"city\" lay-verify=\"required\" lay-search>\n" +
-                            "                    <option value=\"\">---请选择城市---</option>\n" +
+                            "                    <option value=\"\" disabled>---请选择城市---</option>\n" +
                             "                    \n" +
                              options +
                             "                    \n" +
@@ -178,14 +162,15 @@
                 data: {'cityid':data.value},
                 success: function (result) {
                     if (result.status == 0) {
+                        $(".select-county").remove();
                         var options="\n";
                         for(var i=0; i< result.data.length;i++){
                             options=options+"<option value=\""+result.data[i].id+"\">"+result.data[i].countyname+"</option>\n";
                         }
-                        $('.user-address').append("<div class=\"layui-inline\">\n" +
+                        $('.user-address').append("<div class=\"layui-inline select-county\">\n" +
                             "            <div class=\"layui-input-inline\">\n" +
                             "                <select name=\"countyid\" lay-filter=\"county\" lay-verify=\"required\" lay-search>\n" +
-                            "                    <option value=\"\">---请选择县---</option>\n" +
+                            "                    <option value=\"\" disabled>---请选择县---</option>\n" +
                             "                    \n" +
                             options +
                             "                    \n" +

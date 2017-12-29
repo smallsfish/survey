@@ -76,7 +76,7 @@
                 {width: layui_tab_item_width * 0.05, field: 'id', title: 'ID', sort: true},
                 {width: layui_tab_item_width * 0.26, field: 'provincename', title: '所属省'},
                 {width: layui_tab_item_width * 0.26, field: 'cityname', title: '所属市'},
-                {width: layui_tab_item_width * 0.253, field: 'countyname', title: '县名'},
+                {width: layui_tab_item_width * 0.25, field: 'countyname', title: '县名'},
                 {
                     width: layui_tab_item_width * 0.141,
                     fixed: 'right',
