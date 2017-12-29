@@ -33,13 +33,13 @@
     <nav>
         <div class="header-nav">
             <ul>
-                <li><img src="img/logo.png" alt="logo"><span>基础教育改革与发展协同创新中心</span></li>
-                <li><a href="index/home">留守儿童之家<i></i></a></li>
-                <%--<li><a href="index/news">留守儿童资讯<i></i></a></li>--%>
-                <%--<li><a href="index/picture">留守儿童图片<i></i></a></li>--%>
-                <%--<li><a href="index/video">留守儿童视频<i></i></a></li>--%>
-                <li><a href="index/questionnaire">留守儿童问卷<i></i></a></li>
-                <li><a href="index/data">问卷分析<i></i></a></li>
+                <li><img src="img/logo1.png" alt="logo"><%--<span>基础教育改革与发展协同创新中心</span>--%></li>
+                <li><a href="index/home" class="active">儿童之家</a></li>
+                <%--<li><a href="index/news">儿童资讯<i></i></a></li>--%>
+                <%--<li><a href="index/picture">儿童图片<i></i></a></li>--%>
+                <li><a href="index/questionnaire">儿童问卷</a></li>
+                <li><a href="index/data">问卷分析</a></li>
+                <li><a href="index/getNews">研究成果</a></li>
                 <li><a href="index/msg">留言板</a></li>
             </ul>
         </div>
@@ -86,7 +86,7 @@
     </div>
 </section>
 <footer>
-
+    <p>基础教育改革与发展协同创新中心 版权所有</p>
 </footer>
 </body>
 <script>

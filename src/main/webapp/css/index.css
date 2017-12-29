@@ -33,10 +33,10 @@ nav{
 }
 
 .header-nav ul li:first-of-type {
-    width: 60%;
+    width: 50%;
 }
 .header-nav ul li:first-child img{
-    width: 80px;
+    width: 520px;
     height: 80px;
 }
 .header-nav ul li:first-child span{
@@ -53,6 +53,14 @@ nav{
     color: #000;
     font-size: 1rem;
     text-align: center;
+}
+.header-nav ul li a:hover{
+    background: rgba(0,0,0,.4);
+    color:#fff;
+}
+.header-nav ul li a.active{
+    background: rgba(0,0,0,.4);
+    color:#fff;
 }
 
 .header-nav ul li a i {
@@ -71,7 +79,19 @@ nav{
     height: 600px;
     margin: 0 auto;
 }
-
+.pictureContent{
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-top: 115px;
+}
+.pictureContent img{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
 section {
     width: 80%;
     margin: 0 auto;
@@ -291,6 +311,10 @@ footer {
     height: 80px;
     margin: 0 auto;
     background-color: #4E5465;
+    text-align: center;
+    font-size: 16px;
+    line-height: 80px;
+    color: #fff;
 }
 
 /*新闻样式开始*/
@@ -385,6 +409,59 @@ footer {
     height: 86px;
     border: 2px #def7f0 solid;
 }
+.newList{
+    width: 100%;
+    margin: auto;
+    min-height:500px;
+}
+.newList ul li{
+    position: relative;
+    padding:0 2%;
+    height: 90px;
+    line-height: 90px;
+    margin-top: 5px;
+    border-bottom: 1px dashed #9F9F9F;
+}
+.newList ul li a{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index:999;
+}
+.newList ul li span{
+    display: block;
+    width:calc(100% - 102px);
+    height: 70px;
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+    line-height: 70px;
+    position: absolute;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.newList ul li label{
+    display: block;
+    width:calc(100% - 102px);
+    height: 20px;
+    text-align: right;
+    position: absolute;
+    top:70px;
+    right: 100px;
+    line-height:20px;
+    color:red;
+}
+.newList ul li img{
+    position: absolute;
+    left:calc(100% - 96px);
+    width: 86px;
+    height: 86px;
+    border: 2px #def7f0 solid;
+}
+
+
 
 .newsDetail{
     width: 100%;
