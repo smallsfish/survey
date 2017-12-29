@@ -38,7 +38,7 @@
                 <%--<li><a href="index/picture">儿童图片<i></i></a></li>--%>
                 <li><a href="index/questionnaire">儿童问卷</a></li>
                 <li><a href="index/data">问卷分析</a></li>
-                <li><a href="index/getNews">研究成果</a></li>
+                <li><a href="index/getNews" class="active">研究成果</a></li>
                 <li><a href="index/msg">留言板</a></li>
             </ul>
         </div>
@@ -48,29 +48,21 @@
     </div>
 </header>
 <section>
-    <div class="pictures">
-        <div class="pictures-tab">
-            <ul>
-                <li>分类：</li>
-                <c:forEach var="pt" items="${pts}">
-                    <li>${pt.pictureTypeName}</li>
-                </c:forEach>
-            </ul>
-        </div>
-
-    </div>
-    <div class="pictures-content">
+    <div class="newList">
         <ul>
-            <c:forEach var="pt" items="${pts}">
-                <li>
-                    <c:forEach var="p" items="${pt.picturesList}">
-                        <div class="p-picture-list">
-                            <img src="uploadimage/${p.pictureurl}"/>
-                            <span>${p.picturetitle}</span>
-                        </div>
-                    </c:forEach>
-                </li>
-            </c:forEach>
+            <li>
+                <a href=""></a>
+                <span>123333333333333</span>
+                <label>12312312312</label>
+                <img src="img/1.png" alt="关注留守儿童">
+            </li>
+            <li>
+                <a href=""></a>
+                <span>123333333333333</span>
+                <label>1</label>
+                <img src="img/1.png" alt="关注留守儿童">
+            </li>
+
         </ul>
     </div>
 </section>
