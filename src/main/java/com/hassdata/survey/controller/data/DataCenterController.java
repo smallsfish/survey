@@ -302,7 +302,7 @@ public class DataCenterController {
         }
         for (Options o : optionsList){
             optionDTO=new OptionDTO();
-            optionDTO.setName(o.getOptionsname());
+            optionDTO.setName(splitName(8,o.getOptionsname()));
             optionDTO.setCount(scoreService.getSelectCountByOptionId("%"+o.getId()+"%",countyid));
             optionDTOS.add(optionDTO);
         }
@@ -313,31 +313,19 @@ public class DataCenterController {
     /**
      * 分割字符串,如果是问题18个一行，否则12个一行
      *
-     * @param isQuestion
      * @param str
      * @return
      */
-    private String splitName(boolean isQuestion, String str) {
+    private String splitName(int splitLength, String str) {
         String s = "";
         String[] sc = str.split("");
-        if (isQuestion) {
-            for (int i = 0; i < sc.length; i++) {
-                if (i != 0 && i % 18 == 0) {
-                    s += "\\n" + sc[i];
-                } else {
-                    s += sc[i];
-                }
-            }
-        } else {
-            for (int i = 0; i < sc.length; i++) {
-                if (i != 0 && i % 12 == 0) {
-                    s += "\\n" + sc[i];
-                } else {
-                    s += sc[i];
-                }
+        for (int i = 0; i < sc.length; i++) {
+            if (i != 0 && i % splitLength == 0) {
+                s += "\n" + sc[i];
+            } else {
+                s += sc[i];
             }
         }
-        System.out.println(s);
         return s;
     }
 }

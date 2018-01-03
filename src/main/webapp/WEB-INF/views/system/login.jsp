@@ -28,7 +28,7 @@
                         <input type="text" name="account" placeholder="输入账号" style="width: 78%;padding-left: 2%;height: 30px;margin-top:15%; "><br>
                         <input type="password" name="password" placeholder="输入密码" style="width: 78%;padding-left: 2%;height: 30px;margin-top:15px;"><br>
                         <div style="width: 80%; margin-left: 10%; display: block; margin-top: 15px;">
-                            <input id="remind" name="remind" value="1" type="checkbox" style="float:left;margin-top: 5px;"><label for="remind" style="font-size: 14px;margin-left: 5px; display: block;float:left;">记住账号</label>
+                            <%--<input id="remind" name="remind" value="1" type="checkbox" style="float:left;margin-top: 5px;"><label for="remind" style="font-size: 14px;margin-left: 5px; display: block;float:left;">记住账号</label>--%>
                             <%--<a href="javascript:;" onclick="alert('正在施工中...')" style="font-size: 14px;float:right;">忘记密码？</a>--%>
                         </div>
                         <input type="submit" style="width: 60%;height: 35px; border: 0;margin-top: 60px; background-color:#44B549; color: #fff; font-size: 18px;" value="登录">

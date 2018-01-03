@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("index")
@@ -26,6 +24,9 @@ public class HomeController {
 
     @Resource
     private MessageBoardService messageBoardService;
+
+    @Resource
+    private CountyService countyService;
 
     @Resource
     private NewsService newsService;
@@ -248,33 +249,47 @@ public class HomeController {
 
     @RequestMapping(value = "da",method = RequestMethod.GET)
     public String getDataAnalyse(ModelMap map,String id){
-        Question question=new Question();
+        Question question = new Question();
         question.setQuestionnaireid(id);
-        List<Question> questionList=questionService.getAll(question);
-        List<QuestionCharts> questionCharts=new ArrayList<>();
-        List<OptionInfo> optionInfos=null;
-        QuestionCharts qc=null;
-        OptionInfo oi=null;
-        for(Question q : questionList){
-            optionInfos=new ArrayList<>();
-            qc=new QuestionCharts();
-            qc.setName(splitName(true,q.getQuestionname()));
-            Options op=new Options();
-            op.setQuestionid(q.getId());
-            List<Options> optionsList=optionsService.getAll(op);
-            for(Options o : optionsList){
-                oi=new OptionInfo();
-                oi.setName(splitName(false,o.getOptionsname()));
-                oi.setCount((long)scoreService.getOptionCountWidthQuesitonnaire(id,q.getId(),"%"+o.getId()+"%").size());
-                optionInfos.add(oi);
+        List<Question> questionList = questionService.getAll(question);
+        List<County> countyList=countyService.getAll(null,"id DESC");
+        Collections.sort(questionList, new Comparator<Question>() {
+            @Override
+            public int compare(Question o1, Question o2) {
+                return o1.getQuestionsort()-o2.getQuestionsort();
             }
-            qc.setOptionInfos(optionInfos);
-            questionCharts.add(qc);
+        });
+        for(int i=0;i<questionList.size();i++){
+            questionList.get(i).setQuestionname(questionList.get(i).getQuestionname().split(":")[0]);
         }
-        map.addAttribute("ch",questionCharts);
+        map.addAttribute(questionList);
+        map.addAttribute(countyList);
         return "index/da";
     }
 
+    @RequestMapping(value = "getDataByQuestionIdOrCountyId",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getDataByQuestionIdOrCountyId(String questionid,Integer countyid){
+        Question question=questionService.findByStringId(questionid);
+        DataDTO dataDTO=new DataDTO();
+        dataDTO.setQuestionname(question.getQuestionname());
+        Options options=new Options();
+        options.setQuestionid(question.getId());
+        List<Options> optionsList=optionsService.getAll(options);
+        List<OptionDTO> optionDTOS=new ArrayList<>();
+        OptionDTO optionDTO=null;
+        if(countyid==0){
+            countyid=null;
+        }
+        for (Options o : optionsList){
+            optionDTO=new OptionDTO();
+            optionDTO.setName(splitName(7,o.getOptionsname()));
+            optionDTO.setCount(scoreService.getSelectCountByOptionId("%"+o.getId()+"%",countyid));
+            optionDTOS.add(optionDTO);
+        }
+        dataDTO.setOptionDTOS(optionDTOS);
+        return ServerResponse.createBySuccess(dataDTO);
+    }
 
     private void setLoopAttribute(ModelMap map) {
         Loop loop=new Loop();
@@ -313,31 +328,20 @@ public class HomeController {
 
     /**
      * 分割字符串,如果是问题18个一行，否则12个一行
-     * @param isQuestion
+     *
      * @param str
      * @return
      */
-    private String splitName(boolean isQuestion,String str){
-        String s="";
-        String[] sc=str.split("");
-        if(isQuestion){
-            for(int i=0; i<sc.length;i++){
-                if(i!=0 && i%18==0){
-                    s+="\\n"+sc[i];
-                }else{
-                    s+=sc[i];
-                }
-            }
-        }else{
-            for(int i=0; i<sc.length;i++){
-                if(i!=0 && i%12==0){
-                    s+="\\n"+sc[i];
-                }else{
-                    s+=sc[i];
-                }
+    private String splitName(int splitLength, String str) {
+        String s = "";
+        String[] sc = str.split("");
+        for (int i = 0; i < sc.length; i++) {
+            if (i != 0 && i % splitLength == 0) {
+                s += "\n" + sc[i];
+            } else {
+                s += sc[i];
             }
         }
-        System.out.println(s);
         return s;
     }
 }
