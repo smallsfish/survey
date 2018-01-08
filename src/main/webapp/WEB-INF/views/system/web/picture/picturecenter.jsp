@@ -36,7 +36,7 @@
                     </select>
                     <div onclick="picturesSearch()" class="pictures-search-button">搜索</div>
                 </div>
-                <img src="img/icon/icon-delete.png" data-type="checkPicturesData" class="demoTable" alt="删除选中管理员"
+                <img src="img/icon/icon-delete.png" data-type="checkPicturesData" class="demoTable" alt="删除选中图片"
                      title="删除">
                 <img onclick="reflashPicturesTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
                 <img onclick="addPictures()" src="img/icon/icon-more2.png" alt="添加图片" title="添加">
@@ -236,7 +236,7 @@
                     title: '修改' + data.name + '图片类型',
                     type: 2,
                     area: ['50%', '40%'],
-                    content: 'system/getEditorNewType?id=' + data.id,
+                    content: 'system/getEditorPictureType?id=' + data.id,
                     skin: 'layui-layer-molv'
                 });
             } else if (layEvent === 'del') { //删除

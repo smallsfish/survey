@@ -5,7 +5,7 @@
 <html lang="zh-CN">
 <%@ include file="../../base.jsp" %>
 <body oncontextmenu="return false" onselect="return false">
-<div class="layui-tab layui-tab-brief" style="margin: 0; height: 99.9%;" lay-filter="docDemoTabBrief">
+<div class="layui-tab layui-tab-brief" style="margin: 0; height: 99.9%;" lay-filter="cityTabFilter">
     <ul class="layui-tab-title">
         <shiro:hasPermission name="city:view">
             <li class="layui-this">县</li>
@@ -30,7 +30,7 @@
         <div class="layui-tab-item" style="height: 94%;">
             <div class="usertools">
                 <shiro:hasPermission name="city:delete">
-                    <img src="img/icon/icon-delete.png" data-type="checkCityData" class="demoTable" alt="删除选中市"
+                    <img src="img/icon/icon-delete.png" data-type="checkCityData" class="cityTable" alt="删除选中市"
                          title="删除">
                 </shiro:hasPermission>
                 <img onclick="reflashCityTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
@@ -43,7 +43,7 @@
         <div class="layui-tab-item" style="height: 94%;">
             <div class="usertools">
                 <shiro:hasPermission name="city:delete">
-                    <img src="img/icon/icon-delete.png" data-type="checkProvinceData" class="demoTable" alt="删除选中省份"
+                    <img src="img/icon/icon-delete.png" data-type="checkProvinceData" class="provinceTable" alt="删除选中省份"
                          title="删除">
                 </shiro:hasPermission>
                 <img onclick="reflashProvicneTable()" src="img/icon/icon-reflash.png" alt="刷新" title="刷新">
@@ -58,11 +58,74 @@
 </body>
 <script>
     var layui_tab_item_width = $('.layui-tab-item').width();
-    var table, countyTable, layer, loadIndex, cityTable, provinceTable;
-    layui.use(['element', 'table','layer'], function () {
+    var table, countyTable, layer, loadIndex, cityTable, provinceTable, countyLife = true, cityLife = false,
+        provinceLife = false;
+
+    layui.use(['element', 'table', 'layer'], function () {
         var element = layui.element;
         table = layui.table;
         layer = layui.layer;
+        element.on('tab(cityTabFilter)', function (data) {
+            switch (data.index) {
+                case 1 :
+                    if (!cityLife) {
+                        cityTable = table.render({
+                            elem: '#dynamic-table-city', //指定原始表格元素选择器（推荐id选择器）
+                            page: true,
+                            id: 'cityTable',
+                            url: 'system/getCityList',
+                            method: 'get',
+                            loading: true,
+                            height: 'full-115',//容器高度
+                            cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
+                                {width: layui_tab_item_width * 0.04, field: 'id', title: 'ID', sort: true},
+                                {width: layui_tab_item_width * 0.4, field: 'provincename', title: '所属省'},
+                                {width: layui_tab_item_width * 0.383, field: 'cityname', title: '市名'},
+                                {
+                                    width: layui_tab_item_width * 0.141,
+                                    fixed: 'right',
+                                    align: 'center',
+                                    toolbar: '#cityToolBar',
+                                    title: '操作'
+                                }
+                            ]],
+                            size: 'lg',
+                            limits: [30, 60, 90, 150, 300],
+                            limit: 30 //默认采用30
+                        });
+                        cityLife = true;
+                    }
+                    break;
+                case 2 :
+                    if (!provinceLife) {
+                        provinceTable = table.render({
+                            elem: '#dynamic-table-province', //指定原始表格元素选择器（推荐id选择器）
+                            page: true,
+                            id: 'provinceTable',
+                            url: 'system/getProvinceList',
+                            method: 'get',
+                            loading: true,
+                            height: 'full-115', //容器高度
+                            cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
+                                {width: layui_tab_item_width * 0.04, field: 'id', title: 'ID', sort: true},
+                                {width: layui_tab_item_width * 0.785, field: 'provincename', title: '省名'},
+                                {
+                                    width: layui_tab_item_width * 0.141,
+                                    fixed: 'right',
+                                    align: 'center',
+                                    toolbar: '#provinceToolBar',
+                                    title: '操作'
+                                }
+                            ]],
+                            size: 'lg',
+                            limits: [30, 60, 90, 150, 300],
+                            limit: 30 //默认采用30
+                        });
+                        provinceLife = true;
+                    }
+                    break;
+            }
+        });
 //        县动态表格
         countyTable = table.render({
             elem: '#dynamic-table-county', //指定原始表格元素选择器（推荐id选择器）
@@ -89,14 +152,14 @@
             limits: [30, 60, 90, 150, 300],
             limit: 30 //默认采用30
         });
-        var $ = layui.$, active = {
+        var active = {
             checkCountyData: function () { //获取选中数据
                 var checkStatus = table.checkStatus('countyTable')
                     , data = checkStatus.data;
                 if (data.length == 0) {
                     layer.msg("请选择要删除的信息！", {icon: 2})
                 } else {
-                    layer.confirm("确定删除所选用户吗？", {icon: 2, title: '系统提示'}, function (index) {
+                    layer.confirm("确定删除所选县吗？", {icon: 2, title: '系统提示'}, function () {
                         $.each(checkStatus.data, function (index, obj) {
                             loadIndex = layer.load();
                             $.ajax({
@@ -113,7 +176,7 @@
                                 },
                                 error: function (data) {
                                     layer.close(loadIndex);
-                                    layer.alert("出现异常！" + JSON.stringify(data));
+                                    layer.alert("出现异常！");
                                 }
                             });
                         });
@@ -126,7 +189,7 @@
                 if (data.length == 0) {
                     layer.msg("请选择要删除的信息！", {icon: 2})
                 } else {
-                    layer.confirm("确定删除所选用户吗？", {icon: 2, title: '系统提示'}, function (index) {
+                    layer.confirm("确定删除所选城市吗？", {icon: 2, title: '系统提示'}, function (index) {
                         $.each(checkStatus.data, function (index, obj) {
                             loadIndex = layer.load();
                             $.ajax({
@@ -156,7 +219,7 @@
                 if (data.length == 0) {
                     layer.msg("请选择要删除的信息！", {icon: 2})
                 } else {
-                    layer.confirm("确定删除所选用户吗？", {icon: 2, title: '系统提示'}, function (index) {
+                    layer.confirm("确定删除所选省份吗？", {icon: 2, title: '系统提示'}, function (index) {
                         $.each(checkStatus.data, function (index, obj) {
                             loadIndex = layer.load();
                             $.ajax({
@@ -181,7 +244,7 @@
                 }
             }
         };
-        $('.usertools .demoTable').on('click', function () {
+        $('.usertools .demoTable,.cityTable,.provinceTable').on('click', function () {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
@@ -224,34 +287,6 @@
         });
 
 
-
-
-
-        provinceTable = table.render({
-            elem: '#dynamic-table-province', //指定原始表格元素选择器（推荐id选择器）
-            page: true,
-            id: 'provinceTable',
-            url: 'system/getProvinceList',
-            method: 'get',
-            loading: true,
-            height: 'full-115', //容器高度
-            cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
-                {width: layui_tab_item_width * 0.04, field: 'id', title: 'ID', sort: true},
-                {width: layui_tab_item_width * 0.785, field: 'provincename', title: '省名'},
-                {
-                    width: layui_tab_item_width * 0.141,
-                    fixed: 'right',
-                    align: 'center',
-                    toolbar: '#provinceToolBar',
-                    title: '操作'
-                }
-            ]],
-            size: 'lg',
-            limits: [30, 60, 90, 150, 300],
-            limit: 30 //默认采用30
-        });
-
-
         table.on('tool(provinceTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值
@@ -290,33 +325,6 @@
         });
 
 
-        cityTable = table.render({
-            elem: '#dynamic-table-city', //指定原始表格元素选择器（推荐id选择器）
-            page: true,
-            id: 'countyTable',
-            url: 'system/getCityList',
-            method: 'get',
-            loading: true,
-            height: 'full-115',//容器高度
-            cols: [[{checkbox: true, width: layui_tab_item_width * 0.02},
-                {width: layui_tab_item_width * 0.04, field: 'id', title: 'ID', sort: true},
-                {width: layui_tab_item_width * 0.4, field: 'provincename', title: '所属省'},
-                {width: layui_tab_item_width * 0.383, field: 'cityname', title: '市名'},
-                {
-                    width: layui_tab_item_width * 0.141,
-                    fixed: 'right',
-                    align: 'center',
-                    toolbar: '#cityToolBar',
-                    title: '操作'
-                }
-            ]],
-            size: 'lg',
-            limits: [30, 60, 90, 150, 300],
-            limit: 30 //默认采用30
-        });
-
-
-
         table.on('tool(cityTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值
@@ -353,8 +361,6 @@
                 });
             }
         });
-
-
 
 
     });
@@ -471,6 +477,7 @@
             margin-right: 15px;
             cursor: pointer;
         }
+
         /*用户管理样式结束*/
     </style>
 </head>

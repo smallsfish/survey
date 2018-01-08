@@ -28,18 +28,18 @@
 </head>
 
 <body oncontextmenu="return false" onselect="return false">
-<form class="layui-form" id="newsTypeForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
-    <input type="hidden" name="id" value="${newType.id}">
+<form class="layui-form" id="pictureTypeForm"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input type="hidden" name="id" value="${picturetype.id}">
     <div class="layui-form-item" style="margin-top: 20px;">
         <label class="layui-form-label"><span style="color: #f00;">*</span>图片类型：</label>
         <div class="layui-input-block">
-            <input type="text" name="name" lay-verify="required" placeholder="请输入资讯类型" autocomplete="off"
-                   class="layui-input" value="${newType.name}">
+            <input type="text" name="name" lay-verify="required" placeholder="请输入图片类型" autocomplete="off"
+                   class="layui-input" value="${picturetype.name}">
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="addNewstype" id="newsSubmit">立即修改</button>
+            <button class="layui-btn" lay-submit lay-filter="addPicturetype" id="pictureSubmit">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -57,13 +57,13 @@
         laydate.render({
             elem: '#comefrom' //指定元素
         });
-        form.on('submit(addNewstype)', function (data) {
+        form.on('submit(addPicturetype)', function (data) {
             var loadIndex = layer.load();
-            var fromData = new FormData($("#newsTypeForm")[0]);
+            var fromData = new FormData($("#pictureTypeForm")[0]);
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: 'system/editorNewsType',
+                url: 'system/editorPictureType',
                 data: fromData,
                 async: false,
                 cache: false,
@@ -72,13 +72,14 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        window.parent.reflashNewstypeTable();
+                        $("#pictureTypeForm")[0].reset();
+                        window.parent.reflashPicturestypeTable();
                     }
                     layer.msg(result.msg);
                 },
                 error: function (data) {
                     layer.close(loadIndex);
-                    alert("出现异常！" + JSON.stringify(data));
+                    alert("出现异常！");
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
@@ -86,6 +87,6 @@
     });
 </script>
 <script type="text/javascript">
-    var ue = UE.getEditor("newsContent");
+    var ue = UE.getEditor("pictureContent");
 </script>
 </html>

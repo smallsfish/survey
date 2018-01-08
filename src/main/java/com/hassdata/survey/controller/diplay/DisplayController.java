@@ -70,8 +70,6 @@ public class DisplayController {
         if (user.getPassword().equals("") || user.getPassword() == null) {
             map.addAttribute("error", "请输入用户名或密码");
         }
-        String contextPath=request.getContextPath();
-        System.out.println(contextPath+"===================================`");
         String password = MD5TUtils.threeMD5(user.getPassword());
         user.setPassword(null);
         User userS = userService.getOne(user);
@@ -87,14 +85,14 @@ public class DisplayController {
                 userService.updateParams(userS);
                 if(path!=null && parameter!=null && !path.equals("") && !parameter.equals("")){
                     session.setAttribute("parameter",parameter);
-                    return "redirect:/"+contextPath+path+"?id="+parameter;
+                    return "redirect:"+path+"?id="+parameter;
                 }else{
                     map.addAttribute("id",userS.getId());
                     return "display/user/updateUserPassword";
                 }
             }
         }
-        return "redirect:/"+contextPath+"display/login";
+        return "redirect:/display/login";
     }
 
     @RequestMapping(value = "updateUserPassword",method = RequestMethod.POST)

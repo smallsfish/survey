@@ -13,7 +13,7 @@
 <body>
 <img id="bobybg" src="img/bg.jpg">
 <div id="contentbody">
-    <form action="/display/login" method="POST">
+    <form action="display/login" method="POST">
         <input type="hidden" name="path" value="${path}">
         <input type="hidden" name="parameter" value="${parameter}">
         <table cellspacing="30">

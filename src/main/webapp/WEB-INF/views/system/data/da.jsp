@@ -49,6 +49,10 @@
 </div>
 </body>
 <script type="text/javascript">
+    var layer;
+    layui.use(['layer'], function () {
+        layer = layui.layer;
+    });
     var name = "";
     var currentQuestionId = '${questionList.get(0).id}';
     var currentCountyId = 0;

@@ -49,12 +49,16 @@
 </div>
 </body>
 <script type="text/javascript">
+    var layer;
+    layui.use(['layer'], function () {
+        layer = layui.layer;
+    });
     var name = "";
     var currentQuestionId = '${questionList.get(0).id}';
     var currentCountyId = 0;
-    var myChartBing,optionZhu;
-    var myChartZhe,optionZhe;
-    var myChartZhu,optionBing;
+    var myChartBing, optionZhu;
+    var myChartZhe, optionZhe;
+    var myChartZhu, optionBing;
     // 基于准备好的dom，初始化echarts实例
     myChartZhu = echarts.init(document.getElementById('dazhu'));
     myChartZhe = echarts.init(document.getElementById('dazhe'));
@@ -86,7 +90,8 @@
         $("#dazhe").css("display", "none");
         $("#dazhu").css("display", "none");
     }
-    function initOption(){
+
+    function initOption() {
         optionZhu = {
             title: {
                 text: name,
@@ -113,7 +118,7 @@
                         alignWithLabel: true
                     }
                 }
-            ],toolbox: {
+            ], toolbox: {
                 feature: {
                     saveAsImage: {}
                 },
@@ -193,7 +198,7 @@
             tooltip: {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },toolbox: {
+            }, toolbox: {
                 feature: {
                     saveAsImage: {}
                 },
@@ -250,38 +255,39 @@
         $.ajax({
             type: "GET",
             dataType: "json",
-            url: 'system/getDataByQuestionIdOrCountyId',
+            url: 'index/getDataByQuestionIdOrCountyId',
             data: {'questionid': currentQuestionId, 'countyid': currentCountyId},
             success: function (result) {
                 var ydata = [];
                 var xdata = [];
                 var bydata = [];
                 initOption();
-                optionZhu.title.text=result.data.questionname;
-                optionZhe.title.text=result.data.questionname;
-                optionBing.title.text=result.data.questionname;
+                optionZhu.title.text = result.data.questionname;
+                optionZhe.title.text = result.data.questionname;
+                optionBing.title.text = result.data.questionname;
                 $(result.data.optionDTOS).each(function (index, item) {
-                    ydata[index]=item.count;
-                    xdata[index]=item.name;
-                    bydata[index]={};
-                    bydata[index].value=item.count;
-                    bydata[index].name=item.name;
+                    ydata[index] = item.count;
+                    xdata[index] = item.name;
+                    bydata[index] = {};
+                    bydata[index].value = item.count;
+                    bydata[index].name = item.name;
                 });
-                optionZhu.xAxis[0].data=xdata;
-                optionZhu.series[0].data=ydata;
-                optionZhe.xAxis[0].data=xdata;
-                optionZhe.series[0].data=ydata;
-                optionBing.legend.data=xdata;
-                optionBing.series[0].data=bydata;
-                myChartZhu.setOption(optionZhu,{ notMerge:true});
-                myChartZhe.setOption(optionZhe,{ notMerge:true});
-                myChartBing.setOption(optionBing,{ notMerge:true});
+                optionZhu.xAxis[0].data = xdata;
+                optionZhu.series[0].data = ydata;
+                optionZhe.xAxis[0].data = xdata;
+                optionZhe.series[0].data = ydata;
+                optionBing.legend.data = xdata;
+                optionBing.series[0].data = bydata;
+                myChartZhu.setOption(optionZhu, {notMerge: true});
+                myChartZhe.setOption(optionZhe, {notMerge: true});
+                myChartBing.setOption(optionBing, {notMerge: true});
             },
             error: function (data) {
                 layer.alert("出现异常！");
             }
         });
     }
+
     ajaxGetData();
 </script>
 </html>

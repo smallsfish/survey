@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="zh-CN">
 <head>
@@ -17,10 +18,12 @@
             width: 100%;
             height: 100%;
         }
+
         ::-webkit-scrollbar {
             width: 8px;
             height: 5px;
         }
+
         .loop-pic img {
             width: 100%;
             height: 100%;
@@ -44,25 +47,20 @@
         </div>
     </nav>
     <div class="pictureContent">
-        <img src="img/bg.jpg" alt="关注留守儿童">
+        <img src="img/yjjg.jpg" alt="关注留守儿童">
     </div>
 </header>
 <section>
     <div class="newList">
         <ul>
-            <li>
-                <a href=""></a>
-                <span>123333333333333</span>
-                <label>12312312312</label>
-                <img src="img/1.png" alt="关注留守儿童">
-            </li>
-            <li>
-                <a href=""></a>
-                <span>123333333333333</span>
-                <label>1</label>
-                <img src="img/1.png" alt="关注留守儿童">
-            </li>
-
+            <c:forEach var="n" items="${newsList}">
+                <li>
+                    <a href="index/newsDetail?id=${n.id}"></a>
+                    <span>${n.newstitle}</span>
+                    <label> <fmt:formatDate value="${n.createtime}" pattern="yyyy-MM-dd"/> </label>
+                    <img src="uploadimage/${n.imageurl}" alt="关注留守儿童">
+                </li>
+            </c:forEach>
         </ul>
     </div>
 </section>
@@ -70,17 +68,5 @@
     <p>基础教育改革与发展协同创新中心 版权所有</p>
 </footer>
 </body>
-<script>
-    layui.use('carousel', function () {
-        var carousel = layui.carousel;
-        //建造实例
-        carousel.render({
-            elem: '#pictureLoop'
-            , width: '100%' //设置容器宽度
-            , arrow: 'hover' //始终显示箭头
-            , height: '600px'
-            , anim: 'fade' //切换动画方式
-        });
-    });
-</script>
+</body>
 </html>

@@ -80,7 +80,17 @@ public class HomeController {
     }
 
     @RequestMapping(value = "getNews",method = RequestMethod.GET)
-    public String getNews(){
+    public String getNews(ModelMap map){
+        Newstype newstype=new Newstype();
+        newstype.setName("研究成果");
+        Newstype nt=newsTypeService.getOne(newstype);
+        List<News> newsList=new ArrayList<>();
+        if(nt!=null) {
+            News news = new News();
+            news.setNewstype(nt.getId());
+            newsList.addAll(newsService.getAll(news));
+        }
+        map.addAttribute(newsList);
         return "index/new";
     }
 

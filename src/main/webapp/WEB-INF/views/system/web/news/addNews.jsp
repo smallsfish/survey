@@ -114,7 +114,8 @@
                 success: function (result) {
                     layer.close(loadIndex);
                     if (result.status == 0) {
-                        $("#newsForm")[0].reset();
+                        window.parent.reflashNewsTable();
+                        window.parent.layer.closeAll();
                     }
                     layer.msg(result.msg);
                 },

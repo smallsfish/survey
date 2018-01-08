@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-        http://www.springframework.org/schema/jee
-        http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
         http://www.springframework.org/schema/aop
 		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
         http://www.springframework.org/schema/tx
@@ -106,6 +104,5 @@
 	<import resource="classpath:spring-config-cache.xml"/>
 	<import resource="classpath:spring-config-shiro.xml"/>
 	
-	<!-- ############################################################ -->
-	
+
 </beans>

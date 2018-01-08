@@ -1,85 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-        http://www.springframework.org/schema/jee
-        http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
-        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-4.2.xsd
         http://www.springframework.org/schema/aop
 		http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
 
-	<context:component-scan base-package="com.hassdata.survey.controller" />
+    <context:component-scan base-package="com.hassdata.survey.controller"/>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <mvc:annotation-driven/>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="2"/>
+        <property name="viewClass"
+                  value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/views/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/display/**"/>
+            <mvc:exclude-mapping path="/display/login"/>
+            <bean class="com.hassdata.survey.interceptor.UserInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 
-	<aop:aspectj-autoproxy proxy-target-class="true" />
-	<mvc:annotation-driven />
+    <mvc:resources mapping="/css/**" location="/css/"/>
+    <mvc:resources mapping="/img/**" location="/img/"/>
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/layui/**" location="/layui/"/>
+    <mvc:resources mapping="/uploadimage/**" location="/uploadimage/"/>
+    <mvc:resources mapping="/uploadLoop/**" location="/uploadLoop/"/>
+    <mvc:resources mapping="/uploadvideo/**" location="/uploadvideo/"/>
+    <mvc:resources mapping="/ueditor/**" location="/ueditor/"/>
 
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="order" value="2" />
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/views/"></property>
-		<property name="suffix" value=".jsp"></property>
-	</bean>
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"></property>
+        <!-- 文件大小最大值 -->
+        <property name="maxUploadSize" value="10485760000"/>
+        <!-- 内存中的最大值 -->
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
 
-	<!-- 拦截器 -->
-	<mvc:interceptors>
-		<!--<mvc:interceptor>-->
-			<!--<mvc:mapping path="/system/**" />-->
-			<!--<mvc:exclude-mapping path="/system/login" />-->
-			<!--<bean class="com.hassdata.survey.interceptor.AdminUserInterceptor"></bean>-->
-		<!--</mvc:interceptor>-->
-		<mvc:interceptor>
-			<mvc:mapping path="/display/**" />
-			<mvc:exclude-mapping path="/display/login" />
-			<bean class="com.hassdata.survey.interceptor.UserInterceptor"></bean>
-		</mvc:interceptor>
-	</mvc:interceptors>
-
-
-	<mvc:resources mapping="/css/**" location="/css/" />
-	<mvc:resources mapping="/img/**" location="/img/" />
-	<mvc:resources mapping="/js/**" location="/js/" />
-	<mvc:resources mapping="/layui/**" location="/layui/" />
-	<mvc:resources mapping="/uploadimage/**" location="/uploadimage/" />
-	<mvc:resources mapping="/uploadLoop/**" location="/uploadLoop/" />
-	<mvc:resources mapping="/uploadvideo/**" location="/uploadvideo/" />
-	<mvc:resources mapping="/ueditor/**" location="/ueditor/" />
-
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="defaultEncoding" value="utf-8"></property>
-		<!-- 文件大小最大值 -->
-		<property name="maxUploadSize" value="10485760000" />
-		<!-- 内存中的最大值 -->
-		<property name="maxInMemorySize" value="40960" />
-	</bean>
-
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-		<property name="messageConverters">
-			<list>
-				<ref bean="mappingJacksonHttpMessageConverter" />
-			</list>
-		</property>
-	</bean>
-	<bean id="mappingJacksonHttpMessageConverter"
-		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-		<property name="supportedMediaTypes">
-			<list>
-				<value>application/json;charset=UTF-8</value>
-			</list>
-		</property>
-	</bean>
-	<bean class="com.hassdata.survey.exception.DefaultExceptionHandler"/>
-	<import resource="spring-mvc-shiro.xml"/>
+    <bean
+            class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+    <bean class="com.hassdata.survey.exception.DefaultExceptionHandler"/>
+    <import resource="spring-mvc-shiro.xml"/>
 </beans>

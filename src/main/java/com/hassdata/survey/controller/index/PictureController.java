@@ -3,6 +3,7 @@ package com.hassdata.survey.controller.index;
 import com.hassdata.survey.dto.PictureDTO;
 import com.hassdata.survey.dto.PictureTypeDTO;
 import com.hassdata.survey.po.Admin_User;
+import com.hassdata.survey.po.Newstype;
 import com.hassdata.survey.po.Pictures;
 import com.hassdata.survey.po.Picturetype;
 import com.hassdata.survey.service.AdminUserService;
@@ -138,6 +139,8 @@ public class PictureController {
         return ServerResponse.createBySuccessMessage("类型添加成功");
     }
 
+
+
     @RequiresPermissions("picture:update")
     @RequestMapping(value = "getEditorPictures", method = RequestMethod.GET)
     public String getEditorPictures(Long id, ModelMap map) {
@@ -220,6 +223,21 @@ public class PictureController {
         pictureService.updateParams(pictures);
         return ServerResponse.createBySuccessMessage("图片修改成功");
     }
+
+    @RequestMapping(value = "getEditorPictureType",method = RequestMethod.GET)
+    public String getEditorNewType(Integer id,ModelMap map){
+        Picturetype picturetype=pictureTypeService.find(id);
+        map.addAttribute(picturetype);
+        return "system/web/picture/editorPictureType";
+    }
+
+    @RequestMapping(value = "editorPictureType",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse editorNewsType(Picturetype picturetype){
+        pictureTypeService.updateParams(picturetype);
+        return ServerResponse.createBySuccessMessage("修改成功");
+    }
+
 
     @RequestMapping(value = "pictureSearch", method = RequestMethod.GET)
     @ResponseBody

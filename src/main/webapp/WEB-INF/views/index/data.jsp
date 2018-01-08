@@ -44,7 +44,7 @@
         </div>
     </nav>
     <div class="pictureContent">
-        <img src="img/bg.jpg" alt="关注留守儿童">
+        <img src="img/wjfx.jpg" alt="关注留守儿童">
     </div>
 </header>
 <section>

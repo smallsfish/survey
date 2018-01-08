@@ -166,11 +166,11 @@
 	</form>
 	<div id="md">
 		<ul>
-			<li ><a href="/system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#top">头部</a></li>
+			<li ><a href="system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#top">头部</a></li>
 			<c:forEach var="qt" items="${displayQuestionnaireModel.displayQuestionTypeModels}" varStatus="str">
-				<li ><a href="/system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bigtitle${str.index+1}">${str.index+1}</a></li>
+				<li ><a href="system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bigtitle${str.index+1}">${str.index+1}</a></li>
 			</c:forEach>
-			<li ><a href="/system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bottom">底部</a></li>
+			<li ><a href="system/displayQuestionnaire?id=${displayQuestionnaireModel.questionnaire.id}#bottom">底部</a></li>
 		</ul>
 	</div>
 </body>

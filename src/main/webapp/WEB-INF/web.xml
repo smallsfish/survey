@@ -4,7 +4,7 @@
          id="WebApp_ID" version="3.0">
     <display-name>hassdata-survey</display-name>
     <welcome-file-list>
-        <welcome-file>index</welcome-file>
+        <welcome-file>index/home</welcome-file>
     </welcome-file-list>
     <context-param>
         <param-name>log4jConfigLocation</param-name>
